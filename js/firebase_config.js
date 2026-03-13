@@ -27,15 +27,20 @@
 
       auth.onAuthStateChanged(function (user) {
         if (user) {
-          db.collection("users").doc(user.uid).get().then(function (doc) {
-            if (doc.exists && doc.data().displayName) {
-              currentUser = { uid: user.uid, displayName: doc.data().displayName, needsName: false };
-            } else {
-              // 初回ログイン: 表示名未設定
-              currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: true };
-            }
+          if (db) {
+            db.collection("users").doc(user.uid).get().then(function (doc) {
+              if (doc.exists && doc.data().displayName) {
+                currentUser = { uid: user.uid, displayName: doc.data().displayName, needsName: false };
+              } else {
+                currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: true };
+              }
+              fireAuthChange();
+            });
+          } else {
+            // Firestore未読込ページ: Google表示名をそのまま使用
+            currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: false };
             fireAuthChange();
-          });
+          }
         } else {
           currentUser = null;
           fireAuthChange();
