@@ -237,6 +237,49 @@
         }).catch(function (err) { callback(err); });
     },
 
+    // 自分の投稿シナリオ一覧
+    getMyScenarios: function (callback) {
+      if (!db || !currentUser) return callback(null, []);
+      db.collection("scenarios")
+        .where("userId", "==", currentUser.uid)
+        .orderBy("postedAt", "desc")
+        .limit(50)
+        .get().then(function (snap) {
+          var results = [];
+          snap.forEach(function (doc) {
+            var d = doc.data();
+            d.id = doc.id;
+            if (d.postedAt && d.postedAt.toDate) {
+              d.postedAt = formatTimestamp(d.postedAt.toDate());
+            }
+            results.push(d);
+          });
+          callback(null, results);
+        }).catch(function (err) { callback(err); });
+    },
+
+    // 自分のクリア報告一覧（全シナリオ横断: collectionGroup）
+    getMyClears: function (callback) {
+      if (!db || !currentUser) return callback(null, []);
+      db.collectionGroup("clears")
+        .where("userId", "==", currentUser.uid)
+        .orderBy("reportedAt", "desc")
+        .limit(50)
+        .get().then(function (snap) {
+          var results = [];
+          snap.forEach(function (doc) {
+            var d = doc.data();
+            d.id = doc.id;
+            d.scenarioId = doc.ref.parent.parent.id;
+            if (d.reportedAt && d.reportedAt.toDate) {
+              d.reportedAt = formatTimestamp(d.reportedAt.toDate());
+            }
+            results.push(d);
+          });
+          callback(null, results);
+        }).catch(function (err) { callback(err); });
+    },
+
     // クリア報告投稿
     postClear: function (scenarioId, data, callback) {
       if (!db || !currentUser) return callback(new Error("ログインが必要です"));

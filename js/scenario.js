@@ -39,7 +39,7 @@
     });
     authLoginBtn.addEventListener("click", function () { FB.signIn(); });
     authAvatar.addEventListener("click", function () {
-      if (confirm("ログアウトしますか？")) FB.signOut();
+      window.location.href = "profile.html";
     });
   }
 

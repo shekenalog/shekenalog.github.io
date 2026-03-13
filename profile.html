@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プロフィール - シェケナログ</title>
+  <meta property="og:title" content="プロフィール - シェケナログ">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="png/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* プロフィールカード */
+    .prof-card {
+      background: #243556;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .prof-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-color: #888;
+      color: #fff;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+    .prof-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .prof-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.3rem;
+    }
+    .prof-name {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .prof-edit-btn {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 3px;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .prof-edit-btn:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
+    .prof-logout-btn {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.8rem;
+      padding: 0.35rem 1rem;
+      border: 1.5px solid #e05555;
+      border-radius: 4px;
+      background: transparent;
+      color: #e05555;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .prof-logout-btn:hover { background: #e05555; color: #fff; }
+
+    /* タブ */
+    .prof-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .prof-tab {
+      flex: 1 1 0;
+      padding: 0.6rem 0.3rem;
+      background-color: #0f3460;
+      border: 1.5px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .prof-tab.active {
+      background-color: #ff5133;
+      color: #fff;
+      border-color: #ff5133;
+    }
+
+    /* コンテンツ */
+    .prof-content {
+      min-height: 200px;
+    }
+    .prof-empty {
+      text-align: center;
+      color: #888;
+      padding: 3rem 1rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+    }
+    .prof-loading {
+      text-align: center;
+      color: #888;
+      padding: 2rem;
+      font-family: "Noto Sans JP", sans-serif;
+    }
+
+    /* クリア報告カード */
+    .prof-clear-card {
+      background: #243556;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+    }
+    .prof-clear-scenario {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+    }
+    .prof-clear-scenario a {
+      color: #ff6b35;
+      text-decoration: none;
+    }
+    .prof-clear-scenario a:hover { text-decoration: underline; }
+    .prof-clear-eggs {
+      font-family: Consolas, "Splatfont2", monospace;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .prof-clear-eggs img {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+    }
+    .prof-clear-date {
+      font-family: Consolas, monospace;
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    /* 未ログイン */
+    .prof-login-prompt {
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    .prof-login-prompt p {
+      font-family: "Noto Sans JP", sans-serif;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .prof-card { padding: 1rem; gap: 1rem; }
+      .prof-avatar { width: 52px; height: 52px; font-size: 22px; }
+      .prof-name { font-size: 1.1rem; }
+      .prof-tab { font-size: 16px; padding: 0.55rem 0.2rem; }
+    }
+    @media (max-width: 450px) {
+      .prof-card { padding: 0.8rem; gap: 0.8rem; }
+      .prof-avatar { width: 44px; height: 44px; font-size: 18px; }
+      .prof-name { font-size: 1rem; }
+      .prof-tab { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-inline">
+    <a href="index.html" class="back-link"><img src="png/btn_prev.png" alt="トップへ" class="back-btn-img"></a>
+    <h1>プロフィール</h1>
+  </header>
+
+  <main>
+    <!-- 未ログイン時 -->
+    <div id="login-prompt" class="prof-login-prompt" style="display:none;">
+      <p>ログインするとプロフィールが表示されます</p>
+      <button id="prof-login-btn" class="auth-btn">ログイン</button>
+    </div>
+
+    <!-- ログイン時 -->
+    <div id="prof-main" style="display:none;">
+      <div class="prof-card">
+        <div id="prof-avatar" class="prof-avatar"></div>
+        <div class="prof-info">
+          <div class="prof-name-row">
+            <span id="prof-name" class="prof-name"></span>
+            <button id="prof-edit-btn" class="prof-edit-btn">編集</button>
+          </div>
+          <button id="prof-logout-btn" class="prof-logout-btn">ログアウト</button>
+        </div>
+      </div>
+
+      <div class="prof-tabs">
+        <button class="prof-tab active" data-tab="scenarios">バイトシナリオ</button>
+        <button class="prof-tab" data-tab="clears">クリア記録</button>
+        <button class="prof-tab" data-tab="bookmarks">ブックマーク</button>
+      </div>
+
+      <div id="prof-content" class="prof-content"></div>
+    </div>
+  </main>
+
+  <script src="js/schedule_data.js"></script>
+  <script src="js/weapon_data.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase_config.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

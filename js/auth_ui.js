@@ -110,6 +110,6 @@
 
   loginBtn.addEventListener("click", function () { FB.signIn(); });
   avatar.addEventListener("click", function () {
-    if (confirm("ログアウトしますか？")) FB.signOut();
+    window.location.href = "profile.html";
   });
 })();
