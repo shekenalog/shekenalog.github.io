@@ -51,6 +51,7 @@
         }
       });
     } catch (e) {
+      console.error("Firebase init error:", e);
       available = false;
     }
   }
