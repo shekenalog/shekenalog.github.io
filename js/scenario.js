@@ -224,8 +224,8 @@
 
   // === シナリオコード入力 ===
   scenarioCode.addEventListener("input", function () {
-    // 大文字化 & ハイフン自動挿入
-    var v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    // 大文字化、O→0変換、ハイフン自動挿入
+    var v = this.value.toUpperCase().replace(/O/g, "0").replace(/[^A-Z0-9]/g, "");
     var parts = [];
     for (var i = 0; i < v.length && i < 16; i += 4) {
       parts.push(v.substring(i, Math.min(i + 4, v.length)));
