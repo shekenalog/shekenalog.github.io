@@ -1,3 +1,49 @@
+/* 認証エリア（全ページ共通） */
+#auth-area {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+#auth-user-info {
+  display: flex;
+  align-items: center;
+}
+.auth-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ff6b35;
+  color: #fff;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: border-color 0.2s;
+  user-select: none;
+}
+.auth-avatar:hover {
+  border-color: rgba(255,255,255,0.7);
+}
+.auth-btn {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.35rem 0.8rem;
+  border: 1.5px solid #ff6b35;
+  border-radius: 4px;
+  background: transparent;
+  color: #ff6b35;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.auth-btn:hover { background: #ff6b35; color: #fff; }
+
 /* ダブルタップズーム無効化 */
 button, .search-tab, .special-btn, .scenario-btn, .ranking-tab, .auth-btn, .auth-btn-small, .auth-avatar, .suggestion-item {
   touch-action: manipulation;

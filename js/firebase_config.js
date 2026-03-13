@@ -19,7 +19,9 @@
   if (typeof firebase !== "undefined" && location.protocol === "https:") {
     try {
       firebase.initializeApp(config);
-      db = firebase.firestore();
+      if (typeof firebase.firestore === "function") {
+        db = firebase.firestore();
+      }
       auth = firebase.auth();
       available = true;
 
