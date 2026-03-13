@@ -9,7 +9,7 @@
 #auth-user-info {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 1rem;
 }
 .auth-avatar {
   width: 40px;
