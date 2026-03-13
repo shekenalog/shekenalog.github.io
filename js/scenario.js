@@ -10,7 +10,23 @@
   var authNameLabel = document.getElementById("auth-user-name-label");
 
   if (useFirebase) {
-    authLoginBtn.style.display = "";
+    // キャッシュでログイン済み推定 → チラつき防止
+    var cachedName = "";
+    var cachedUid = "";
+    try { cachedName = localStorage.getItem("fb_displayName") || ""; cachedUid = localStorage.getItem("fb_uid") || ""; } catch(e) {}
+    if (cachedName) {
+      authLoginBtn.style.display = "none";
+      authUserInfo.style.display = "";
+      if (cachedUid) authAvatar.style.backgroundColor = FB.avatarColor(cachedUid);
+      var ch = cachedName.charAt(0);
+      var isJpChar = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uF900-\uFAFFa-zA-Z0-9]/.test(ch);
+      if (isJpChar) { authAvatar.textContent = ch; } else {
+        authAvatar.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>';
+      }
+      if (authNameLabel) authNameLabel.textContent = cachedName;
+    } else {
+      authLoginBtn.style.display = "";
+    }
     FB.onAuthChange(function (user) {
       if (user) {
         if (user.needsName) {
