@@ -66,7 +66,7 @@
     signIn: function () {
       if (!auth) return;
       var provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithRedirect(provider);
+      auth.signInWithPopup(provider);
     },
 
     signOut: function () {
