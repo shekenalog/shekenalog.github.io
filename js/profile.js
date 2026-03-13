@@ -528,39 +528,88 @@
       grid.className = "sn-list";
       profContent.appendChild(grid);
 
-      // 各クリアの親シナリオを取得してカード生成
+      // 各クリアの親シナリオ+全クリア報告を取得してカード生成（順位算出）
       var remaining = results.length;
       for (var i = 0; i < results.length; i++) {
         (function (clear, index) {
           FB.getScenario(clear.scenarioId, function (err2, sc) {
             if (!err2 && sc) {
-              // シナリオカードにクリア情報を付加
-              var card = buildScenarioCard(sc);
-              // クリア結果セクションを点線の前に挿入
-              var clearInfo = buildClearInfo(clear);
-              card.appendChild(clearInfo);
-              card._sortIndex = index;
-              grid.appendChild(card);
+              // 全クリア報告を取得して順位算出
+              FB.getClears(clear.scenarioId, function (err3, allClears) {
+                var rank = calcRank(clear, allClears || []);
+                var card = buildScenarioCard(sc);
+                var clearInfo = buildClearInfo(clear, rank);
+                card.appendChild(clearInfo);
+                card._sortIndex = index;
+                grid.appendChild(card);
+                checkDone();
+              });
+            } else {
+              checkDone();
             }
+          });
+          function checkDone() {
             remaining--;
             if (remaining === 0) {
-              // 元の順序にソート
               var cards = Array.prototype.slice.call(grid.children);
               cards.sort(function (a, b) { return (a._sortIndex || 0) - (b._sortIndex || 0); });
               for (var k = 0; k < cards.length; k++) grid.appendChild(cards[k]);
               requestAnimationFrame(refreshDividers);
             }
-          });
+          }
         })(results[i], i);
       }
     });
   }
 
-  function buildClearInfo(clear) {
-    // scenario.jsのbuildClearCardと同じデザイン（順位なし）
+  var CROWN_COLORS = ["#ffd700", "#c0c0c0", "#cd7f32"];
+
+  function goldSum(cl) {
+    var s = 0;
+    if (cl.waveEggs) for (var i = 0; i < cl.waveEggs.length; i++) s += (cl.waveEggs[i] || 0);
+    return s;
+  }
+
+  function calcRank(myClear, allClears) {
+    var sorted = allClears.slice().sort(function (a, b) {
+      var diff = goldSum(b) - goldSum(a);
+      return diff !== 0 ? diff : (b.redEggs || 0) - (a.redEggs || 0);
+    });
+    for (var i = 0; i < sorted.length; i++) {
+      if (sorted[i].id === myClear.id) return i + 1;
+    }
+    return sorted.length + 1;
+  }
+
+  function buildClearInfo(clear, rank) {
     var card = document.createElement("div");
     card.className = "sn-clear-card";
     card.style.marginTop = "0.6rem";
+
+    // 順位（scenario.jsと同じ）
+    var rankCol = document.createElement("div");
+    rankCol.className = "sn-cc-rank";
+    if (rank <= 3) {
+      var crown = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      crown.setAttribute("viewBox", "0 0 24 20");
+      crown.setAttribute("width", "20");
+      crown.setAttribute("height", "17");
+      crown.style.display = "block";
+      crown.style.margin = "0 auto 2px";
+      var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M2 16L4 6L8 10L12 2L16 10L20 6L22 16Z");
+      path.setAttribute("fill", CROWN_COLORS[rank - 1]);
+      path.setAttribute("stroke", "rgba(0,0,0,0.3)");
+      path.setAttribute("stroke-width", "1");
+      crown.appendChild(path);
+      rankCol.appendChild(crown);
+    }
+    var rankNum = document.createElement("span");
+    rankNum.className = "sn-cc-rank-num";
+    rankNum.textContent = rank;
+    if (rank <= 3) rankNum.style.color = CROWN_COLORS[rank - 1];
+    rankCol.appendChild(rankNum);
+    card.appendChild(rankCol);
 
     var infoCol = document.createElement("div");
     infoCol.className = "sn-cc-info";
