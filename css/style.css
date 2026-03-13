@@ -44,6 +44,64 @@
 }
 .auth-btn:hover { background: #ff6b35; color: #fff; }
 
+/* 表示名設定モーダル（全ページ共通） */
+.name-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.name-modal {
+  background: #1e2d4a;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 360px;
+}
+.name-modal-title {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.name-modal-desc {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 1rem;
+}
+.name-modal-input {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 1.1rem;
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.32);
+  border-radius: 4px;
+  padding: 0.55rem 0.7rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+.name-modal-input:focus { outline: none; border-color: #ff6b35; }
+.name-modal-btns { display: flex; justify-content: flex-end; }
+.name-modal-ok {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background: #e0622f;
+  color: #fff;
+  cursor: pointer;
+}
+.name-modal-ok:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* ダブルタップズーム無効化 */
 button, .search-tab, .special-btn, .scenario-btn, .ranking-tab, .auth-btn, .auth-btn-small, .auth-avatar, .suggestion-item {
   touch-action: manipulation;
