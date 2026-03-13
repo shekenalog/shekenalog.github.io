@@ -81,6 +81,7 @@
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true }).then(function () {
         currentUser.displayName = name;
+        currentUser.needsName = false;
         fireAuthChange();
         if (callback) callback(null);
       }).catch(function (err) {
