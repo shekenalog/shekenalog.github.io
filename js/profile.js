@@ -262,7 +262,7 @@
   function loadMyScenarios() {
     FB.getMyScenarios(function (err, results) {
       profContent.innerHTML = "";
-      if (err) { profContent.innerHTML = '<div class="prof-empty">読み込みに失敗しました</div>'; return; }
+      if (err) { profContent.innerHTML = '<div class="prof-empty">読み込みに失敗しました: ' + err.message + '</div>'; console.error(err); return; }
       if (!results || results.length === 0) {
         profContent.innerHTML = '<div class="prof-empty">投稿したシナリオはまだありません</div>';
         return;
@@ -277,7 +277,7 @@
   function loadMyClears() {
     FB.getMyClears(function (err, results) {
       profContent.innerHTML = "";
-      if (err) { profContent.innerHTML = '<div class="prof-empty">読み込みに失敗しました</div>'; return; }
+      if (err) { profContent.innerHTML = '<div class="prof-empty">読み込みに失敗しました: ' + err.message + '</div>'; console.error(err); return; }
       if (!results || results.length === 0) {
         profContent.innerHTML = '<div class="prof-empty">クリア報告はまだありません</div>';
         return;
