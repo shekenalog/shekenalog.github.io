@@ -538,6 +538,8 @@ tr:hover {
 /* サジェスト */
 .suggestions {
   position: relative;
+  max-width: 550px;
+  margin: 0 auto;
 }
 
 .suggestion-item {
