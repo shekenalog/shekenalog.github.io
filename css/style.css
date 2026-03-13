@@ -193,6 +193,9 @@ select {
   padding-right: 2rem;
 }
 
+html {
+  background-color: #1a1a2e;
+}
 body {
   font-family: "Noto Sans JP", "Segoe UI", "Hiragino Sans", sans-serif;
   background-color: #1a1a2e;
