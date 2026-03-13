@@ -182,6 +182,419 @@
       .prof-name { font-size: 1rem; }
       .prof-tab { font-size: 14px; }
     }
+
+    /* シナリオカード（record.htmlと共通） */
+    .sn-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 960px) {
+      .sn-list { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1440px) {
+      .sn-list { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .sn-card {
+      container-type: inline-size;
+      display: flex;
+      flex-direction: column;
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.0rem;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+    .sn-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('png/bg_card.png') center/cover no-repeat;
+      z-index: 0;
+    }
+    .sn-card > * {
+      position: relative;
+      z-index: 1;
+    }
+    .sn-mode-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sn-mode-badge {
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #fff;
+      background: #d05a20;
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      width: fit-content;
+    }
+    .sn-mode-badge.sn-mode-private {
+      background: #6040c0;
+    }
+    .sn-danger-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sn-danger-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .sn-danger-value {
+      font-family: "SplatHeading", "Segoe UI", "Hiragino Sans", sans-serif;
+      font-weight: normal;
+      font-size: 1.9rem;
+      color: #fff;
+      position: relative;
+      top: 0.1em;
+    }
+    .sc-date-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .sc-no {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #fff;
+      background: #000;
+      border: 1.5px solid #fff;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .sc-year {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .sc-date {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #e0e0e0;
+    }
+    .sn-private-note {
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 0.8rem;
+    }
+    .sc-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding-bottom: 0.6rem;
+    }
+    .sc-stage-img {
+      width: 150px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .sc-stage-col {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 1;
+      min-width: 0;
+      gap: 0.2rem;
+    }
+    .sc-stage-name {
+      font-family: "Splatfont2", "Segoe UI", "Hiragino Sans", sans-serif;
+      font-size: 1.25rem;
+      color: #e0e0e0;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .sc-weapons {
+      display: flex;
+      gap: 0.3rem;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .sc-weapons img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+    }
+    .sn-code-box {
+      background: rgba(0,0,0,1);
+      border-radius: 4px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .sn-code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.7rem;
+      color: #fff;
+      letter-spacing: 0.1em;
+    }
+    .sn-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 0.8rem;
+    }
+    .sn-footer-meta {
+      display: flex;
+      align-items: center;
+      column-gap: 0.5rem;
+      row-gap: 0.15rem;
+      flex-wrap: wrap;
+    }
+    .sn-user {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.2;
+    }
+    .sn-posted-date {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.55);
+    }
+    .sn-bookmark-btn {
+      margin-left: auto;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0.35rem 0.7rem;
+      transition: all 0.15s;
+      line-height: 1.2;
+    }
+    .sn-bookmark-btn:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.35);
+    }
+    .sn-bookmark-btn.sn-bookmarked {
+      color: #ffd700;
+      background: rgba(255,215,0,0.3);
+      border-color: rgba(255,215,0,0.7);
+    }
+    .sc-divider {
+      display: flex;
+      height: 2px;
+      margin: 0.6rem 0;
+    }
+    .sc-dot {
+      height: 100%;
+      background: rgba(255,255,255,0.5);
+    }
+    .sc-gap {
+      height: 100%;
+    }
+    .sn-wave-strip {
+      margin: 0.8rem 0;
+    }
+    .sn-wave-squares {
+      display: flex;
+      column-gap: 0.2rem;
+      row-gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .sn-wave-square {
+      width: calc((100% - 0.4rem) / 3);
+      max-width: 152px;
+      aspect-ratio: 5 / 6;
+      background: #ffff67;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: min(1.2cqi, 4.8px);
+      position: relative;
+      overflow: hidden;
+    }
+    .sn-wave-bg {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .sn-wave-bg svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .sn-wave-label, .sn-wave-quota-band, .sn-wave-tide, .sn-wave-event, .sn-wave-clear {
+      position: relative;
+      z-index: 1;
+    }
+    .sn-wave-label {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.2cqi, 16.8px);
+      color: #000;
+      font-weight: normal;
+      line-height: 1.2;
+    }
+    .sn-wave-quota-band {
+      width: 100%;
+      height: 28%;
+      background: #2b2b11;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: min(0.6cqi, 2.4px);
+    }
+    .sn-wave-quota-text {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(5.5cqi, 22px);
+      font-weight: normal;
+      color: #ffffff;
+      line-height: 1;
+    }
+    .sn-wave-tide {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.5cqi, 18px);
+      font-weight: normal;
+      color: #000;
+      margin-top: min(1cqi, 4px);
+      line-height: 1.2;
+    }
+    .sn-wave-event {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.2cqi, 16.8px);
+      font-weight: normal;
+      color: #000;
+      line-height: 1.3;
+    }
+    .sn-wave-clear {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.2cqi, 16.8px);
+      font-weight: normal;
+      line-height: 1;
+      margin-top: auto;
+      margin-bottom: min(1cqi, 4px);
+      background: #2b2b11;
+      border-radius: 999px;
+      padding: min(0.8cqi, 3.2px) min(2.5cqi, 10px);
+    }
+    .sn-wave-clear-gj { color: #95eece; }
+    .sn-wave-clear-ng { color: #e75941; }
+    .sn-comment {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      color: #fff;
+      margin: 0.8rem 0;
+      line-height: 1.4;
+    }
+    .sn-detail-btn {
+      flex-shrink: 0;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sn-detail-btn:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: #ff6b35;
+    }
+
+    /* カード内レスポンシブ（コンテナクエリ） */
+    @container (max-width: 620px) {
+      .sc-no { font-size: 1.05rem; }
+      .sc-year { font-size: 1.05rem; }
+      .sc-date { font-size: 1.05rem; }
+      .sc-stage-img { width: 116px; height: 65px; }
+      .sc-stage-name { font-size: 1.05rem; }
+      .sc-weapons img { width: 54px; height: 54px; filter: drop-shadow(2.38px 2.38px 0 #000); }
+      .sn-mode-badge { font-size: 0.8rem; }
+      .sn-private-note { font-size: 0.98rem; }
+      .sn-danger-label { font-size: 0.98rem; }
+      .sn-danger-value { font-size: 1.76rem; }
+      .sn-code { font-size: 1.55rem; }
+    }
+    @container (max-width: 520px) {
+      .sc-no { font-size: 1.0rem; }
+      .sc-year { font-size: 1.0rem; }
+      .sc-date { font-size: 1.0rem; }
+      .sc-stage-img { width: 104px; height: 59px; }
+      .sc-stage-name { font-size: 1rem; }
+      .sc-weapons img { width: 40px; height: 40px; filter: drop-shadow(2.16px 2.16px 0 #000); }
+      .sn-mode-badge { font-size: 0.78rem; }
+      .sn-private-note { font-size: 0.93rem; }
+      .sn-danger-label { font-size: 0.93rem; }
+      .sn-danger-value { font-size: 1.67rem; }
+      .sn-code { font-size: 1.4rem; }
+    }
+    @container (max-width: 440px) {
+      .sc-no { font-size: 0.95rem; }
+      .sc-year { font-size: 0.95rem; }
+      .sc-date { font-size: 0.95rem; }
+      .sc-stage-img { width: 90px; height: 51px; }
+      .sc-stage-name { font-size: 0.9rem; }
+      .sc-weapons img { width: 36px; height: 36px; filter: drop-shadow(1.94px 1.94px 0 #000); }
+      .sn-mode-badge { font-size: 0.74rem; }
+      .sn-private-note { font-size: 0.88rem; }
+      .sn-danger-label { font-size: 0.88rem; }
+      .sn-danger-value { font-size: 1.58rem; }
+      .sn-code { font-size: 1.25rem; }
+    }
+    @container (max-width: 380px) {
+      .sc-no { font-size: 0.85rem; }
+      .sc-year { font-size: 0.85rem; }
+      .sc-date { font-size: 0.85rem; }
+      .sc-stage-img { width: 80px; height: 45px; }
+      .sc-stage-name { font-size: 0.85rem; }
+      .sc-weapons img { width: 34px; height: 34px; filter: drop-shadow(1.72px 1.72px 0 #000); }
+      .sc-weapons { gap: 0.2rem; }
+      .sn-mode-badge { font-size: 0.7rem; }
+      .sn-private-note { font-size: 0.83rem; }
+      .sn-danger-label { font-size: 0.83rem; }
+      .sn-danger-value { font-size: 1.49rem; }
+      .sn-code { font-size: 1.12rem; }
+      .sn-wave-squares { column-gap: 0.15rem; }
+      .sn-wave-square { width: calc((100% - 0.3rem) / 3); }
+    }
+    @container (max-width: 330px) {
+      .sc-no { font-size: 0.75rem; }
+      .sc-year { font-size: 0.75rem; }
+      .sc-date { font-size: 0.78rem; }
+      .sc-stage-img { width: 76px; height: 43px; }
+      .sc-stage-name { font-size: 0.78rem; }
+      .sc-weapons img { width: 32px; height: 32px; filter: drop-shadow(1.5px 1.5px 0 #000); }
+      .sn-mode-badge { font-size: 0.65rem; }
+      .sn-private-note { font-size: 0.78rem; }
+      .sn-danger-label { font-size: 0.78rem; }
+      .sn-danger-value { font-size: 1.4rem; }
+      .sn-code { font-size: 1.0rem; }
+      .sn-wave-squares { column-gap: 0.1rem; }
+      .sn-wave-square { width: calc((100% - 0.2rem) / 3); }
+    }
   </style>
 </head>
 <body>

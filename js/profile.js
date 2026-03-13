@@ -136,7 +136,9 @@
     else if (tab === "bookmarks") loadBookmarks();
   }
 
-  // === ヘルパー ===
+  // === ヘルパー（scenario.jsと同じ） ===
+  var allDividers = [];
+
   function findScheduleByNo(no) {
     if (!no || typeof SCHEDULE_DATA === "undefined") return null;
     for (var i = 0; i < SCHEDULE_DATA.length; i++) {
@@ -145,15 +147,23 @@
     return null;
   }
 
+  function formatDate(dateStr) {
+    var parts = dateStr.split(" ");
+    var md = parts[0];
+    var time = parts[1] || "";
+    return md + " " + time;
+  }
+
   function buildWeaponsDiv(sc) {
-    var div = document.createElement("div");
-    div.className = "sc-weapons";
+    var weaponsDiv = document.createElement("div");
+    weaponsDiv.className = "sc-weapons";
     if (sc.mode === "private" || !sc.weapons || sc.weapons.length === 0) {
       for (var i = 0; i < 4; i++) {
         var img = document.createElement("img");
         img.src = ICON_DIR + "weapon_free_private.png";
         img.alt = "フリー";
-        div.appendChild(img);
+        img.title = "フリー";
+        weaponsDiv.appendChild(img);
       }
     } else {
       for (var j = 0; j < sc.weapons.length; j++) {
@@ -161,32 +171,219 @@
         var wImg = document.createElement("img");
         if (wName === "？(金)") {
           wImg.src = ICON_DIR + "weapon_random_rare.png";
+          wImg.title = "？（黄金）";
         } else if (wName === "？") {
           wImg.src = ICON_DIR + "weapon_random.png";
+          wImg.title = "？（ランダム）";
         } else {
           wImg.src = ICON_DIR + (WEAPON_ICONS[wName] || "weapon_random.png");
+          wImg.title = wName;
         }
         wImg.alt = wName;
-        wImg.title = wName;
-        div.appendChild(wImg);
+        weaponsDiv.appendChild(wImg);
       }
     }
-    return div;
+    return weaponsDiv;
   }
 
-  // === シナリオカード（簡易版） ===
+  function buildDottedDivider() {
+    var divider = document.createElement("div");
+    divider.className = "sc-divider";
+    allDividers.push(divider);
+    return divider;
+  }
+
+  function refreshDividers() {
+    for (var i = 0; i < allDividers.length; i++) {
+      var d = allDividers[i];
+      d.innerHTML = "";
+      var w = d.offsetWidth;
+      if (w <= 0) continue;
+      var dotW = 4, gapW = 6, unit = dotW + gapW;
+      var count = Math.floor(w / unit);
+      for (var j = 0; j < count; j++) {
+        var dot = document.createElement("span");
+        dot.className = "sc-dot";
+        dot.style.width = dotW + "px";
+        dot.style.flexShrink = "0";
+        d.appendChild(dot);
+        if (j < count - 1) {
+          var gap = document.createElement("span");
+          gap.className = "sc-gap";
+          gap.style.width = gapW + "px";
+          gap.style.flexShrink = "0";
+          d.appendChild(gap);
+        }
+      }
+    }
+  }
+
+  // === ノルマテーブル ===
+  var QUOTA_TABLE = [
+    [3.8,3,4,5],[7.8,4,5,6],[11.8,5,6,7],[15.8,6,7,8],[19.8,7,8,9],
+    [29.8,8,9,10],[39.8,8,9,11],[49.8,9,10,12],[59.8,10,11,13],[69.8,11,12,14],
+    [79.8,12,13,15],[86.6,13,14,16],[93.2,14,15,17],[99.8,15,16,18],[109,16,17,19],
+    [118,17,18,20],[119.8,17,19,21],[127.2,18,19,21],[129.8,18,20,22],[136.2,19,20,22],
+    [139.8,19,21,23],[145.4,20,21,23],[149.8,20,22,24],[154.4,21,22,24],[159.8,21,23,25],
+    [163.6,22,23,25],[169.8,22,24,26],[172.6,23,24,26],[179.8,23,25,27],[181.8,24,25,27],
+    [189.8,24,26,28],[190.8,25,26,28],[199.8,25,27,29],[226.4,26,28,30],[233.2,26,28,31],
+    [253,27,29,31],[266.4,27,29,32],[279.6,28,30,32],[299.6,28,30,33],[306.2,29,31,33],
+    [332.8,29,31,34],[333,30,32,35]
+  ];
+
+  function calcQuota(danger, waveNum) {
+    for (var i = 0; i < QUOTA_TABLE.length; i++) {
+      if (danger <= QUOTA_TABLE[i][0]) return QUOTA_TABLE[i][waveNum];
+    }
+    return QUOTA_TABLE[QUOTA_TABLE.length - 1][waveNum];
+  }
+
+  // === WAVE正方形 ===
+  function buildWaveSquare(wv, isEx, danger) {
+    var sq = document.createElement("div");
+    sq.className = "sn-wave-square";
+    var label = document.createElement("div");
+    label.className = "sn-wave-label";
+    label.textContent = isEx ? "EX-WAVE" : "WAVE" + wv.wave;
+    sq.appendChild(label);
+    var band = document.createElement("div");
+    band.className = "sn-wave-quota-band";
+    var bandText = document.createElement("span");
+    bandText.className = "sn-wave-quota-text";
+    if (isEx) {
+      bandText.textContent = wv.boss || "";
+    } else {
+      bandText.textContent = "ノルマ " + calcQuota(danger, wv.wave);
+    }
+    band.appendChild(bandText);
+    sq.appendChild(band);
+    var tide = document.createElement("div");
+    tide.className = "sn-wave-tide";
+    tide.textContent = wv.tide || "";
+    sq.appendChild(tide);
+    var eventEl = document.createElement("div");
+    eventEl.className = "sn-wave-event";
+    var fullName = isEx ? "" : (wv.event || "");
+    eventEl.textContent = fullName === "昼" ? "-" : fullName;
+    sq.appendChild(eventEl);
+    if (wv.clear && !isEx) {
+      var clearSpan = document.createElement("span");
+      clearSpan.className = "sn-wave-clear";
+      if (wv.clear === "GJ") clearSpan.classList.add("sn-wave-clear-gj");
+      if (wv.clear === "NG") clearSpan.classList.add("sn-wave-clear-ng");
+      clearSpan.textContent = wv.clear === "GJ" ? "GJ!" : wv.clear;
+      sq.appendChild(clearSpan);
+    }
+    if (wv.clear === "NG" && !isEx) bandText.style.opacity = "0.6";
+    if (wv.tide) {
+      var tideLevel = wv.tide === "干潮" ? 0.20 : wv.tide === "満潮" ? 0.85 : 0.50;
+      var RANGE_TOP = 44;
+      var rangeH = 100 - RANGE_TOP;
+      var waveCenterPct = RANGE_TOP + rangeH * (1 - tideLevel);
+      var waveBg = document.createElement("div");
+      waveBg.className = "sn-wave-bg";
+      waveBg.style.top = RANGE_TOP + "%";
+      var svgNS = "http://www.w3.org/2000/svg";
+      var svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("viewBox", "0 0 600 100");
+      svg.setAttribute("preserveAspectRatio", "none");
+      var waveY = ((waveCenterPct - RANGE_TOP) / rangeH) * 100;
+      var amp = 5;
+      var NUM_WAVES = 6;
+      var pts = NUM_WAVES * 20;
+      var pathD = "";
+      for (var p = 0; p <= pts; p++) {
+        var x = (p / pts) * 600;
+        var y = waveY + amp * Math.cos((p / pts) * NUM_WAVES * 2 * Math.PI);
+        pathD += (p === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+      }
+      pathD += "L600,100L0,100Z";
+      var path = document.createElementNS(svgNS, "path");
+      path.setAttribute("d", pathD);
+      path.setAttribute("fill", "#ccd35c");
+      svg.appendChild(path);
+      waveBg.appendChild(svg);
+      sq.appendChild(waveBg);
+    }
+    return sq;
+  }
+
+  function applySquareRadii(container) {
+    var squares = container.children;
+    if (squares.length === 0) return;
+    var rows = [];
+    var currentRow = [squares[0]];
+    var currentTop = squares[0].offsetTop;
+    for (var i = 1; i < squares.length; i++) {
+      if (squares[i].offsetTop !== currentTop) {
+        rows.push(currentRow);
+        currentRow = [squares[i]];
+        currentTop = squares[i].offsetTop;
+      } else {
+        currentRow.push(squares[i]);
+      }
+    }
+    rows.push(currentRow);
+    var R = "6px";
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r];
+      for (var c = 0; c < row.length; c++) {
+        var tl = "0", tr = "0", br = "0", bl = "0";
+        if (c === 0) { tl = R; bl = R; }
+        if (c === row.length - 1) { tr = R; br = R; }
+        row[c].style.borderRadius = tl + " " + tr + " " + br + " " + bl;
+      }
+    }
+  }
+
+  function buildWaveStrip(sc) {
+    var strip = document.createElement("div");
+    strip.className = "sn-wave-strip";
+    if (!sc.waves || sc.waves.length === 0) return strip;
+    var squares = document.createElement("div");
+    squares.className = "sn-wave-squares";
+    var hasEx = sc.extra && (sc.extra.tide || sc.extra.boss);
+    for (var i = 0; i < sc.waves.length; i++) {
+      var wv = sc.waves[i];
+      if (!wv.tide && !wv.event && !wv.clear) continue;
+      squares.appendChild(buildWaveSquare(wv, false, sc.danger));
+    }
+    if (hasEx) {
+      squares.appendChild(buildWaveSquare({ tide: sc.extra.tide, boss: sc.extra.boss, clear: null }, true, sc.danger));
+    }
+    strip.appendChild(squares);
+    requestAnimationFrame(function() { applySquareRadii(squares); });
+    var resizeObserver = new ResizeObserver(function() { applySquareRadii(squares); });
+    resizeObserver.observe(squares);
+    return strip;
+  }
+
+  // バッジテキスト切替
+  function updateBadgeTexts() {
+    var narrow = window.innerWidth <= 450;
+    var badges = document.querySelectorAll(".sn-mode-badge");
+    for (var i = 0; i < badges.length; i++) {
+      var b = badges[i];
+      if (b.dataset.full) b.textContent = narrow ? b.dataset.short : b.dataset.full;
+    }
+  }
+  window.addEventListener("resize", updateBadgeTexts);
+
+  // === シナリオカード（完全版） ===
   function buildScenarioCard(sc) {
     var card = document.createElement("div");
     card.className = "sn-card";
 
-    // モードバッジ + キケン度
+    // モードバッジ + キケン度 + ブックマーク
     var modeRow = document.createElement("div");
     modeRow.className = "sn-mode-row";
-    var badge = document.createElement("span");
-    badge.className = "sn-mode-badge";
-    if (sc.mode === "private") badge.classList.add("sn-mode-private");
-    badge.textContent = sc.mode === "private" ? "プライベートバイト" : "いつものバイト";
-    modeRow.appendChild(badge);
+    var modeBadge = document.createElement("span");
+    modeBadge.className = "sn-mode-badge";
+    if (sc.mode === "private") modeBadge.classList.add("sn-mode-private");
+    modeBadge.dataset.full = sc.mode === "private" ? "プライベートバイト" : "いつものバイト";
+    modeBadge.dataset.short = sc.mode === "private" ? "プライベート" : "いつもの";
+    modeBadge.textContent = modeBadge.dataset.full;
+    modeRow.appendChild(modeBadge);
     var dangerWrap = document.createElement("span");
     dangerWrap.className = "sn-danger-wrap";
     var dangerLabel = document.createElement("span");
@@ -198,9 +395,22 @@
     dangerValue.textContent = sc.danger + "%";
     dangerWrap.appendChild(dangerValue);
     modeRow.appendChild(dangerWrap);
+    var bmBtn = document.createElement("button");
+    bmBtn.className = "sn-bookmark-btn";
+    bmBtn.textContent = "☆ " + (sc.bookmarkCount || 0);
+    bmBtn.addEventListener("click", function () {
+      if (bmBtn.classList.toggle("sn-bookmarked")) {
+        sc.bookmarkCount = (sc.bookmarkCount || 0) + 1;
+        bmBtn.textContent = "★ " + sc.bookmarkCount;
+      } else {
+        sc.bookmarkCount = Math.max(0, (sc.bookmarkCount || 0) - 1);
+        bmBtn.textContent = "☆ " + sc.bookmarkCount;
+      }
+    });
+    modeRow.appendChild(bmBtn);
     card.appendChild(modeRow);
 
-    // 開催情報
+    // No + 年号 + 開催日時 / プライベート説明文
     var schedRec = findScheduleByNo(sc.scheduleNo);
     if (schedRec) {
       var dateRow = document.createElement("div");
@@ -213,10 +423,23 @@
       yearBadge.className = "sc-year";
       yearBadge.textContent = schedRec.year + "年";
       dateRow.appendChild(yearBadge);
+      var startMonth = parseInt(schedRec.startDate.split("/")[0]);
+      var endMonth = parseInt(schedRec.endDate.split("/")[0]);
+      var endYear = schedRec.year;
+      if (endMonth < startMonth) endYear++;
+      var dateSpan = document.createElement("span");
+      dateSpan.className = "sc-date";
+      dateSpan.textContent = formatDate(schedRec.startDate) + " - " + formatDate(schedRec.endDate);
+      dateRow.appendChild(dateSpan);
       card.appendChild(dateRow);
+    } else if (sc.mode === "private") {
+      var privateNote = document.createElement("div");
+      privateNote.className = "sn-private-note";
+      privateNote.textContent = "プライベートなのでブキ変更自由";
+      card.appendChild(privateNote);
     }
 
-    // ステージ + ブキ
+    // ステージ画像 + ステージ名 + ブキ
     var infoDiv = document.createElement("div");
     infoDiv.className = "sc-info";
     var stageImg = document.createElement("img");
@@ -234,7 +457,10 @@
     infoDiv.appendChild(buildWeaponsDiv(sc));
     card.appendChild(infoDiv);
 
-    // コード
+    // 点線区切り
+    card.appendChild(buildDottedDivider());
+
+    // シナリオコード
     var codeBox = document.createElement("div");
     codeBox.className = "sn-code-box";
     var codeSpan = document.createElement("span");
@@ -243,18 +469,30 @@
     codeBox.appendChild(codeSpan);
     card.appendChild(codeBox);
 
+    // WAVEストリップ
+    card.appendChild(buildWaveStrip(sc));
+
+    // コメント
+    if (sc.comment) {
+      var comment = document.createElement("div");
+      comment.className = "sn-comment";
+      comment.textContent = sc.comment;
+      card.appendChild(comment);
+    }
+
     // フッター
     var footer = document.createElement("div");
     footer.className = "sn-footer";
-    var meta = document.createElement("div");
-    meta.className = "sn-footer-meta";
-    var posted = document.createElement("span");
-    posted.className = "sn-posted-date";
-    posted.textContent = sc.postedAt;
-    meta.appendChild(posted);
-    footer.appendChild(meta);
+    var metaLeft = document.createElement("div");
+    metaLeft.className = "sn-footer-meta";
+    var postedDate = document.createElement("span");
+    postedDate.className = "sn-posted-date";
+    postedDate.textContent = sc.postedAt;
+    metaLeft.appendChild(postedDate);
+    footer.appendChild(metaLeft);
     card.appendChild(footer);
 
+    requestAnimationFrame(updateBadgeTexts);
     return card;
   }
 
@@ -267,9 +505,13 @@
         profContent.innerHTML = '<div class="prof-empty">投稿したシナリオはまだありません</div>';
         return;
       }
+      var grid = document.createElement("div");
+      grid.className = "sn-list";
       for (var i = 0; i < results.length; i++) {
-        profContent.appendChild(buildScenarioCard(results[i]));
+        grid.appendChild(buildScenarioCard(results[i]));
       }
+      profContent.appendChild(grid);
+      requestAnimationFrame(refreshDividers);
     });
   }
 
