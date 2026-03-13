@@ -1896,7 +1896,7 @@
     var infoCol = document.createElement("div");
     infoCol.className = "sn-cc-info";
 
-    // 名前 + 仲間
+    // 名前 + 人数バッジ
     var header = document.createElement("div");
     header.className = "sn-cc-header";
     var name = document.createElement("span");
@@ -1904,6 +1904,11 @@
     name.textContent = cl.userName.length > 14 ? cl.userName.substring(0, 14) + "..." : cl.userName;
     if (cl.userName.length > 14) name.title = cl.userName;
     header.appendChild(name);
+    var memberCount = 1 + (cl.teammates ? cl.teammates.length : 0);
+    var countBadge = document.createElement("span");
+    countBadge.className = "sn-cc-count-badge";
+    countBadge.textContent = memberCount + "人";
+    header.appendChild(countBadge);
     infoCol.appendChild(header);
 
     if (cl.teammates && cl.teammates.length > 0) {
