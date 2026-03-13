@@ -34,6 +34,7 @@
     if (user) {
       loginBtn.style.display = "none";
       userInfo.style.display = "";
+      avatar.style.backgroundColor = FB.avatarColor(user.uid);
       var ch = (user.displayName || "").charAt(0);
       var isJpChar = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uF900-\uFAFFa-zA-Z0-9]/.test(ch);
       if (isJpChar) {

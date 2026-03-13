@@ -61,10 +61,27 @@
     }
   }
 
+  // UIDからアバター背景色を決定（Google方式: ハッシュで14色から選択）
+  var AVATAR_COLORS = [
+    "#e53935", "#d81b60", "#8e24aa", "#5e35b1",
+    "#3949ab", "#1e88e5", "#00897b", "#43a047",
+    "#7cb342", "#c0ca33", "#ffb300", "#fb8c00",
+    "#f4511e", "#6d4c41"
+  ];
+  function avatarColor(uid) {
+    if (!uid) return AVATAR_COLORS[0];
+    var hash = 0;
+    for (var i = 0; i < uid.length; i++) {
+      hash = ((hash << 5) - hash + uid.charCodeAt(i)) | 0;
+    }
+    return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+  }
+
   window.FB = {
     available: available,
     db: db,
     auth: auth,
+    avatarColor: avatarColor,
 
     get currentUser() { return currentUser; },
 
