@@ -1,3 +1,8 @@
+/* ダブルタップズーム無効化 */
+button, .search-tab, .special-btn, .scenario-btn, .ranking-tab, .auth-btn, .auth-btn-small, .auth-avatar, .suggestion-item {
+  touch-action: manipulation;
+}
+
 /* フォント定義 */
 @font-face {
   font-family: "Splatfont2";
