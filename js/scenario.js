@@ -6,8 +6,7 @@
   // === 認証UI ===
   var authLoginBtn = document.getElementById("auth-login-btn");
   var authUserInfo = document.getElementById("auth-user-info");
-  var authUserName = document.getElementById("auth-user-name");
-  var authLogoutBtn = document.getElementById("auth-logout-btn");
+  var authAvatar = document.getElementById("auth-avatar");
 
   if (useFirebase) {
     authLoginBtn.style.display = "";
@@ -19,16 +18,19 @@
         }
         authLoginBtn.style.display = "none";
         authUserInfo.style.display = "";
-        authUserName.textContent = user.displayName;
-        authUserName.title = user.displayName;
+        var initial = (user.displayName || "?").charAt(0);
+        authAvatar.textContent = initial;
+        authAvatar.title = user.displayName;
       } else {
         authLoginBtn.style.display = "";
         authUserInfo.style.display = "none";
-        authUserName.textContent = "";
+        authAvatar.textContent = "";
       }
     });
     authLoginBtn.addEventListener("click", function () { FB.signIn(); });
-    authLogoutBtn.addEventListener("click", function () { FB.signOut(); });
+    authAvatar.addEventListener("click", function () {
+      if (confirm("ログアウトしますか？")) FB.signOut();
+    });
   }
 
   // 初回ログイン: 表示名設定モーダル
