@@ -1349,3 +1349,10 @@ thead .boss-weapon-name-col {
     font-size: 0.6rem;
   }
 }
+
+@media (max-width: 374px) {
+  .search-tab {
+    font-size: 13px;
+    padding: 0.45rem 0.2rem;
+  }
+}
