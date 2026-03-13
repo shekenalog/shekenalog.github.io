@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブキ評価 - シェケナログ</title>
+  <meta name="description" content="サーモンランの全ブキをデータに基づいてティア評価。機動力・塗り・射程・雑魚処理・対オオモノ・扱いやすさの6指標。">
+  <meta property="og:title" content="ブキ評価 - シェケナログ">
+  <meta property="og:description" content="サーモンランの全ブキをデータに基づいてティア評価。機動力・塗り・射程・雑魚処理・対オオモノ・扱いやすさの6指標。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/ranking.html">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ブキ評価 - シェケナログ">
+  <meta name="twitter:description" content="サーモンランの全ブキをデータに基づいてティア評価。機動力・塗り・射程・雑魚処理・対オオモノ・扱いやすさの6指標。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header-inline">
+    <a href="index.html" class="back-link"><img src="png/btn_prev.png" alt="トップへ" class="back-btn-img"></a>
+    <h1>ブキ評価</h1>
+  </header>
+
+  <main>
+    <section>
+      <div class="ranking-tabs">
+        <button class="ranking-tab active" data-metric="overall">総合力</button>
+        <button class="ranking-tab" data-metric="mobility">機動力</button>
+        <button class="ranking-tab" data-metric="paint">塗り</button>
+        <button class="ranking-tab" data-metric="range">射程</button>
+        <button class="ranking-tab" data-metric="clearing">雑魚処理</button>
+        <button class="ranking-tab" data-metric="boss">対オオモノ</button>
+        <button class="ranking-tab" data-metric="handling">扱いやすさ</button>
+      </div>
+
+      <div id="range-toggle-container" style="display:none;">
+        <div class="range-toggle-group">
+          <button id="range-toggle-normal" class="range-toggle-btn active">通常射程</button>
+          <button id="range-toggle-effective" class="range-toggle-btn">実効射程</button>
+        </div>
+      </div>
+
+      <div id="tier-container"></div>
+
+      <div id="coming-soon" style="display:none; text-align:center; color:#aaa; padding:2rem 0;">
+        準備中
+      </div>
+    </section>
+
+    <section id="method-section">
+      <details id="method-details">
+        <summary><h2 style="display:inline; cursor:pointer;">評価方法</h2></summary>
+        <div id="method-text"></div>
+      </details>
+    </section>
+  </main>
+
+  <script src="js/weapon_data.js"></script>
+  <script src="js/ranking.js"></script>
+</body>
+</html>

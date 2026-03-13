@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>バイトシナリオ - シェケナログ</title>
+  <meta name="description" content="サーモンランのバイトシナリオコードを共有・検索。">
+  <meta property="og:title" content="バイトシナリオ - シェケナログ">
+  <meta property="og:description" content="サーモンランのバイトシナリオコードを共有・検索。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/record.html">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="バイトシナリオ - シェケナログ">
+  <meta name="twitter:description" content="サーモンランのバイトシナリオコードを共有・検索。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* 認証エリア */
+    #auth-area {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+    #auth-user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #auth-user-name {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.8rem;
+      color: #ddd;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .auth-btn {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.35rem 0.8rem;
+      border: 1.5px solid #ff6b35;
+      border-radius: 4px;
+      background: transparent;
+      color: #ff6b35;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-btn:hover { background: #ff6b35; color: #fff; }
+    .auth-btn-small {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 3px;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+    }
+    .auth-btn-small:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
+
+    /* ワイド時にmain拡張、フォーム・検索は中央維持 */
+    @media (min-width: 960px) {
+      main { max-width: 1400px; }
+      #scenario-actions { max-width: 800px; margin-left: auto; margin-right: auto; }
+      #post-section { max-width: 800px; margin-left: auto; margin-right: auto; }
+      #search-section #search-form-card { max-width: 800px; margin-left: auto; margin-right: auto; }
+      .search-heading { max-width: 800px; margin-left: auto; margin-right: auto; }
+      #detail-section { max-width: 800px; margin-left: auto; margin-right: auto; }
+    }
+
+    /* === 投稿フォーム === */
+    #post-section {
+      display: none;
+    }
+    .form-card {
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.22);
+      margin-bottom: 1rem;
+    }
+    .form-card > * {
+      position: relative;
+    }
+
+    .form-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .form-required-tag {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 3px;
+      padding: 0.05rem 0.3rem;
+      line-height: 1.3;
+    }
+    .form-sublabel {
+      font-size: 0.78rem;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    /* 共通入力スタイル */
+    .form-input, .form-select {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.1rem;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.32);
+      border-radius: 4px;
+      padding: 0.55rem 0.7rem;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    .form-input:disabled, .form-select:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* モード切替 */
+    .mode-toggle {
+      display: flex;
+      gap: 0;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 0.7rem 0.5rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border: 1.5px solid rgba(255,255,255,0.32);
+      background: rgba(0,0,0,0.4);
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn:first-child { border-radius: 4px 0 0 4px; }
+    .mode-btn:last-child { border-radius: 0 4px 4px 0; }
+    .mode-btn + .mode-btn { margin-left: -1.5px; }
+    .mode-btn.active {
+      background: #e0622f;
+      color: #fff;
+      border-color: #e0622f;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ブキ選択 */
+    .weapon-slots {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+    .weapon-slot {
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+    .weapon-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(2px 2px 0 #000);
+    }
+    .weapon-slot-remove {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      background: #ff3333;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 12px;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+      padding: 0;
+      z-index: 2;
+    }
+    .weapon-add-btn {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.12);
+      border: 2px dashed rgba(255,255,255,0.38);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .weapon-add-btn:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+    }
+    .weapon-add-btn:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+    .weapon-section-disabled .weapon-slots,
+    .weapon-section-disabled .weapon-add-btn {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* マッチ結果表示 */
+    .match-result {
+      font-size: 0.85rem;
+      padding: 0.3rem 0;
+      min-height: 1.4em;
+    }
+    .match-result-ok { color: #50c878; }
+    .match-result-ng { color: #ff5133; }
+
+    /* WAVEカード */
+    .wave-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .wave-card {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+    }
+    .wave-card-title {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .wave-fields {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .wave-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+    }
+    .wave-field-label {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+    .wave-select {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.05rem;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 4px;
+      padding: 0.55rem 0.5rem;
+      width: 100%;
+    }
+    .wave-select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    /* 非公開チェックボックス — カード型 */
+    .checkbox-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      cursor: pointer;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: 1.0rem 0.9rem;
+      transition: border-color 0.15s;
+    }
+    .checkbox-card:hover {
+      border-color: rgba(255,255,255,0.38);
+    }
+    .checkbox-card.checked {
+      border-color: #ff6b35;
+    }
+    .checkbox-card input[type="checkbox"] {
+      display: none;
+    }
+    .custom-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid rgba(255,255,255,0.42);
+      border-radius: 4px;
+      background: rgba(0,0,0,0.3);
+      flex-shrink: 0;
+      position: relative;
+      margin-top: 0.1rem;
+      transition: all 0.15s;
+    }
+    .checkbox-card.checked .custom-checkbox {
+      background: #ff6b35;
+      border-color: #ff6b35;
+    }
+    .checkbox-card.checked .custom-checkbox::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 2px;
+      width: 6px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .checkbox-card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .checkbox-card-desc {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.58);
+      line-height: 1.4;
+    }
+    .checkbox-card-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #e0e0e0;
+    }
+
+    /* コメント */
+    .form-textarea {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.32);
+      border-radius: 4px;
+      padding: 0.6rem 0.7rem;
+      width: 100%;
+      height: 5rem;
+      resize: vertical;
+    }
+    .form-textarea:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+    .char-count {
+      font-size: 0.75rem;
+      color: #aaa;
+      text-align: right;
+    }
+    .char-count-over { color: #ff5133; }
+
+    /* 投稿ボタン */
+    .submit-btn {
+      display: block;
+      width: 100%;
+      margin: 1.2rem auto 0;
+      padding: 0.9rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: #e0622f;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover {
+      background: #c8572a;
+    }
+
+    /* ブキ選択ポップアップ */
+    .weapon-popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    .weapon-popup-overlay.active {
+      display: flex;
+    }
+    .weapon-popup {
+      background: #16213e;
+      border: 1.5px solid rgba(255,255,255,0.28);
+      border-radius: 8px;
+      padding: 1.2rem;
+      max-width: 560px;
+      width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .weapon-popup-title {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .weapon-popup-preview {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      flex-shrink: 0;
+    }
+    .weapon-popup-preview-slot {
+      width: 52px;
+      height: 52px;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px dashed rgba(255,255,255,0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .weapon-popup-preview-slot.filled {
+      border-style: solid;
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+    }
+    .weapon-popup-preview-slot img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(1px 1px 0 #000);
+    }
+    .weapon-popup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 0.45rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .weapon-popup-item {
+      width: 100%;
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 4px;
+      transition: all 0.15s;
+    }
+    .weapon-popup-item:hover {
+      border-color: #ff6b35;
+      background: rgba(255,107,53,0.15);
+    }
+    .weapon-popup-item.selected {
+      border-color: #ff6b35;
+      background: rgba(255,107,53,0.25);
+    }
+    .weapon-popup-item {
+      position: relative;
+    }
+    .weapon-popup-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #e0622f;
+      color: #fff;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      border-radius: 50%;
+      display: none;
+    }
+    .weapon-popup-item.popup-disabled {
+      opacity: 0.25;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+    .weapon-popup-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(1.5px 1.5px 0 #000);
+    }
+    .weapon-popup-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.8rem;
+      flex-shrink: 0;
+    }
+    .weapon-popup-ok, .weapon-popup-cancel {
+      padding: 0.55rem 1.8rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .weapon-popup-ok {
+      background: #ff6b35;
+      color: #fff;
+    }
+    .weapon-popup-cancel {
+      background: rgba(255,255,255,0.2);
+      color: #e0e0e0;
+    }
+
+    /* フォーム行間 */
+    .form-row {
+      margin-bottom: 1rem;
+    }
+    .form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    /* === シナリオカード（schedule.htmlと同じsc-*構造） === */
+    .sn-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    @media (min-width: 960px) {
+      .sn-list { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1440px) {
+      .sn-list { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .sn-card {
+      container-type: inline-size;
+      display: flex;
+      flex-direction: column;
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.0rem;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+    .sn-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('png/bg_card.png') center/cover no-repeat;
+      z-index: 0;
+    }
+    .sn-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* モードバッジ行（カード最上部） */
+    .sn-mode-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sn-bookmark-btn {
+      margin-left: auto;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0.35rem 0.7rem;
+      transition: all 0.15s;
+      line-height: 1.2;
+    }
+    .sn-bookmark-btn:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.35);
+    }
+    .sn-bookmark-btn.sn-bookmarked {
+      color: #ffd700;
+      background: rgba(255,215,0,0.3);
+      border-color: rgba(255,215,0,0.7);
+    }
+    .sn-mode-badge {
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #fff;
+      background: #d05a20;
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      width: fit-content;
+    }
+    .sn-mode-badge.sn-mode-private {
+      background: #6040c0;
+    }
+    .sn-danger-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sn-danger-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .sn-danger-value {
+      font-family: "SplatHeading", "Segoe UI", "Hiragino Sans", sans-serif;
+      font-weight: normal;
+      font-size: 1.9rem;
+      color: #fff;
+      position: relative;
+      top: 0.1em;
+    }
+
+    /* 1行目: No + 年号 + 日時（schedule.htmlと同じ） */
+    .sc-date-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .sc-no {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #fff;
+      background: #000;
+      border: 1.5px solid #fff;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .sc-year {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .sc-date {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #e0e0e0;
+    }
+
+    /* プライベート説明行 */
+    .sn-private-note {
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 0.8rem;
+    }
+
+    /* 2行目: ステージ画像 + ステージ名 + ブキ（schedule.htmlと同じ） */
+    .sc-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding-bottom: 0.6rem;
+    }
+    .sc-stage-img {
+      width: 150px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .sc-stage-col {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 1;
+      min-width: 0;
+      gap: 0.2rem;
+    }
+    .sc-stage-name {
+      font-family: "Splatfont2", "Segoe UI", "Hiragino Sans", sans-serif;
+      font-size: 1.25rem;
+      color: #e0e0e0;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .sc-weapons {
+      display: flex;
+      gap: 0.3rem;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .sc-weapons img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+    }
+
+    /* 点線区切り */
+    .sc-divider {
+      display: flex;
+      height: 2px;
+      margin: 0.6rem 0;
+    }
+    .sc-dot {
+      height: 100%;
+      background: rgba(255,255,255,0.5);
+    }
+    .sc-gap {
+      height: 100%;
+    }
+
+    /* シナリオコードボックス */
+    .sn-code-box {
+      background: rgba(0,0,0,1);
+      border-radius: 4px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .sn-code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.7rem;
+      color: #fff;
+      letter-spacing: 0.1em;
+    }
+
+    /* WAVE正方形 */
+    .sn-wave-strip {
+      margin: 0.8rem 0;
+    }
+    .sn-wave-squares {
+      display: flex;
+      column-gap: 0.2rem;
+      row-gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .sn-wave-square {
+      width: calc((100% - 0.4rem) / 3);
+      max-width: 152px;
+      aspect-ratio: 5 / 6;
+      background: #ffff67;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: min(1.2cqi, 4.8px);
+      position: relative;
+      overflow: hidden;
+    }
+    .sn-wave-bg {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .sn-wave-bg svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .sn-wave-label, .sn-wave-quota-band, .sn-wave-tide, .sn-wave-event, .sn-wave-clear {
+      position: relative;
+      z-index: 1;
+    }
+    .sn-wave-label {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.2cqi, 16.8px);
+      color: #000;
+      font-weight: normal;
+      line-height: 1.2;
+    }
+    .sn-wave-quota-band {
+      width: 100%;
+      height: 28%;
+      background: #2b2b11;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: min(0.6cqi, 2.4px);
+    }
+    .sn-wave-quota-text {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(5.5cqi, 22px);
+      font-weight: normal;
+      color: #ffffff;
+      line-height: 1;
+    }
+    .sn-wave-tide {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.5cqi, 18px);
+      font-weight: normal;
+      color: #000;
+      margin-top: min(1cqi, 4px);
+      line-height: 1.2;
+    }
+    .sn-wave-event {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.2cqi, 16.8px);
+      font-weight: normal;
+      color: #000;
+      line-height: 1.3;
+    }
+    .sn-wave-clear {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: min(4.2cqi, 16.8px);
+      font-weight: normal;
+      line-height: 1;
+      margin-top: auto;
+      margin-bottom: min(1cqi, 4px);
+      background: #2b2b11;
+      border-radius: 999px;
+      padding: min(0.8cqi, 3.2px) min(2.5cqi, 10px);
+    }
+    .sn-wave-clear-gj {
+      color: #95eece;
+    }
+    .sn-wave-clear-ng {
+      color: #e75941;
+    }
+
+    /* コメント */
+    .sn-comment {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      color: #fff;
+      margin: 0.8rem 0;
+      line-height: 1.4;
+    }
+
+    /* カード下部: メタ情報 + 詳細ボタン */
+    .sn-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 0.8rem;
+    }
+    .sn-footer-meta {
+      display: flex;
+      align-items: center;
+      column-gap: 0.5rem;
+      row-gap: 0.15rem;
+      flex-wrap: wrap;
+    }
+    .sn-user {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.2;
+    }
+    .sn-posted-date {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.55);
+    }
+    .sn-detail-btn {
+      flex-shrink: 0;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sn-detail-btn:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: #ff6b35;
+    }
+
+    /* カード内レスポンシブ（コンテナクエリ） */
+    @container (max-width: 620px) {
+      .sc-no { font-size: 1.05rem; }
+      .sc-year { font-size: 1.05rem; }
+      .sc-date { font-size: 1.05rem; }
+      .sc-stage-img { width: 116px; height: 65px; }
+      .sc-stage-name { font-size: 1.05rem; }
+      .sc-weapons img { width: 54px; height: 54px; filter: drop-shadow(2.38px 2.38px 0 #000); }
+      .sn-mode-badge { font-size: 0.8rem; }
+      .sn-private-note { font-size: 0.98rem; }
+      .sn-danger-label { font-size: 0.98rem; }
+      .sn-danger-value { font-size: 1.76rem; }
+      .sn-code { font-size: 1.55rem; }
+    }
+    @container (max-width: 520px) {
+      .sc-no { font-size: 1.0rem; }
+      .sc-year { font-size: 1.0rem; }
+      .sc-date { font-size: 1.0rem; }
+      .sc-stage-img { width: 104px; height: 59px; }
+      .sc-stage-name { font-size: 1rem; }
+      .sc-weapons img { width: 40px; height: 40px; filter: drop-shadow(2.16px 2.16px 0 #000); }
+      .sn-mode-badge { font-size: 0.78rem; }
+      .sn-private-note { font-size: 0.93rem; }
+      .sn-danger-label { font-size: 0.93rem; }
+      .sn-danger-value { font-size: 1.67rem; }
+      .sn-code { font-size: 1.4rem; }
+    }
+    @container (max-width: 440px) {
+      .sc-no { font-size: 0.95rem; }
+      .sc-year { font-size: 0.95rem; }
+      .sc-date { font-size: 0.95rem; }
+      .sc-stage-img { width: 90px; height: 51px; }
+      .sc-stage-name { font-size: 0.9rem; }
+      .sc-weapons img { width: 36px; height: 36px; filter: drop-shadow(1.94px 1.94px 0 #000); }
+      .sn-mode-badge { font-size: 0.74rem; }
+      .sn-private-note { font-size: 0.88rem; }
+      .sn-danger-label { font-size: 0.88rem; }
+      .sn-danger-value { font-size: 1.58rem; }
+      .sn-code { font-size: 1.25rem; }
+    }
+    @container (max-width: 380px) {
+      .sc-no { font-size: 0.85rem; }
+      .sc-year { font-size: 0.85rem; }
+      .sc-date { font-size: 0.85rem; }
+      .sc-stage-img { width: 80px; height: 45px; }
+      .sc-stage-name { font-size: 0.85rem; }
+      .sc-weapons img { width: 34px; height: 34px; filter: drop-shadow(1.72px 1.72px 0 #000); }
+      .sc-weapons { gap: 0.2rem; }
+      .sn-mode-badge { font-size: 0.7rem; }
+      .sn-private-note { font-size: 0.83rem; }
+      .sn-danger-label { font-size: 0.83rem; }
+      .sn-danger-value { font-size: 1.49rem; }
+      .sn-code { font-size: 1.12rem; }
+      .sn-wave-squares { column-gap: 0.15rem; }
+      .sn-wave-square { width: calc((100% - 0.3rem) / 3); }
+    }
+    @container (max-width: 330px) {
+      .sc-no { font-size: 0.75rem; }
+      .sc-year { font-size: 0.75rem; }
+      .sc-date { font-size: 0.78rem; }
+      .sc-stage-img { width: 76px; height: 43px; }
+      .sc-stage-name { font-size: 0.78rem; }
+      .sc-weapons img { width: 32px; height: 32px; filter: drop-shadow(1.5px 1.5px 0 #000); }
+      .sn-mode-badge { font-size: 0.65rem; }
+      .sn-private-note { font-size: 0.78rem; }
+      .sn-danger-label { font-size: 0.78rem; }
+      .sn-danger-value { font-size: 1.4rem; }
+      .sn-code { font-size: 1.0rem; }
+      .sn-wave-squares { column-gap: 0.1rem; }
+      .sn-wave-square { width: calc((100% - 0.2rem) / 3); }
+    }
+
+    /* === 検索フォーム折りたたみ === */
+    .search-collapse-toggle {
+      display: none; /* 初回は非表示、検索実行後に表示 */
+      width: 100%;
+      padding: 0.7rem 0.7rem 0.7rem 0.6rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 500;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 0.8rem;
+      transition: background 0.15s;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .search-collapse-toggle:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .toggle-icon {
+      display: inline-block;
+      width: 1.1em;
+      height: 1.1em;
+      border: 1.5px solid rgba(255,255,255,0.65);
+      border-radius: 2px;
+      position: relative;
+      flex-shrink: 0;
+      vertical-align: middle;
+      margin-right: 0.35em;
+      top: -0.05em;
+    }
+    /* 横棒（共通） */
+    .toggle-icon::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 22%;
+      right: 22%;
+      height: 1.5px;
+      background: rgba(255,255,255,0.8);
+      transform: translateY(-50%);
+    }
+    /* 縦棒（+の時だけ） */
+    .toggle-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 22%;
+      bottom: 22%;
+      width: 1.5px;
+      background: rgba(255,255,255,0.8);
+      transform: translateX(-50%);
+      transition: opacity 0.2s;
+    }
+    .toggle-icon.minus::after {
+      opacity: 0;
+    }
+    #search-form-card {
+      overflow: hidden;
+      max-height: 2000px; /* 十分大きい値 */
+      transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease, border-width 0.35s ease;
+    }
+    #search-form-card.collapsed {
+      max-height: 0 !important;
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-width: 0;
+    }
+    @media (min-width: 960px) {
+      .search-collapse-toggle { max-width: 800px; margin-left: auto; margin-right: auto; }
+    }
+    .search-no-result {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 2rem 0;
+    }
+
+    /* === 詳細ページ === */
+
+    /* クリア報告 */
+    .sn-clear-section {
+      margin-top: 1rem;
+    }
+    .sn-clear-toggle {
+      display: block;
+      width: 100%;
+      padding: 0.7rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+      margin-bottom: 0.8rem;
+    }
+    .sn-clear-toggle:hover {
+      background: rgba(255,255,255,0.18);
+    }
+    .sn-clear-heading {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+    }
+    .sn-clear-btn {
+      display: block;
+      width: 100%;
+      padding: 0.7rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      background: #2e8b57;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+      transition: background 0.2s;
+    }
+    .sn-clear-btn:hover {
+      background: #267349;
+    }
+    .sn-clear-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .sn-clear-item {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      color: #e0e0e0;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      padding: 0.4rem 0.7rem;
+    }
+    .sn-clear-empty {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    /* クリア報告フォーム */
+    .sn-clear-form {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .sn-cf-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 500;
+      color: #fff;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .sn-cf-label:first-child {
+      margin-top: 0;
+    }
+    @media (max-width: 500px) {
+      .sn-cf-label { font-size: 0.9rem; }
+    }
+    @media (max-width: 380px) {
+      .sn-cf-label { font-size: 0.8rem; }
+    }
+    .sn-cf-input {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 0.45rem 0.6rem;
+      width: 100%;
+    }
+    .sn-cf-input:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+    .sn-cf-tm-slot {
+      max-height: 3rem;
+      margin-top: 0.4rem;
+      overflow: hidden;
+      transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease;
+      opacity: 1;
+    }
+    .sn-cf-tm-slot:first-child {
+      margin-top: 0;
+    }
+    .sn-cf-tm-slot.collapsed {
+      max-height: 0;
+      margin-top: 0;
+      opacity: 0;
+    }
+    .sn-cf-select {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 0.45rem 0.6rem;
+      margin-bottom: 0.8rem;
+    }
+    .sn-cf-select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    /* 仲間リスト */
+    .sn-cf-tm-list {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.8rem;
+    }
+    .sn-cf-tm-btn-row {
+      display: flex;
+      margin-bottom: 1rem;
+      max-width: 500px;
+    }
+    .sn-cf-tm-count-btn {
+      flex: 1;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.35rem 0;
+      cursor: pointer;
+      transition: all 0.15s;
+      border-radius: 0;
+      margin-left: -1px;
+    }
+    .sn-cf-tm-count-btn:first-child {
+      border-radius: 4px 0 0 4px;
+      margin-left: 0;
+    }
+    .sn-cf-tm-count-btn:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+    .sn-cf-tm-count-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+    }
+    .sn-cf-tm-count-btn.active {
+      background: #ff6b35;
+      border-color: #ff6b35;
+      color: #fff;
+      z-index: 1;
+      position: relative;
+    }
+
+    /* WAVE納品数 */
+    .sn-cf-eggs-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .sn-cf-egg-total {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
+    }
+    .sn-cf-egg-total img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+    .sn-cf-egg-total span {
+      font-family: "Splatfont2", "Noto Sans JP", sans-serif;
+      font-size: 1.68rem;
+      color: #fff;
+    }
+    @media (max-width: 500px) {
+      .sn-cf-egg-total img { width: 32px; height: 32px; }
+      .sn-cf-egg-total span { font-size: 1.4rem; }
+    }
+    .sn-cf-egg-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+    }
+    .sn-cf-egg-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+    }
+    .sn-cf-egg-input {
+      text-align: center;
+    }
+
+    /* ソート切替ボタン */
+    .sn-rank-sort-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 0.6rem;
+    }
+    .sn-rank-sort-btn {
+      flex: 1;
+      max-width: 200px;
+      padding: 0.45rem 0.5rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1.5px solid rgba(255,255,255,0.32);
+      background: rgba(0,0,0,0.4);
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sn-rank-sort-btn:first-child { border-radius: 4px 0 0 4px; }
+    .sn-rank-sort-btn:last-child { border-radius: 0 4px 4px 0; margin-left: -1.5px; }
+    .sn-rank-sort-btn.active {
+      background: #e0622f;
+      color: #fff;
+      border-color: #e0622f;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* クリア報告セクション */
+    .sn-rank-section {
+      background: rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* クリア報告カード（ランキング形式） */
+    .sn-clear-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      background: rgba(0,0,0,0.2);
+      border: 1.5px solid rgba(255,255,255,0.22);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+    }
+    .sn-cc-rank {
+      flex-shrink: 0;
+      width: 2.2rem;
+      text-align: center;
+      padding-top: 0.1rem;
+    }
+    .sn-cc-rank-num {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.5);
+      display: block;
+    }
+    .sn-cc-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sn-cc-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.2rem;
+    }
+    .sn-cc-name {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #e0e0e0;
+    }
+    .sn-cc-teammates {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+    }
+    .sn-cc-tm-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.15rem;
+    }
+    .sn-cc-tm-badge {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      padding: 0.1rem 0.45rem;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sn-cc-egg-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .sn-cc-egg {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .sn-cc-egg img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+    .sn-cc-egg-num {
+      font-family: "Splatfont2", Consolas, monospace;
+      font-size: 1.0rem;
+      color: #fff;
+    }
+    .sn-cc-egg-red {
+      color: #ff8a8a;
+    }
+    .sn-cc-wave-detail {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 0.15rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .sn-cc-wave-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+    .sn-cc-wave-egg-icon {
+      width: 1em;
+      height: 1em;
+      object-fit: contain;
+      vertical-align: middle;
+    }
+    .sn-cc-date {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* レスポンシブ（ワイド時クリア報告カード1.2倍） */
+    @media (min-width: 960px) {
+      .sn-rank-section { padding: 1rem; gap: 0.6rem; }
+      .sn-clear-card { gap: 0.85rem; padding: 0.7rem 1rem; }
+      .sn-cc-rank { width: 2.6rem; }
+      .sn-cc-rank-num { font-size: 1.3rem; }
+      .sn-cc-name { font-size: 1.08rem; }
+      .sn-cc-header { margin-bottom: 0.25rem; }
+      .sn-cc-tm-badge { font-size: 0.86rem; padding: 0.12rem 0.55rem; }
+      .sn-cc-egg img { width: 26px; height: 26px; }
+      .sn-cc-egg-num { font-size: 1.2rem; }
+      .sn-cc-egg-row { margin-top: 0.6rem; margin-bottom: 0.6rem; }
+      .sn-cc-wave-detail { font-size: 1.1rem; gap: 0.7rem; }
+      .sn-cc-date { font-size: 0.84rem; }
+      .sn-rank-sort-btn { font-size: 1.08rem; padding: 0.55rem 0.6rem; }
+    }
+
+    @media (max-width: 800px) {
+      .wave-fields { flex-direction: column; align-items: stretch; }
+      .wave-select { width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .form-card { padding: 1rem; }
+      .weapon-slot { width: 52px; height: 52px; }
+      .weapon-add-btn { width: 52px; height: 52px; font-size: 1.3rem; }
+      .wave-fields { gap: 0.35rem; }
+      .wave-select { font-size: 0.95rem; padding: 0.45rem; }
+      .form-input, .form-select { font-size: 1.0rem; }
+      .form-label { font-size: 1.1rem; }
+      .wave-card-title { font-size: 0.95rem; }
+      .mode-btn { font-size: 0.95rem; }
+      .submit-btn { font-size: 1.1rem; }
+      .form-textarea { font-size: 0.95rem; }
+      .checkbox-card-label { font-size: 0.9rem; }
+      .weapon-popup-ok, .weapon-popup-cancel { font-size: 0.95rem; padding: 0.5rem 1.5rem; }
+      .weapon-popup-preview-slot { width: 46px; height: 46px; }
+      .weapon-popup-preview-slot img { width: 38px; height: 38px; }
+      .checkbox-card-desc { font-size: 0.83rem; }
+    }
+    @media (max-width: 450px) {
+      .form-card { padding: 0.8rem; }
+      .weapon-slot { width: 46px; height: 46px; }
+      .weapon-add-btn { width: 46px; height: 46px; font-size: 1.1rem; }
+      .wave-select { font-size: 0.9rem; padding: 0.5rem; }
+      .form-input, .form-select { font-size: 0.95rem; padding: 0.5rem; }
+      .mode-btn { font-size: 0.85rem; padding: 0.55rem; }
+      .form-label { font-size: 1.0rem; }
+      .wave-card-title { font-size: 0.9rem; }
+      .submit-btn { font-size: 1.0rem; padding: 0.8rem; }
+      .form-textarea { font-size: 0.9rem; }
+      .checkbox-card-label { font-size: 0.85rem; }
+      .weapon-popup-ok, .weapon-popup-cancel { font-size: 0.85rem; padding: 0.45rem 1.2rem; }
+      .checkbox-card-desc { font-size: 0.78rem; }
+      .weapon-popup-preview-slot { width: 40px; height: 40px; }
+      .weapon-popup-preview-slot img { width: 34px; height: 34px; }
+      .weapon-popup-title { font-size: 1.0rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-inline">
+    <a href="index.html" id="back-link" class="back-link"><img src="png/btn_prev.png" alt="戻る" class="back-btn-img"></a>
+    <h1>バイトシナリオ</h1>
+    <div id="auth-area">
+      <button id="auth-login-btn" class="auth-btn" style="display:none;">ログイン</button>
+      <div id="auth-user-info" style="display:none;">
+        <span id="auth-user-name"></span>
+        <button id="auth-logout-btn" class="auth-btn-small">ログアウト</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- アクション選択 -->
+    <section id="scenario-actions">
+      <p class="scenario-desc">ここではバイトシナリオの検索・投稿ができます。<span class="nowrap">投稿にはログインが必要です。</span></p>
+      <div class="scenario-buttons">
+        <button class="scenario-btn" id="btn-search">検索する</button>
+        <button class="scenario-btn" id="btn-post">投稿する</button>
+      </div>
+    </section>
+
+    <!-- 投稿フォーム -->
+    <section id="post-section">
+      <h2 class="search-heading">シナリオを投稿</h2>
+
+      <div class="form-card">
+        <!-- シナリオコード -->
+        <div class="form-row">
+          <span class="form-label">シナリオコード<span class="form-required-tag">必須</span></span>
+          <input type="text" id="scenario-code" class="form-input" placeholder="SXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off">
+        </div>
+
+        <!-- モード -->
+        <div class="form-row">
+          <span class="form-label">モード<span class="form-required-tag">必須</span></span>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn active" data-mode="regular">いつものバイト</button>
+            <button type="button" class="mode-btn" data-mode="private">プライベートバイト</button>
+          </div>
+        </div>
+
+        <!-- ステージ -->
+        <div class="form-row">
+          <span class="form-label">ステージ<span class="form-required-tag">必須</span></span>
+          <select id="stage-select" class="form-select">
+            <option value="アラマキ砦">アラマキ砦</option>
+            <option value="ムニ・エール海洋発電所">ムニ・エール海洋発電所</option>
+            <option value="シェケナダム">シェケナダム</option>
+            <option value="難破船ドン・ブラコ">難破船ドン・ブラコ</option>
+            <option value="すじこジャンクション跡">すじこジャンクション跡</option>
+            <option value="トキシラズいぶし工房">トキシラズいぶし工房</option>
+            <option value="どんぴこ闘技場">どんぴこ闘技場</option>
+          </select>
+        </div>
+
+        <!-- キケン度 -->
+        <div class="form-row">
+          <span class="form-label">キケン度<span class="form-required-tag">必須</span></span>
+          <div style="display:flex;align-items:center;gap:0.3rem;">
+            <input type="text" id="danger-input" class="form-input" style="max-width:120px;" placeholder="0" inputmode="numeric" autocomplete="off">
+            <span style="color:#e0e0e0;font-size:0.95rem;">%</span>
+          </div>
+        </div>
+
+        <!-- 支給ブキ -->
+        <div class="form-row" id="weapon-section">
+          <span class="form-label">支給ブキ<span class="form-required-tag">必須</span></span>
+          <div class="weapon-slots" id="weapon-slots"></div>
+          <button type="button" class="weapon-add-btn" id="weapon-add-btn">＋</button>
+          <div class="match-result" id="match-result"></div>
+        </div>
+
+        <!-- WAVE内容 -->
+        <div class="form-row">
+          <span class="form-label">WAVE内容</span>
+          <div class="wave-cards">
+            <!-- WAVE 1 -->
+            <div class="wave-card" data-wave="1">
+              <div class="wave-card-title">WAVE 1 <span class="form-required-tag">必須</span></div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">内容</span>
+                  <select class="wave-select wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">結果</span>
+                  <select class="wave-select wave-clear">
+                    <option value="">-</option>
+                    <option value="GJ">GJ（クリア）</option>
+                    <option value="NG">NG（失敗）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- WAVE 2 -->
+            <div class="wave-card" data-wave="2">
+              <div class="wave-card-title">WAVE 2</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">内容</span>
+                  <select class="wave-select wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">結果</span>
+                  <select class="wave-select wave-clear">
+                    <option value="">-</option>
+                    <option value="GJ">GJ（クリア）</option>
+                    <option value="NG">NG（失敗）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- WAVE 3 -->
+            <div class="wave-card" data-wave="3">
+              <div class="wave-card-title">WAVE 3</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">内容</span>
+                  <select class="wave-select wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">結果</span>
+                  <select class="wave-select wave-clear">
+                    <option value="">-</option>
+                    <option value="GJ">GJ（クリア）</option>
+                    <option value="NG">NG（失敗）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- EXTRA WAVE -->
+            <div class="wave-card wave-card-extra" data-wave="extra">
+              <div class="wave-card-title">EX-WAVE</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">オカシラ</span>
+                  <select class="wave-select wave-boss">
+                    <option value="">-</option>
+                    <option value="ヨコヅナ">ヨコヅナ</option>
+                    <option value="タツ">タツ</option>
+                    <option value="ジョー">ジョー</option>
+                    <option value="オカシラ連合">オカシラ連合</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 非公開 -->
+        <div class="form-row">
+          <div class="checkbox-card" id="private-card">
+            <input type="checkbox" id="private-check">
+            <span class="custom-checkbox"></span>
+            <div class="checkbox-card-text">
+              <span class="checkbox-card-label">非公開シナリオにする</span>
+              <span class="checkbox-card-desc">ここにチェックを入れると、このシナリオを投稿したユーザーにしか表示されません。</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- コメント -->
+        <div class="form-row">
+          <span class="form-label" style="font-weight:500;">コメント</span>
+          <textarea id="comment-input" class="form-textarea" maxlength="140" placeholder="任意（140文字以内）"></textarea>
+          <div class="char-count" id="char-count">0 / 140</div>
+        </div>
+      </div>
+
+      <!-- 投稿ボタン -->
+      <button type="button" class="submit-btn" id="submit-btn">シナリオを投稿する</button>
+    </section>
+
+    <!-- 最近の投稿 -->
+    <div id="recent-section">
+      <h2 class="search-heading">最近の投稿</h2>
+      <div id="recent-list" class="sn-list"></div>
+    </div>
+
+    <!-- 検索 -->
+    <div id="search-section" style="display:none;">
+      <h2 class="search-heading">シナリオを検索</h2>
+
+      <!-- 検索条件トグル -->
+      <button type="button" class="search-collapse-toggle" id="search-collapse-toggle"><span class="toggle-icon minus"></span>検索条件を閉じる</button>
+
+      <div class="form-card" id="search-form-card">
+        <!-- モード -->
+        <div class="form-row">
+          <span class="form-label">モード</span>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn search-mode-btn active" data-mode="regular">いつものバイト</button>
+            <button type="button" class="mode-btn search-mode-btn" data-mode="private">プライベートバイト</button>
+          </div>
+        </div>
+
+        <!-- ステージ -->
+        <div class="form-row">
+          <span class="form-label">ステージ</span>
+          <select id="search-stage" class="form-select">
+            <option value="">すべて</option>
+            <option value="アラマキ砦">アラマキ砦</option>
+            <option value="ムニ・エール海洋発電所">ムニ・エール海洋発電所</option>
+            <option value="シェケナダム">シェケナダム</option>
+            <option value="難破船ドン・ブラコ">難破船ドン・ブラコ</option>
+            <option value="すじこジャンクション跡">すじこジャンクション跡</option>
+            <option value="トキシラズいぶし工房">トキシラズいぶし工房</option>
+            <option value="どんぴこ闘技場">どんぴこ闘技場</option>
+          </select>
+        </div>
+
+        <!-- キケン度 -->
+        <div class="form-row">
+          <span class="form-label">キケン度</span>
+          <div style="display:flex;gap:0.4rem;align-items:center;">
+            <input type="text" id="search-danger-min" class="form-input" style="max-width:100px;" placeholder="0" inputmode="numeric" autocomplete="off">
+            <span style="color:#aaa;">〜</span>
+            <input type="text" id="search-danger-max" class="form-input" style="max-width:100px;" placeholder="333" inputmode="numeric" autocomplete="off">
+            <span style="color:#e0e0e0;font-size:0.95rem;">%</span>
+          </div>
+        </div>
+
+        <!-- 支給ブキ -->
+        <div class="form-row" id="search-weapon-section">
+          <span class="form-label">支給ブキ</span>
+          <div class="weapon-slots" id="search-weapon-slots"></div>
+          <button type="button" class="weapon-add-btn" id="search-weapon-add-btn">＋</button>
+        </div>
+
+        <!-- WAVE内容 -->
+        <div class="form-row">
+          <span class="form-label">WAVE内容</span>
+          <div class="wave-cards" id="search-wave-cards">
+            <!-- WAVE 1 -->
+            <div class="wave-card search-wave-card" data-wave="1">
+              <div class="wave-card-title">WAVE 1</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select search-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">内容</span>
+                  <select class="wave-select search-wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">結果</span>
+                  <select class="wave-select search-wave-clear">
+                    <option value="">-</option>
+                    <option value="GJ">GJ（クリア）</option>
+                    <option value="NG">NG（失敗）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- WAVE 2 -->
+            <div class="wave-card search-wave-card" data-wave="2">
+              <div class="wave-card-title">WAVE 2</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select search-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">内容</span>
+                  <select class="wave-select search-wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">結果</span>
+                  <select class="wave-select search-wave-clear">
+                    <option value="">-</option>
+                    <option value="GJ">GJ（クリア）</option>
+                    <option value="NG">NG（失敗）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- WAVE 3 -->
+            <div class="wave-card search-wave-card" data-wave="3">
+              <div class="wave-card-title">WAVE 3</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select search-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">内容</span>
+                  <select class="wave-select search-wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">結果</span>
+                  <select class="wave-select search-wave-clear">
+                    <option value="">-</option>
+                    <option value="GJ">GJ（クリア）</option>
+                    <option value="NG">NG（失敗）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- EXTRA WAVE -->
+            <div class="wave-card search-wave-card" data-wave="extra">
+              <div class="wave-card-title">EX-WAVE</div>
+              <div class="wave-fields">
+                <div class="wave-field">
+                  <span class="wave-field-label">潮位</span>
+                  <select class="wave-select search-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="wave-field">
+                  <span class="wave-field-label">オカシラ</span>
+                  <select class="wave-select search-wave-boss">
+                    <option value="">-</option>
+                    <option value="ヨコヅナ">ヨコヅナ</option>
+                    <option value="タツ">タツ</option>
+                    <option value="ジョー">ジョー</option>
+                    <option value="オカシラ連合">オカシラ連合</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 検索ボタン -->
+        <button type="button" class="submit-btn" id="search-exec-btn">検索する</button>
+      </div>
+
+      <p id="search-result-count" class="result-count-text"></p>
+      <div id="search-results" class="sn-list"></div>
+    </div>
+
+    <!-- 詳細 -->
+    <div id="detail-section" style="display:none;">
+      <div id="detail-content"></div>
+    </div>
+  </main>
+
+  <!-- ブキ選択ポップアップ -->
+  <div class="weapon-popup-overlay" id="weapon-popup-overlay">
+    <div class="weapon-popup">
+      <div class="weapon-popup-title">ブキを選択</div>
+      <div class="weapon-popup-preview" id="weapon-popup-preview"></div>
+      <div class="weapon-popup-grid" id="weapon-popup-grid"></div>
+      <div class="weapon-popup-actions">
+        <button type="button" class="weapon-popup-cancel" id="weapon-popup-cancel">キャンセル</button>
+        <button type="button" class="weapon-popup-ok" id="weapon-popup-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/schedule_data.js"></script>
+  <script src="js/weapon_data.js"></script>
+  <script src="js/scenario_mock.js"></script>
+  <!-- Firebase SDK (compat) — HTTPS環境でのみ有効 -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase_config.js"></script>
+  <script src="js/scenario.js"></script>
+</body>
+</html>

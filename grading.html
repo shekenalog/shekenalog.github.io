@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編成精密採点 - シェケナログ</title>
+  <meta name="description" content="現在と直近のサーモンラン編成を自動採点。ブキ評価データに基づく総合点とオカシラ適正点を表示。">
+  <meta property="og:title" content="編成精密採点 - シェケナログ">
+  <meta property="og:description" content="現在と直近のサーモンラン編成を自動採点。ブキ評価データに基づく総合点とオカシラ適正点を表示。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/grading.html">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="編成精密採点 - シェケナログ">
+  <meta name="twitter:description" content="現在と直近のサーモンラン編成を自動採点。ブキ評価データに基づく総合点とオカシラ適正点を表示。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    #grading-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .grading-card {
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.0rem;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+    .grading-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('png/bg_card.png') center/cover no-repeat;
+      z-index: 0;
+    }
+    .grading-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ホログラムカード（オールランダム編成） */
+    .grading-card-holo::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 2;
+      background: linear-gradient(
+        135deg,
+        rgba(255,0,128,0.0) 0%,
+        rgba(255,0,128,0.12) 15%,
+        rgba(0,200,255,0.12) 30%,
+        rgba(100,255,100,0.10) 45%,
+        rgba(255,200,0,0.12) 60%,
+        rgba(200,0,255,0.12) 75%,
+        rgba(255,0,128,0.0) 100%
+      );
+      background-size: 300% 300%;
+      animation: holoShimmer 4s ease-in-out infinite;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+    @keyframes holoShimmer {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+    .grading-card-holo {
+      border: 1.5px solid rgba(255,255,255,0.25);
+    }
+
+    /* 黄金カード */
+    .grading-card-golden {
+      background: linear-gradient(160deg, #2a1f00 0%, #3d2e00 30%, #4a3800 50%, #3d2e00 70%, #2a1f00 100%);
+      border: 1.5px solid rgba(255,215,0,0.35);
+    }
+    .grading-card-golden::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%; right: 0; bottom: 0;
+      width: 300%;
+      z-index: 2;
+      background: linear-gradient(
+        110deg,
+        rgba(255,215,0,0.0) 0%,
+        rgba(255,215,0,0.0) 35%,
+        rgba(255,230,100,0.07) 42%,
+        rgba(255,255,200,0.1) 50%,
+        rgba(255,230,100,0.07) 58%,
+        rgba(255,215,0,0.0) 65%,
+        rgba(255,215,0,0.0) 100%
+      );
+      animation: goldenShine 10s linear infinite;
+      pointer-events: none;
+      will-change: transform;
+    }
+    @keyframes goldenShine {
+      0% { transform: translateX(-33%); }
+      40% { transform: translateX(33%); }
+      100% { transform: translateX(33%); }
+    }
+    /* ビッグラン+黄金: ホログラムが光エフェクトを上書き */
+    .grading-card-golden.grading-card-holo::after {
+      left: 0;
+      width: auto;
+      background: linear-gradient(
+        135deg,
+        rgba(255,0,128,0.0) 0%,
+        rgba(255,0,128,0.12) 15%,
+        rgba(0,200,255,0.12) 30%,
+        rgba(100,255,100,0.10) 45%,
+        rgba(255,200,0,0.12) 60%,
+        rgba(200,0,255,0.12) 75%,
+        rgba(255,0,128,0.0) 100%
+      );
+      background-size: 300% 300%;
+      animation: holoShimmer 4s ease-in-out infinite;
+      mix-blend-mode: screen;
+      transform: none;
+      will-change: background-position;
+    }
+
+    .grading-unmeasurable {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 3.0rem;
+      color: #e0e0e0;
+      text-align: center;
+      text-shadow: 2.6px 2.6px 0 #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .grading-unmeasurable-icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+    }
+
+    /* 1行目: 日時 */
+    .grading-date-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .grading-year {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.4rem;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.5rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .grading-year.grading-status-badge {
+      background: #cd4500;
+      border-color: #cd4500;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .grading-date {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.4rem;
+      color: #e0e0e0;
+    }
+
+    /* 2行目: ステージ + ブキ */
+    .grading-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding-bottom: 0.6rem;
+    }
+
+    .grading-stage-img {
+      width: 150px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .grading-stage-col {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 1;
+      min-width: 0;
+      gap: 0.2rem;
+    }
+    .grading-event-badge {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      background: #9e22d0;
+      border-radius: 4px;
+      padding: 0.02rem 0.3rem;
+      text-shadow: 1px 1px 0 #000;
+      width: fit-content;
+    }
+    .grading-stage-name {
+      font-family: "Splatfont2", "Segoe UI", "Hiragino Sans", sans-serif;
+      font-size: 1.25rem;
+      color: #e0e0e0;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+
+    .grading-weapons {
+      display: flex;
+      gap: 0.3rem;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .grading-weapons img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+    }
+
+    .grading-divider {
+      display: flex;
+      height: 2px;
+      margin: 0.6rem 0;
+    }
+    .grading-dot {
+      height: 100%;
+      background: rgba(255,255,255,0.5);
+    }
+    .grading-gap {
+      height: 100%;
+    }
+
+    .grading-score {
+      text-align: center;
+      padding: 0.3rem 0;
+    }
+    .grading-total {
+      font-family: "Splatfont2", Consolas, monospace;
+      font-size: 3.0rem;
+      font-weight: normal;
+      text-shadow: 2.6px 2.6px 0 #000;
+    }
+    .grading-total-prefix {
+      font-size: 0.7em;
+      color: #e0e0e0;
+      margin-right: 0.5rem;
+    }
+    .grading-total-unit {
+      font-size: 0.7em;
+      margin-left: 0.2rem;
+    }
+    .grading-total-label {
+      font-family: "Splatfont2", "Segoe UI", sans-serif;
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-right: 0.3rem;
+    }
+    .grading-breakdown {
+      margin-top: 0.4rem;
+      background: rgba(255,255,255,0.15);
+      border-radius: 0.6rem;
+      padding: 0.5rem 0.8rem;
+      max-width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .grading-metric-labels, .grading-metric-vals {
+      display: flex;
+      justify-content: center;
+      gap: 2.4rem;
+    }
+    .grading-metric-label-item {
+      font-family: "Splatfont2", "Segoe UI", sans-serif;
+      font-size: 1.3rem;
+      color: #e0e0e0;
+      width: 3em;
+      text-align: center;
+      text-shadow: 2.6px 2.6px 0 #000;
+    }
+    .grading-metric-vals {
+      background: #303030;
+      border-radius: 999px;
+      padding: 0.2rem 0.8rem;
+      margin-top: 0.15rem;
+      max-width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .grading-metric-val-item {
+      font-family: "Splatfont2", "Segoe UI", sans-serif;
+      font-size: 1.82rem;
+      width: 2.14em;
+      text-align: center;
+      text-shadow: 2.6px 2.6px 0 #000;
+    }
+    .grading-boss-warnings {
+      margin-top: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .grading-boss-label {
+      font-family: "Splatfont2", "Segoe UI", sans-serif;
+      font-size: 1.3rem;
+      color: #e0e0e0;
+      margin-right: 0.25rem;
+      flex-shrink: 0;
+    }
+    .grading-boss-icons {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .grading-boss-icon-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .grading-boss-icon {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+    }
+    .grading-boss-sym {
+      position: absolute;
+      right: -2px;
+      bottom: -2px;
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .grading-boss-sym-x {
+      font-size: 1.8rem;
+      bottom: -9px;
+      right: -4px;
+    }
+
+    /* オカシラ適性スコア */
+    .grading-okashira {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0;
+    }
+    .grading-okashira .icon-wrap,
+    .grading-unmeasurable .icon-wrap {
+      display: flex;
+      align-items: center;
+    }
+    .grading-okashira-icon {
+      width: 3.0rem;
+      height: 3.0rem;
+      object-fit: contain;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+      flex-shrink: 0;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 700px) {
+      .grading-year {
+        font-size: 1.2rem;
+      }
+      .grading-date {
+        font-size: 1.2rem;
+      }
+      .grading-total, .grading-unmeasurable {
+        font-size: 2.8rem;
+        text-shadow: 2.38px 2.38px 0 #000;
+      }
+      .grading-stage-img {
+        width: 116px;
+        height: 65px;
+      }
+      .grading-event-badge { font-size: 0.95rem; }
+      .grading-stage-name {
+        font-size: 1.05rem;
+      }
+      .grading-metric-labels, .grading-metric-vals {
+        gap: 2.04rem;
+      }
+      .grading-metric-label-item {
+        font-size: 1.1rem;
+        text-shadow: 2.38px 2.38px 0 #000;
+      }
+      .grading-metric-val-item {
+        font-size: 1.54rem;
+        text-shadow: 2.38px 2.38px 0 #000;
+      }
+      .grading-boss-label {
+        font-size: 1.1rem;
+      }
+      .grading-boss-icon {
+        width: 41px;
+        height: 41px;
+        filter: drop-shadow(2.38px 2.38px 0 #000);
+      }
+      .grading-weapons img {
+        width: 54px;
+        height: 54px;
+        filter: drop-shadow(2.38px 2.38px 0 #000);
+      }
+      .grading-okashira-icon { width: 2.8rem; height: 2.8rem; }
+    }
+
+    @media (max-width: 600px) {
+      .grading-year {
+        font-size: 1.15rem;
+      }
+      .grading-date {
+        font-size: 1.15rem;
+      }
+      .grading-total, .grading-unmeasurable {
+        font-size: 2.6rem;
+        text-shadow: 2.16px 2.16px 0 #000;
+      }
+      .grading-stage-img {
+        width: 104px;
+        height: 59px;
+      }
+      .grading-event-badge { font-size: 0.9rem; }
+      .grading-stage-name {
+        font-size: 1rem;
+      }
+      .grading-metric-labels, .grading-metric-vals {
+        gap: 1.68rem;
+      }
+      .grading-metric-label-item {
+        font-size: 1.05rem;
+        text-shadow: 2.16px 2.16px 0 #000;
+      }
+      .grading-metric-val-item {
+        font-size: 1.47rem;
+        text-shadow: 2.16px 2.16px 0 #000;
+      }
+      .grading-boss-label {
+        font-size: 1.05rem;
+      }
+      .grading-boss-icon {
+        width: 30px;
+        height: 30px;
+        filter: drop-shadow(2.16px 2.16px 0 #000);
+      }
+      .grading-weapons img {
+        width: 40px;
+        height: 40px;
+        filter: drop-shadow(2.16px 2.16px 0 #000);
+      }
+      .grading-okashira-icon { width: 2.6rem; height: 2.6rem; }
+    }
+
+    @media (max-width: 500px) {
+      .grading-year {
+        font-size: 1.1rem;
+      }
+      .grading-date {
+        font-size: 1.1rem;
+      }
+      .grading-total, .grading-unmeasurable {
+        font-size: 2.4rem;
+        text-shadow: 1.94px 1.94px 0 #000;
+      }
+      .grading-stage-img {
+        width: 90px;
+        height: 51px;
+      }
+      .grading-event-badge { font-size: 0.82rem; }
+      .grading-stage-name {
+        font-size: 0.9rem;
+      }
+      .grading-metric-labels, .grading-metric-vals {
+        gap: 1.32rem;
+      }
+      .grading-metric-label-item {
+        font-size: 1.0rem;
+        text-shadow: 1.94px 1.94px 0 #000;
+      }
+      .grading-metric-val-item {
+        font-size: 1.4rem;
+        text-shadow: 1.94px 1.94px 0 #000;
+      }
+      .grading-boss-label {
+        font-size: 1.0rem;
+      }
+      .grading-boss-icon {
+        width: 27px;
+        height: 27px;
+        filter: drop-shadow(1.94px 1.94px 0 #000);
+      }
+      .grading-weapons img {
+        width: 36px;
+        height: 36px;
+        filter: drop-shadow(1.94px 1.94px 0 #000);
+      }
+      .grading-okashira-icon { width: 2.4rem; height: 2.4rem; }
+    }
+
+    @media (max-width: 450px) {
+      .grading-year {
+        font-size: 1.0rem;
+      }
+      .grading-date {
+        font-size: 1.0rem;
+      }
+      .grading-total, .grading-unmeasurable {
+        font-size: 2.2rem;
+        text-shadow: 1.72px 1.72px 0 #000;
+      }
+      .grading-stage-img {
+        width: 80px;
+        height: 45px;
+      }
+      .grading-event-badge { font-size: 0.76rem; }
+      .grading-stage-name {
+        font-size: 0.85rem;
+      }
+      .grading-metric-labels, .grading-metric-vals {
+        gap: 0.96rem;
+      }
+      .grading-metric-label-item {
+        font-size: 0.9rem;
+        text-shadow: 1.72px 1.72px 0 #000;
+      }
+      .grading-metric-val-item {
+        font-size: 1.26rem;
+        text-shadow: 1.72px 1.72px 0 #000;
+      }
+      .grading-boss-label {
+        font-size: 0.9rem;
+      }
+      .grading-boss-icon {
+        width: 26px;
+        height: 26px;
+        filter: drop-shadow(1.72px 1.72px 0 #000);
+      }
+      .grading-weapons img {
+        width: 34px;
+        height: 34px;
+        filter: drop-shadow(1.72px 1.72px 0 #000);
+      }
+      .grading-weapons {
+        gap: 0.2rem;
+      }
+      .grading-okashira-icon { width: 2.2rem; height: 2.2rem; }
+    }
+
+    @media (max-width: 400px) {
+      .grading-year {
+        font-size: 0.85rem;
+      }
+      .grading-date {
+        font-size: 0.9rem;
+      }
+      .grading-total, .grading-unmeasurable {
+        font-size: 2.0rem;
+        text-shadow: 1.5px 1.5px 0 #000;
+      }
+      .grading-stage-img {
+        width: 76px;
+        height: 43px;
+      }
+      .grading-event-badge { font-size: 0.7rem; }
+      .grading-stage-name {
+        font-size: 0.78rem;
+      }
+      .grading-metric-labels, .grading-metric-vals {
+        gap: 0.6rem;
+      }
+      .grading-metric-label-item {
+        font-size: 0.84rem;
+        text-shadow: 1.5px 1.5px 0 #000;
+      }
+      .grading-metric-val-item {
+        font-size: 1.18rem;
+        text-shadow: 1.5px 1.5px 0 #000;
+      }
+      .grading-boss-label {
+        font-size: 0.84rem;
+      }
+      .grading-boss-icon {
+        width: 24px;
+        height: 24px;
+        filter: drop-shadow(1.5px 1.5px 0 #000);
+      }
+      .grading-weapons img {
+        width: 32px;
+        height: 32px;
+        filter: drop-shadow(1.5px 1.5px 0 #000);
+      }
+      .grading-okashira-icon { width: 2.0rem; height: 2.0rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-inline">
+    <a href="index.html" class="back-link"><img src="png/btn_prev.png" alt="トップへ" class="back-btn-img"></a>
+    <h1>編成精密採点</h1>
+  </header>
+
+  <main>
+    <div id="grading-container"></div>
+  </main>
+
+  <script src="js/schedule_data.js"></script>
+  <script src="js/weapon_data.js"></script>
+  <script>
+  (function() {
+    var ICON_DIR = "png/";
+
+    var STAGE_ICONS_HIGH = {
+      "シェケナダム": "stage_spawning_grounds_high.jpg",
+      "難破船ドン・ブラコ": "stage_marooners_bay_high.jpg",
+      "アラマキ砦": "stage_sockeye_station_high.jpg",
+      "ムニ・エール海洋発電所": "stage_gone_fission_hydroplant_high.jpg",
+      "すじこジャンクション跡": "stage_jammin_salmon_junction_high.jpg",
+      "トキシラズいぶし工房": "stage_salmonid_smokeyard_high.jpg",
+      "どんぴこ闘技場": "stage_bonerattle_arena_high.jpg",
+      "スメーシーワールド": "stage_wahoo_world_high.png",
+      "海女美術大学": "stage_inkblot_art_academy_high.png",
+      "マテガイ放水路": "stage_undertow_spillway_high.png",
+      "ナンプラー遺跡": "stage_umami_ruins_high.png",
+      "タラポートショッピングパーク": "stage_barnacle_dime_high.png",
+      "ゴンズイ地区": "stage_eeltail_alley_high.png",
+      "グランドバンカラアリーナ": "stage_grand_splatlands_bowl_high.png",
+    };
+
+    // WEAPON_ICONS は weapon_data.js で定義（グローバル参照）
+
+    // --- ステージ別ウェイト (%) ---
+    var STAGE_WEIGHTS = {
+      "トキシラズいぶし工房":   { clearing: 45, paint: 15, boss: 25, mobility: 5, handling: 10 },
+      "シェケナダム":         { clearing: 40, paint: 15, boss: 27.5, mobility: 7.5, handling: 10 },
+      "難破船ドン・ブラコ":     { clearing: 35, paint: 15, boss: 30, mobility: 10, handling: 10 },
+      "どんぴこ闘技場":       { clearing: 35, paint: 15, boss: 30, mobility: 10, handling: 10 },
+      "ムニ・エール海洋発電所":  { clearing: 40, paint: 15, boss: 30, mobility: 5, handling: 10 },
+      "アラマキ砦":          { clearing: 40, paint: 15, boss: 25, mobility: 10, handling: 10 },
+      "すじこジャンクション跡":  { clearing: 40, paint: 15, boss: 27.5, mobility: 7.5, handling: 10 },
+    };
+
+    // --- ステージ別オオモノ傾斜 (日本語ボス名 → 英語キー) ---
+    var BOSS_KEY = {
+      "タワー": "stinger", "コウモリ": "drizzler", "ハシラ": "fishstick",
+      "カタパッド": "flyfish", "ヘビ": "steeleel", "テッキュウ": "bigshot",
+      "テッパン": "scrapper", "ナベブタ": "slamminlid", "バクダン": "steelhead",
+      "モグラ": "maws", "ダイバー": "flipper"
+    };
+
+    var T = { X: 10, Sp: 8, S: 6, A: 4, B: 2.5, C: 1 };
+
+    var STAGE_BOSS_DANGER = {
+      "シェケナダム": {
+        "タワー": T.X, "コウモリ": T.Sp, "ハシラ": T.Sp, "カタパッド": T.Sp, "ヘビ": T.Sp, "テッキュウ": T.Sp,
+        "テッパン": T.S, "ナベブタ": T.A, "バクダン": T.A, "モグラ": T.B, "ダイバー": T.B
+      },
+      "トキシラズいぶし工房": {
+        "コウモリ": T.X, "テッキュウ": T.Sp, "ハシラ": T.Sp, "カタパッド": T.Sp,
+        "タワー": T.S, "ヘビ": T.S, "テッパン": T.A,
+        "モグラ": T.B, "ダイバー": T.B, "バクダン": T.B, "ナベブタ": T.B
+      },
+      "ムニ・エール海洋発電所": {
+        "コウモリ": T.S, "タワー": T.S, "テッキュウ": T.S, "ハシラ": T.S, "カタパッド": T.S,
+        "ヘビ": T.A, "テッパン": T.B, "ナベブタ": T.B, "バクダン": T.B,
+        "モグラ": T.C, "ダイバー": T.C
+      },
+      "どんぴこ闘技場": {
+        "コウモリ": T.X, "タワー": T.Sp, "テッキュウ": T.Sp,
+        "テッパン": T.S, "カタパッド": T.A, "ヘビ": T.A,
+        "ナベブタ": T.B, "バクダン": T.B, "ハシラ": T.B,
+        "モグラ": T.C, "ダイバー": T.C
+      },
+      "アラマキ砦": {
+        "タワー": T.X, "カタパッド": T.X, "テッキュウ": T.X,
+        "ハシラ": T.S, "コウモリ": T.A, "ナベブタ": T.A,
+        "テッパン": T.B, "バクダン": T.B, "ヘビ": T.B,
+        "モグラ": T.C, "ダイバー": T.C
+      },
+      "すじこジャンクション跡": {
+        "カタパッド": T.Sp, "タワー": T.Sp, "テッキュウ": T.Sp,
+        "ハシラ": T.S, "ヘビ": T.S, "コウモリ": T.A,
+        "ナベブタ": T.B, "バクダン": T.B, "テッパン": T.B,
+        "モグラ": T.C, "ダイバー": T.C
+      },
+      "難破船ドン・ブラコ": {
+        "タワー": T.X, "カタパッド": T.X, "コウモリ": T.X, "テッキュウ": T.X, "ハシラ": T.X,
+        "ヘビ": T.Sp, "ナベブタ": T.A, "バクダン": T.A,
+        "テッパン": T.B, "モグラ": T.C, "ダイバー": T.C
+      },
+    };
+
+    // --- ステージ総合難易度 (ボス + 夜) ---
+    var STAGE_DIFFICULTY = {
+      "難破船ドン・ブラコ":     104.0,
+      "シェケナダム":         91.5,
+      "トキシラズいぶし工房":   87.0,
+      "アラマキ砦":          76.0,
+      "どんぴこ闘技場":       75.0,
+      "すじこジャンクション跡":  68.5,
+      "ムニ・エール海洋発電所":  62.5,
+    };
+    var DIFF_MIN = 62.5;
+    var DIFF_MAX = 104.0;
+    var DIFF_PENALTY = 0.15; // 最難ステージで最大15%減
+
+    // --- スコア正規化範囲（全ステージ全組み合わせ探索の最小/最大） ---
+    var SCORE_MIN = 20.3;  // ドンブラコ最弱（実行力ペナルティ込み）
+    var SCORE_MAX = 79.6;  // ムニエール最強
+
+    // --- 各指標 min/max（全組み合わせ探索結果） ---
+    var METRIC_RANGE = {
+      clearing:  { min: 29.0, max: 97.7 },
+      paint:     { min: 35.9, max: 94.7 },
+      mobility:  { min: 16.7, max: 73.0 },
+      handling:  { min: 20.0, max: 100.0 },
+      range:     { min: 7.8,  max: 90.3 },
+    };
+
+    // --- ボス別 min/max（ステージ別、danger>=4のみ） ---
+    var BOSS_SCORE_RANGE = {
+      "シェケナダム":         { "タワー":{min:1,max:4},"コウモリ":{min:1,max:4},"ハシラ":{min:2,max:5},"カタパッド":{min:1,max:4.4},"ヘビ":{min:2,max:4},"テッキュウ":{min:1,max:4},"テッパン":{min:2,max:4},"ナベブタ":{min:2,max:4},"バクダン":{min:2,max:4} },
+      "トキシラズいぶし工房":   { "コウモリ":{min:1,max:4},"テッキュウ":{min:1,max:4},"ハシラ":{min:2,max:5},"カタパッド":{min:1,max:4.4},"タワー":{min:1,max:4},"ヘビ":{min:2,max:4},"テッパン":{min:2,max:4} },
+      "ムニ・エール海洋発電所":  { "コウモリ":{min:1,max:4},"タワー":{min:1,max:4},"テッキュウ":{min:1,max:4},"ハシラ":{min:2,max:5},"カタパッド":{min:1,max:4.4},"ヘビ":{min:2,max:4} },
+      "どんぴこ闘技場":       { "コウモリ":{min:1,max:4},"タワー":{min:1,max:4},"テッキュウ":{min:1,max:4},"テッパン":{min:2,max:4},"カタパッド":{min:1,max:4.4},"ヘビ":{min:2,max:4} },
+      "アラマキ砦":          { "タワー":{min:1,max:4},"カタパッド":{min:1,max:4.4},"テッキュウ":{min:1,max:4},"ハシラ":{min:2,max:5},"コウモリ":{min:1,max:4},"ナベブタ":{min:2,max:4} },
+      "すじこジャンクション跡":  { "カタパッド":{min:1,max:4.4},"タワー":{min:1,max:4},"テッキュウ":{min:1,max:4},"ハシラ":{min:2,max:5},"ヘビ":{min:2,max:4},"コウモリ":{min:1,max:4} },
+      "難破船ドン・ブラコ":     { "タワー":{min:1,max:4},"カタパッド":{min:1,max:4.4},"コウモリ":{min:1,max:4},"テッキュウ":{min:1,max:4},"ハシラ":{min:2,max:5},"ヘビ":{min:2,max:4},"ナベブタ":{min:2,max:4},"バクダン":{min:2,max:4} },
+    };
+
+    // --- オカシラ専用ブキデータ [dmg, dps, inkTime, penalty, tatsu, joe] ---
+    var OKASHIRA_WEAPONS = {
+      "ボールドマーカー": [5625,540,10.42,1,1,1],
+      "わかばシューター": [6496,336,19.33,1,1,1],
+      "シャープマーカー": [3500,336,10.42,1,2,1],
+      "プロモデラーMG": [4800,360,13.33,1,1,1],
+      "スプラシューター": [3888,360,10.8,1,2,1],
+      ".52ガロン": [3952,347,11.4,1,2,1],
+      "N-ZAP85": [3750,360,10.42,1,2,1],
+      "プライムシューター": [2790,338,8.27,1,3,1],
+      ".96ガロン": [3400,425,8.6,1,3,1],
+      "ジェットスイーパー": [2480,300,8.27,1,4,1],
+      "スペースシューター": [3750,300,12.5,1,3,1],
+      "L3リールガン": [4000,400,9.97,1,3,1],
+      "H3リールガン": [3850,394,9.68,1,3,1],
+      "ボトルガイザー": [2250,375,6,1,3,1],
+      "スパッタリー": [6000,600,9.53,1,1,1],
+      "スプラマニューバー": [4140,450,8.67,1,2,1],
+      "クアッドホッパーブラック": [3750,360,10.15,1,2,1],
+      "デュアルスイーパー": [3750,300,12.5,1,3,1],
+      "ケルビン525": [4550,467,10.65,1,3,1],
+      "ガエンFF": [3320,600,5,1,3,1],
+      "スプラスピナー": [5133,412.5,12.44,1.1,3,1],
+      "バレルスピナー": [6378,369.5,17.26,1.1,3,1],
+      "ハイドラント": [11880,578.1,19.57,1.1,4,1],
+      "クーゲルシュライバー": [7000,472.5,16.67,1.1,1,1],
+      "ノーチラス47": [7750,330.5,23.45,1.1,3,1],
+      "イグザミナー": [10675,425.6,25.08,1.1,3,1],
+      "ノヴァブラスター": [5000,300,16.67,1,1,1.5],
+      "ホットブラスター": [4000,240,16.67,1,2,1.5],
+      "ロングブラスター": [5000,250,20,1,3,1.5],
+      "ラピッドブラスター": [3080,240,12.83,1,3,1.5],
+      "Rブラスターエリート": [3000,225,13.33,1,3,1.5],
+      "クラッシュブラスター": [3000,255,10.33,1,2,1.5],
+      "S-BLAST92": [6000,327,18.33,1,3,1.5],
+      "カーボンローラー": [4480,310,14.47,1,1,1.4],
+      "スプラローラー": [3200,286,11.2,1,1,1.4],
+      "ヴァリアブルローラー": [3200,300,10.67,1,1,1.4],
+      "ダイナモローラー": [1800,212,8.5,1,3,1.4],
+      "ワイドローラー": [1950,231,7.8,1,1,1.4],
+      "パブロ": [2376,360,7.82,1,1,1.4],
+      "ホクサイ": [1980,360,6.05,1,1,1.4],
+      "フィンセント": [3300,692,5.133,1,1,1.4],
+      "スクイックリンα": [3300,353,9.35,1.1,3,1.6],
+      "スプラチャージャー": [1500,273,5.5,1.1,4,1.6],
+      "リッター4K": [2400,367,6.533,1.1,4,1.6],
+      "ソイチューバー": [2400,234,10.27,1.1,4,1.6],
+      "14式竹筒銃・甲": [4000,369,10.833,1.2,4,1],
+      "R-PEN/5H": [3600,497,7.79,1.1,4,1],
+      "ヒッセン": [2200,261,8.27,1,1,1.4],
+      "バケットスロッシャー": [2520,290,8.72,1,2,1.4],
+      "スクリュースロッシャー": [3060,268,11.4,1,2,1.4],
+      "オーバーフロッシャー": [3840,450,8.12,1,1,1],
+      "エクスプロッシャー": [2200,218,9.45,1,3,1.4],
+      "モップリン": [3000,333,9,1,2,1.4],
+      "パラシェルター": [7200,372,19.33,1,2,1.4],
+      "キャンピングシェルター": [7200,424,17,1,3,1.4],
+      "スパイガジェット": [4950,346,14.3,1,2,1.4],
+      "24式張替傘・甲": [5250,371,14.17,1,3,1.4],
+      "トライストリンガー": [7500,400,18.75,1.2,3,1],
+      "LACT-450": [8400,467,18,1.2,3,1],
+      "フルイドV": [6250,625,10,1,1,1],
+      "ドライブワイパー": [9100,542,16.8,1.1,3,1.6],
+      "ジムワイパー": [6400,571,11.2,1.1,4,1.6],
+      "デンタルワイパーミント": [6300,519,12.13,1.1,3,1.6],
+    };
+    var OKASHIRA_OVERRIDES = {
+      "クーゲルシュライバー": { "タツ": [7000,315,22.3,1.15,4,1] },
+      "ソイチューバー": { "ヨコヅナ": [6640,343,19.37,1.1,1,1] },
+      "フルイドV": { "タツ": [6800,436,14.67,1.1,3,1] },
+      // ワイパー類はタツ戦でダメージ45%に減衰
+      "ドライブワイパー": { "タツ": [4095,243.9,16.8,1.1,3,1.6] },
+      "ジムワイパー": { "タツ": [2880,256.95,11.2,1.1,4,1.6] },
+      "デンタルワイパーミント": { "タツ": [2835,233.55,12.13,1.1,3,1.6] },
+    };
+    var OKASHIRA_ICON_MAP = {
+      "ヨコヅナ": "salmon_cohozuna.png",
+      "タツ": "salmon_horrorboros.png",
+      "ジョー": "salmon_megalodontia.png",
+      "オカシラ連合": "salmon_triumvirate.png",
+      "ランダム": "salmon_okashira_random.png",
+    };
+    // 開催日時文字列をDateに変換
+    function parseScheduleDate(dateStr, year) {
+      var parts = dateStr.split(" ");
+      var md = parts[0].split("/");
+      var hm = parts[1].split(":");
+      return new Date(year, parseInt(md[0]) - 1, parseInt(md[1]), parseInt(hm[0]), parseInt(hm[1]));
+    }
+    function detectCurrentAndNext() {
+      var now = new Date();
+      var currentNo = null, nextNo = null, nextStart = null;
+      for (var i = 0; i < SCHEDULE_DATA.length; i++) {
+        var r = SCHEDULE_DATA[i];
+        var sm = parseInt(r.startDate.split("/")[0]);
+        var em = parseInt(r.endDate.split("/")[0]);
+        var ey = r.year;
+        if (em < sm) ey++;
+        var start = parseScheduleDate(r.startDate, r.year);
+        var end = parseScheduleDate(r.endDate, ey);
+        if (now >= start && now < end) currentNo = r.no;
+        if (start > now && (nextStart === null || start < nextStart)) {
+          nextStart = start; nextNo = r.no;
+        }
+      }
+      return { currentNo: currentNo, nextNo: nextNo };
+    }
+    var scheduleStatus = detectCurrentAndNext();
+
+    var OKASHIRA_REFILL = 7;
+    var OKASHIRA_TATSU_MOD = {4: 1.0, 3: 0.7, 2: 0.35, 1: 0.08};
+    var OKASHIRA_TEAM_WEIGHTS = [0.4, 0.3, 0.2, 0.1];
+    var OKASHIRA_STAGE_DIFF = {
+      "ジョー": {"難破船ドン・ブラコ":10,"シェケナダム":8,"アラマキ砦":8,"すじこジャンクション跡":8,"ムニ・エール海洋発電所":6,"トキシラズいぶし工房":6,"どんぴこ闘技場":6},
+      "タツ": {"トキシラズいぶし工房":6,"シェケナダム":3.5,"すじこジャンクション跡":3.5,"難破船ドン・ブラコ":3.5,"アラマキ砦":1,"どんぴこ闘技場":1,"ムニ・エール海洋発電所":1},
+      "ヨコヅナ": {"難破船ドン・ブラコ":8,"トキシラズいぶし工房":6,"すじこジャンクション跡":6,"シェケナダム":6,"どんぴこ闘技場":3.5,"アラマキ砦":3.5,"ムニ・エール海洋発電所":1},
+    };
+    var OKASHIRA_DIFF_MIN = 1, OKASHIRA_DIFF_MAX = 10, OKASHIRA_DIFF_PENALTY = 0.2;
+    // per-boss raw score min/max (from calc_okashira_minmax.js)
+    var OKASHIRA_SCORE_RANGE = {
+      "ヨコヅナ": { min: 253.33, max: 447.51 },
+      "タツ":     { min: 266.67, max: 369.27 },
+      "ジョー":   { min: 240.00, max: 562.23 },
+    };
+    // ボス難易度補正（bossNormに加算、タツが最も倒しやすい）
+    var OKASHIRA_BOSS_BONUS = { "タツ": 15, "ヨコヅナ": 10, "ジョー": 5 };
+    // ボスごとの底上げ（理論最弱でもこの点数になる）
+    var OKASHIRA_FLOOR = { "タツ": 30, "ヨコヅナ": 25, "ジョー": 20 };
+
+    function getOkashiraWeaponData(name, boss) {
+      if (OKASHIRA_OVERRIDES[name] && OKASHIRA_OVERRIDES[name][boss]) {
+        return OKASHIRA_OVERRIDES[name][boss];
+      }
+      return OKASHIRA_WEAPONS[name];
+    }
+
+    var OKASHIRA_SCORE_FLOOR = 300; // 金イクラ投げの最低貢献
+    function okashiraWeaponScore(name, boss) {
+      var d = getOkashiraWeaponData(name, boss);
+      if (!d) return OKASHIRA_SCORE_FLOOR;
+      var dmg=d[0], dps=d[1], inkTime=d[2], penalty=d[3], tatsu=d[4], joe=d[5];
+      var score = 0;
+      if (boss === "ヨコヅナ") {
+        var cycleDps = dmg / (inkTime * penalty + OKASHIRA_REFILL);
+        score = cycleDps * 0.7 + dps * 0.3;
+      } else if (boss === "タツ") {
+        var cycleDps = dmg / (inkTime * penalty + OKASHIRA_REFILL);
+        var raw = cycleDps * 0.7 + dps * 0.3;
+        score = raw * (OKASHIRA_TATSU_MOD[tatsu] || 0.08);
+      } else if (boss === "ジョー") {
+        var effDmg = dmg * joe, effDps = dps * joe;
+        var cycleDps = effDmg / (inkTime * penalty + OKASHIRA_REFILL);
+        score = cycleDps * 0.7 + effDps * 0.3;
+      }
+      return Math.max(OKASHIRA_SCORE_FLOOR, score);
+    }
+
+    // オカシラ適性スコア計算
+    function gradeOkashira(weapons, stage, boss) {
+      if (!boss || !OKASHIRA_STAGE_DIFF[boss]) return null;
+
+      // 全武器平均（ランダム枠用）
+      var avgScores = {};
+      var bosses = ["ヨコヅナ", "タツ", "ジョー"];
+      var wCount = 0;
+      var avgBoss = 0;
+      for (var wn in OKASHIRA_WEAPONS) {
+        avgBoss += okashiraWeaponScore(wn, boss);
+        wCount++;
+      }
+      avgBoss /= wCount;
+
+      var scores = [];
+      for (var i = 0; i < weapons.length; i++) {
+        if (weapons[i] === "？") {
+          scores.push(avgBoss);
+        } else {
+          scores.push(okashiraWeaponScore(weapons[i], boss));
+        }
+      }
+      scores.sort(function(a,b){return b-a;});
+      var sum = 0;
+      for (var k = 0; k < OKASHIRA_TEAM_WEIGHTS.length && k < scores.length; k++) {
+        sum += scores[k] * OKASHIRA_TEAM_WEIGHTS[k];
+      }
+      var diff = (OKASHIRA_STAGE_DIFF[boss][stage]) || OKASHIRA_DIFF_MIN;
+      var coeff = 1 - ((diff - OKASHIRA_DIFF_MIN) / (OKASHIRA_DIFF_MAX - OKASHIRA_DIFF_MIN)) * OKASHIRA_DIFF_PENALTY;
+      var rawBoss = sum * coeff;
+
+      var range = OKASHIRA_SCORE_RANGE[boss];
+      if (!range) return null;
+      var bossNorm = Math.max(0, Math.min(100, (rawBoss - range.min) / (range.max - range.min) * 100));
+
+      return bossNorm;
+    }
+
+    // --- 採点関数 ---
+    function gradeTeam(weapons, stage) {
+      var weights = STAGE_WEIGHTS[stage];
+      if (!weights) return null;
+
+      // オールランダムは採点不可
+      if (weapons.every(function(w) { return w === "？"; })) return null;
+
+      // 全武器平均値を計算（ランダム枠用）
+      var avgAll = { clearing: 0, paint: 0, mobility: 0, handling: 0, effectiveRange: 0 };
+      var weaponCount = 0;
+      for (var wn in WEAPON_RATINGS) {
+        var wr = WEAPON_RATINGS[wn];
+        avgAll.clearing += wr.clearing || 0;
+        avgAll.paint += wr.paint || 0;
+        avgAll.mobility += wr.mobility || 0;
+        avgAll.handling += wr.handling || 0;
+        avgAll.effectiveRange += wr.effectiveRange || 0;
+        weaponCount++;
+      }
+      for (var ak in avgAll) avgAll[ak] /= weaponCount;
+
+      // 各項目を収集（？は全武器平均値として扱う）
+      var allClearing = [], allPaint = [], allMobility = [], allHandling = [], allRange = [];
+      for (var i = 0; i < weapons.length; i++) {
+        if (weapons[i] === "？") {
+          allClearing.push(avgAll.clearing);
+          allPaint.push(avgAll.paint);
+          allMobility.push(avgAll.mobility);
+          allHandling.push(avgAll.handling);
+          allRange.push(avgAll.effectiveRange);
+        } else {
+          var r = WEAPON_RATINGS[weapons[i]];
+          if (!r) continue;
+          allClearing.push(r.clearing || 0);
+          allPaint.push(r.paint || 0);
+          allMobility.push(r.mobility || 0);
+          allHandling.push(r.handling || 0);
+          allRange.push(r.effectiveRange || 0);
+        }
+      }
+      var descSort = function(a, b) { return b - a; };
+      allClearing.sort(descSort);
+      allPaint.sort(descSort);
+      allMobility.sort(descSort);
+      allHandling.sort(descSort);
+      allRange.sort(descSort);
+
+      // 加重平均（上位ほど重い）
+      function weightedAvg(arr, weights) {
+        var sum = 0;
+        for (var k = 0; k < weights.length && k < arr.length; k++) sum += arr[k] * weights[k];
+        return sum;
+      }
+      var avgClearing = weightedAvg(allClearing, [0.45, 0.35, 0.2]);
+      var avgPaint = weightedAvg(allPaint, [0.5, 0.3, 0.1, 0.1]);
+      var avgMobility = weightedAvg(allMobility, [0.4, 0.3, 0.2, 0.1]);
+      var avgHandling = weightedAvg(allHandling, [0.25, 0.25, 0.25, 0.25]);
+      var avgRange = weightedAvg(allRange, [0.6, 0.3, 0.1]);
+
+      // 対オオモノ: ボス種別ごとに評価方式を変える
+      var bossDanger = STAGE_BOSS_DANGER[stage];
+      var bossScore = 0;
+      var bossPenalty = 0;
+      var bossDetail = {}; // ボス名 → 加重スコア
+      // ボス種別ごとの加重方式
+      var BOSS_EVAL = {
+        // ハシラ: 1人◎いれば安定（コンテナ周りに湧く）
+        fishstick: [0.7, 0.3],
+        // タワー: ◎1+○1 or ○3人必要（遠方に湧く）
+        stinger: [0.4, 0.35, 0.25],
+        // カタパッド: タワーと同じ（遠方に湧く）
+        flyfish: [0.4, 0.35, 0.25],
+        // テッキュウ: 1人◎ならOK、○代替なら3人
+        bigshot: [0.5, 0.25, 0.25],
+        // コウモリ: 3人が平均的に強いのが良い（各所でアメを撃つ）
+        drizzler: [0.35, 0.35, 0.3],
+        // バクダン: 上位2人が対応できるのが望ましい
+        steelhead: [0.5, 0.4, 0.1],
+      };
+      if (bossDanger) {
+        var weightedSum = 0, dangerTotal = 0;
+        for (var bossJP in bossDanger) {
+          var bossKey = BOSS_KEY[bossJP];
+          var danger = bossDanger[bossJP];
+          dangerTotal += danger;
+          // 4武器のマッチアップを収集してソート(降順)
+          var matches = [];
+          for (var j = 0; j < weapons.length; j++) {
+            if (weapons[j] === "？") {
+              // ランダム枠: 全武器のこのボスに対する平均値
+              var bSum = 0, bCnt = 0;
+              for (var wn2 in BOSS_MATCHUPS) {
+                var bm2 = BOSS_MATCHUPS[wn2];
+                if (bm2 && bm2[bossKey] !== undefined) { bSum += bm2[bossKey]; bCnt++; }
+              }
+              if (bCnt > 0) matches.push(bSum / bCnt);
+            } else {
+              var bm = BOSS_MATCHUPS[weapons[j]];
+              if (bm && bm[bossKey] !== undefined) {
+                matches.push(bm[bossKey]);
+              }
+            }
+          }
+          matches.sort(function(a, b) { return b - a; });
+          if (matches.length > 0) {
+            var evalWeights = BOSS_EVAL[bossKey] || [0.7, 0.3];
+            var bossVal = weightedAvg(matches, evalWeights);
+            weightedSum += danger * bossVal;
+            bossDetail[bossJP] = bossVal;
+          }
+          // ペナルティ: 危険度S(6)以上のボスで対応不足
+          if (danger >= 6 && matches.length > 0) {
+            if (matches[0] <= 2) {
+              bossPenalty += danger * 3;
+            }
+            var goodCount = matches.filter(function(m) { return m >= 3; }).length;
+            if (goodCount < 2) {
+              bossPenalty += danger * 1.5;
+            }
+          }
+        }
+        if (dangerTotal > 0) {
+          var rawAvg = weightedSum / dangerTotal;
+          bossScore = ((rawAvg - 1) / 4) * 100;
+          bossScore = Math.max(0, bossScore - bossPenalty);
+        }
+      }
+
+      // 実行力ペナルティ: 機動力+扱いやすさが低いとボスと射程が額面通りに発揮されない
+      var mobPct = (avgMobility - METRIC_RANGE.mobility.min) / (METRIC_RANGE.mobility.max - METRIC_RANGE.mobility.min);
+      var hdlPct = (avgHandling - METRIC_RANGE.handling.min) / (METRIC_RANGE.handling.max - METRIC_RANGE.handling.min);
+      var practicalPct = mobPct * 0.3 + hdlPct * 0.7;
+      var PRAC_THRESHOLD = 0.65, PRAC_STRENGTH = 1.9, PRAC_FLOOR = 0.3;
+      var pracPenalty = 1.0;
+      if (practicalPct < PRAC_THRESHOLD) {
+        pracPenalty = Math.max(PRAC_FLOOR, 1 - (PRAC_THRESHOLD - practicalPct) * PRAC_STRENGTH);
+      }
+      var rawBossScore = bossScore;
+      var rawRange = avgRange;
+      bossScore *= pracPenalty;
+      avgRange *= pracPenalty;
+
+      // ステージ配分による加重合算
+      var baseScore = avgClearing * (weights.clearing / 100)
+                    + avgPaint * (weights.paint / 100)
+                    + bossScore * (weights.boss / 100)
+                    + avgMobility * (weights.mobility / 100)
+                    + avgHandling * (weights.handling / 100);
+
+      // ステージ難易度係数
+      var diff = STAGE_DIFFICULTY[stage] || DIFF_MIN;
+      var coeff = 1 - ((diff - DIFF_MIN) / (DIFF_MAX - DIFF_MIN)) * DIFF_PENALTY;
+      var rawTotal = (baseScore * 0.9 + avgRange * 0.1) * coeff;
+
+      // 0-100正規化（全ステージ共通スケール）
+      var total = Math.max(0, Math.min(100, (rawTotal - SCORE_MIN) / (SCORE_MAX - SCORE_MIN) * 100));
+
+      return {
+        total: total,
+        clearing: avgClearing,
+        paint: avgPaint,
+        boss: rawBossScore,
+        mobility: avgMobility,
+        handling: avgHandling,
+        range: rawRange,
+        coefficient: coeff,
+        bossDetail: bossDetail,
+        stage: stage
+      };
+    }
+
+    var DAY_NAMES = ["日", "月", "火", "水", "木", "金", "土"];
+
+    // 日時文字列をDateに変換 "03/16 09:00" + year → Date
+    function parseScheduleDate(dateStr, year) {
+      var parts = dateStr.match(/(\d+)\/(\d+)\s+(\d+):(\d+)/);
+      if (!parts) return null;
+      var m = parseInt(parts[1]), d = parseInt(parts[2]);
+      var h = parseInt(parts[3]), min = parseInt(parts[4]);
+      return new Date(year, m - 1, d, h, min);
+    }
+
+    // 採点可能な編成を取得（ランダム・黄金を除外）
+    // 古い順、開催中を先頭、未来も含む
+    function findGradableSchedules() {
+      var data = typeof SCHEDULE_DATA !== "undefined" ? SCHEDULE_DATA : [];
+      var now = new Date();
+      var gradable = [];
+      for (var i = 0; i < data.length; i++) {
+        var r = data[i];
+        // 単一ランダム含む全編成を対象（部分ランダムも表示）
+        gradable.push(r);
+      }
+      // 開催中・過去・未来を分類
+      var active = [], past = [], future = [];
+      for (var j = 0; j < gradable.length; j++) {
+        var rec = gradable[j];
+        var startYear = rec.year;
+        var start = parseScheduleDate(rec.startDate, startYear);
+        var endMonth = parseInt(rec.endDate.match(/(\d+)\//)[1]);
+        var startMonth = parseInt(rec.startDate.match(/(\d+)\//)[1]);
+        var endYear = (endMonth < startMonth) ? startYear + 1 : startYear;
+        var end = parseScheduleDate(rec.endDate, endYear);
+        if (start && end && now >= start && now < end) {
+          active.push(rec);
+        } else if (start && now < start) {
+          future.push(rec);
+        } else {
+          past.push(rec);
+        }
+      }
+      // 開催中 → 未来（古い順）
+      return active.concat(future);
+    }
+
+    // "03/16 09:00" + year → "3/16(月) 9:00"
+    function formatDate(dateStr, year) {
+      var parts = dateStr.match(/(\d+)\/(\d+)\s+(\d+):(\d+)/);
+      if (!parts) return dateStr;
+      var m = parseInt(parts[1]), d = parseInt(parts[2]);
+      var h = parseInt(parts[3]), min = parts[4];
+      var dt = new Date(year, m - 1, d, h, parseInt(min));
+      var dow = DAY_NAMES[dt.getDay()];
+      return m + "/" + d + "(" + dow + ") " + h + ":" + min;
+    }
+
+    // 共通ティア色判定（丸めた後の値で判定）
+    function tierColor(score) {
+      var v = Math.round(score * 10) / 10; // .toFixed(1)と同じ丸め
+      if (v >= 80) return "#ff2496";
+      if (v >= 70) return "#c77dff";
+      if (v >= 60) return "#4a90d9";
+      if (v >= 50) return "#e0e0e0";
+      if (v >= 35) return "#ff6b35";
+      return "#ff4444";
+    }
+
+    function renderCard(container, rec) {
+      var isAllRandom = rec.weapons.every(function(w) { return w === "？"; });
+      var isGolden = rec.isGolden;
+      var isBigRun = rec.eventType === "bigrun" || rec.eventType === "bigbigrun";
+      var card = document.createElement("div");
+      var cardClass = "grading-card";
+      if (isGolden) cardClass += " grading-card-golden";
+      if (isGolden && isBigRun) cardClass += " grading-card-holo";
+      else if (!isGolden && isAllRandom) cardClass += " grading-card-holo";
+      card.className = cardClass;
+
+      // 終了日の年を推定（月が戻ったら翌年）
+      var startMonth = parseInt(rec.startDate.split("/")[0]);
+      var endMonth = parseInt(rec.endDate.split("/")[0]);
+      var endYear = rec.year;
+      if (endMonth < startMonth) endYear++;
+
+      // 1行目: 年号 + 日時
+      var dateRow = document.createElement("div");
+      dateRow.className = "grading-date-row";
+      var yearBadge = document.createElement("span");
+      if (scheduleStatus.currentNo === rec.no) {
+        yearBadge.className = "grading-year grading-status-badge";
+        yearBadge.textContent = "オープン!";
+      } else if (scheduleStatus.nextNo === rec.no) {
+        yearBadge.className = "grading-year grading-status-badge";
+        yearBadge.textContent = "そのつぎ";
+      } else {
+        yearBadge.className = "grading-year";
+        yearBadge.textContent = rec.year + "年";
+      }
+      dateRow.appendChild(yearBadge);
+      var dateDiv = document.createElement("span");
+      dateDiv.className = "grading-date";
+      dateDiv.textContent = formatDate(rec.startDate, rec.year) + " - " + formatDate(rec.endDate, endYear);
+      dateRow.appendChild(dateDiv);
+      card.appendChild(dateRow);
+
+      // 2行目: ステージ + ブキ
+      var infoDiv = document.createElement("div");
+      infoDiv.className = "grading-info";
+
+      var stageImg = document.createElement("img");
+      stageImg.className = "grading-stage-img";
+      stageImg.src = ICON_DIR + (STAGE_ICONS_HIGH[rec.stage] || "stage_random_high.png");
+      stageImg.alt = rec.stage;
+      infoDiv.appendChild(stageImg);
+
+      var stageCol = document.createElement("div");
+      stageCol.className = "grading-stage-col";
+      if (isBigRun || isGolden) {
+        if (isBigRun) {
+          var bigBadge = document.createElement("span");
+          bigBadge.className = "grading-event-badge";
+          bigBadge.textContent = "ビッグラン";
+          if (isGolden) bigBadge.style.background = "#b8860b";
+          stageCol.appendChild(bigBadge);
+        }
+        if (isGolden && !isBigRun) {
+          var goldenBadge = document.createElement("span");
+          goldenBadge.className = "grading-event-badge";
+          goldenBadge.textContent = "クマフェス";
+          goldenBadge.style.background = "#b8860b";
+          stageCol.appendChild(goldenBadge);
+        }
+      }
+      var stageName = document.createElement("span");
+      stageName.className = "grading-stage-name";
+      stageName.textContent = rec.stage;
+      stageCol.appendChild(stageName);
+      infoDiv.appendChild(stageCol);
+
+      var weaponsDiv = document.createElement("div");
+      weaponsDiv.className = "grading-weapons";
+      for (var i = 0; i < rec.weapons.length; i++) {
+        var wWrap = document.createElement("span");
+        wWrap.className = "icon-wrap";
+        var wName = rec.weapons[i];
+        var wTitle = wName;
+        if (wName === "？" && isGolden) wTitle = "？（黄金）";
+        else if (wName === "？") wTitle = "？（ランダム）";
+        wWrap.setAttribute("data-tooltip", wTitle);
+        var wImg = document.createElement("img");
+        var weaponIcon = WEAPON_ICONS[wName] || "weapon_random.png";
+        if (wName === "？" && isGolden) weaponIcon = "weapon_random_rare.png";
+        wImg.src = ICON_DIR + weaponIcon;
+        wImg.alt = wTitle;
+        wWrap.appendChild(wImg);
+        weaponsDiv.appendChild(wWrap);
+      }
+      infoDiv.appendChild(weaponsDiv);
+
+      card.appendChild(infoDiv);
+
+      // 点線区切り
+      var divider = document.createElement("div");
+      divider.className = "grading-divider";
+      card.appendChild(divider);
+
+      // 3行目: 採点結果
+      if (isAllRandom || isGolden) {
+        var scoreDiv = document.createElement("div");
+        scoreDiv.className = "grading-score";
+        var unmeasurable = document.createElement("div");
+        unmeasurable.className = "grading-unmeasurable";
+        if (rec.boss && OKASHIRA_ICON_MAP[rec.boss]) {
+          var unmWrap = document.createElement("span");
+          unmWrap.className = "icon-wrap";
+          unmWrap.setAttribute("data-tooltip", rec.boss);
+          var unmIcon = document.createElement("img");
+          unmIcon.className = "grading-unmeasurable-icon";
+          unmIcon.src = ICON_DIR + OKASHIRA_ICON_MAP[rec.boss];
+          unmIcon.alt = rec.boss;
+          unmWrap.appendChild(unmIcon);
+          unmeasurable.appendChild(unmWrap);
+        }
+        unmeasurable.appendChild(document.createTextNode("測定不能"));
+        scoreDiv.appendChild(unmeasurable);
+        card.appendChild(scoreDiv);
+      } else {
+      var grade = gradeTeam(rec.weapons, rec.stage);
+      if (grade) {
+        var scoreDiv = document.createElement("div");
+        scoreDiv.className = "grading-score";
+
+        var total = grade.total;
+
+        var totalEl = document.createElement("div");
+        totalEl.className = "grading-total";
+        totalEl.style.color = tierColor(total);
+        totalEl.innerHTML = '<span class="grading-total-prefix">総合</span>' + total.toFixed(1) + '<span class="grading-total-unit">点</span>';
+        scoreDiv.appendChild(totalEl);
+
+        // メトリクス内訳（色付きパーセンタイル表示）
+        var breakdown = document.createElement("div");
+        breakdown.className = "grading-breakdown";
+        var labelRow = document.createElement("div");
+        labelRow.className = "grading-metric-labels";
+        var valRow = document.createElement("div");
+        valRow.className = "grading-metric-vals";
+        var metricKeys = ["clearing", "paint", "mobility", "handling", "range"];
+        var metricShort = ["雑魚", "塗り", "機動力", "手軽さ", "射程"];
+        var metricRaw = [grade.clearing, grade.paint, grade.mobility, grade.handling, grade.range];
+        for (var k = 0; k < metricKeys.length; k++) {
+          var mr = METRIC_RANGE[metricKeys[k]];
+          var pct = mr ? (metricRaw[k] - mr.min) / (mr.max - mr.min) * 100 : metricRaw[k];
+          var rounded = Math.round(pct);
+          var valColor = tierColor(rounded);
+          var sym = rounded >= 80 ? "★" : rounded >= 70 ? "◎" : rounded >= 60 ? "〇" : rounded >= 50 ? "〇" : rounded >= 35 ? "△" : "×";
+          var lbl = document.createElement("span");
+          lbl.className = "grading-metric-label-item";
+          lbl.textContent = metricShort[k];
+          labelRow.appendChild(lbl);
+          var val = document.createElement("span");
+          val.className = "grading-metric-val-item";
+          val.style.color = valColor;
+          val.textContent = sym + pct.toFixed(0);
+          valRow.appendChild(val);
+        }
+        breakdown.appendChild(labelRow);
+        breakdown.appendChild(valRow);
+        scoreDiv.appendChild(breakdown);
+
+        // 対オオモノ別アラート（アイコン＋記号）
+        var BOSS_SYMBOLS = ["×", "×", "△", "〇", "◎"];
+        var BOSS_SYM_COLORS = ["#ff4444", "#ff4444", "#ff6b35", "#e0e0e0", "#4a90d9"];
+        var BOSS_ICON_MAP = {stinger:"salmon_stinger.png",drizzler:"salmon_drizzler.png",fishstick:"salmon_fishstick.png",flyfish:"salmon_flyfish.png",steeleel:"salmon_steeleel.png",bigshot:"salmon_bigshot.png",scrapper:"salmon_scrapper.png",slamminlid:"salmon_slamminlid.png",steelhead:"salmon_steelhead.png",maws:"salmon_maws.png",flipper:"salmon_flipper-flopper.png"};
+        var warnings = [];
+        var bsr = BOSS_SCORE_RANGE[grade.stage];
+        if (bsr && grade.bossDetail) {
+          var bd = STAGE_BOSS_DANGER[grade.stage];
+          for (var bj in grade.bossDetail) {
+            if (!bsr[bj]) continue;
+            var br = bsr[bj];
+            var bpct = (grade.bossDetail[bj] - br.min) / (br.max - br.min) * 100;
+            var danger = bd[bj] || 0;
+            var bossThreshold = 35 + danger * 2.5;
+            var symIdx = Math.min(4, Math.max(0, Math.round(bpct / 25)));
+            var sym = BOSS_SYMBOLS[symIdx] || "〇";
+            var symColor = BOSS_SYM_COLORS[symIdx] || "#e0e0e0";
+            if ((danger >= 6 || danger >= 4) && bpct < bossThreshold) {
+              warnings.push({sym: sym, color: symColor, bossKey: BOSS_KEY[bj], name: bj});
+            }
+          }
+        }
+
+        if (warnings.length > 0) {
+          var warnDiv = document.createElement("div");
+          warnDiv.className = "grading-boss-warnings";
+          var warnLabel = document.createElement("span");
+          warnLabel.className = "grading-boss-label";
+          warnLabel.textContent = "要注意オオモノ";
+          warnDiv.appendChild(warnLabel);
+          var iconsWrap = document.createElement("div");
+          iconsWrap.className = "grading-boss-icons";
+          for (var wi = 0; wi < warnings.length; wi++) {
+            var iconWrap = document.createElement("span");
+            iconWrap.className = "grading-boss-icon-wrap";
+            var bImg = document.createElement("img");
+            bImg.className = "grading-boss-icon";
+            bImg.src = ICON_DIR + (BOSS_ICON_MAP[warnings[wi].bossKey] || "");
+            bImg.alt = warnings[wi].name;
+            iconWrap.appendChild(bImg);
+            var symEl = document.createElement("span");
+            symEl.className = "grading-boss-sym" + (warnings[wi].sym === "×" ? " grading-boss-sym-x" : "");
+            symEl.style.color = warnings[wi].color;
+            symEl.textContent = warnings[wi].sym;
+            iconWrap.appendChild(symEl);
+            iconsWrap.appendChild(iconWrap);
+          }
+          warnDiv.appendChild(iconsWrap);
+          scoreDiv.appendChild(warnDiv);
+        }
+
+        card.appendChild(scoreDiv);
+
+        // --- オカシラ適性スコア ---
+        if (rec.boss && OKASHIRA_STAGE_DIFF[rec.boss] && !isAllRandom && !isGolden) {
+          var bossNorm = gradeOkashira(rec.weapons, rec.stage, rec.boss);
+          if (bossNorm !== null) {
+            // ボス難易度補正
+            var adjustedBoss = Math.max(0, Math.min(100, bossNorm + (OKASHIRA_BOSS_BONUS[rec.boss] || 0)));
+            var okashiraBlend = grade.total * 0.2 + adjustedBoss * 0.8;
+            // 底上げ: FLOOR + (100-FLOOR) * norm/100
+            var floor = OKASHIRA_FLOOR[rec.boss] || 20;
+            var okashiraTotal = floor + (100 - floor) * okashiraBlend / 100;
+
+            // 点線区切り
+            var divider2 = document.createElement("div");
+            divider2.className = "grading-divider";
+            card.appendChild(divider2);
+            if (!card._extraDividers) card._extraDividers = [];
+            card._extraDividers.push(divider2);
+
+            var okashiraDiv = document.createElement("div");
+            okashiraDiv.className = "grading-okashira";
+
+            var bossWrap = document.createElement("span");
+            bossWrap.className = "icon-wrap";
+            bossWrap.setAttribute("data-tooltip", rec.boss);
+            var bossIcon = document.createElement("img");
+            bossIcon.className = "grading-okashira-icon";
+            bossIcon.src = ICON_DIR + (OKASHIRA_ICON_MAP[rec.boss] || "");
+            bossIcon.alt = rec.boss;
+            bossWrap.appendChild(bossIcon);
+            okashiraDiv.appendChild(bossWrap);
+
+            var okaTierColor = tierColor(okashiraTotal);
+
+            var okaScore = document.createElement("div");
+            okaScore.className = "grading-total";
+            okaScore.style.color = okaTierColor;
+            okaScore.innerHTML = '<span class="grading-total-prefix">オカシラ適正</span>' + okashiraTotal.toFixed(1) + '<span class="grading-total-unit">点</span>';
+            okashiraDiv.appendChild(okaScore);
+
+            card.appendChild(okashiraDiv);
+          }
+        } else if (rec.boss && OKASHIRA_ICON_MAP[rec.boss] && !isAllRandom && !isGolden) {
+          // ランダム等、採点不能なオカシラ → アイコンのみ表示
+          var divider2b = document.createElement("div");
+          divider2b.className = "grading-divider";
+          card.appendChild(divider2b);
+          if (!card._extraDividers) card._extraDividers = [];
+          card._extraDividers.push(divider2b);
+
+          var okashiraDiv2 = document.createElement("div");
+          okashiraDiv2.className = "grading-okashira";
+          var bossWrap2 = document.createElement("span");
+          bossWrap2.className = "icon-wrap";
+          bossWrap2.setAttribute("data-tooltip", rec.boss);
+          var bossIcon2 = document.createElement("img");
+          bossIcon2.className = "grading-okashira-icon";
+          bossIcon2.src = ICON_DIR + OKASHIRA_ICON_MAP[rec.boss];
+          bossIcon2.alt = rec.boss;
+          bossWrap2.appendChild(bossIcon2);
+          okashiraDiv2.appendChild(bossWrap2);
+          card.appendChild(okashiraDiv2);
+        }
+
+      }
+      } // else (not allRandom)
+
+      container.appendChild(card);
+      return divider;
+    }
+
+    function render() {
+      var container = document.getElementById("grading-container");
+      var recs = findGradableSchedules();
+      if (recs.length === 0) {
+        container.textContent = "データがありません";
+        return;
+      }
+
+      var dividers = [];
+      for (var i = 0; i < recs.length; i++) {
+        dividers.push(renderCard(container, recs[i]));
+      }
+      // オカシラ区切り線も含めて全dividerを収集
+      var allDividers = dividers.slice();
+      var cards = container.querySelectorAll(".grading-card");
+      for (var ci = 0; ci < cards.length; ci++) {
+        if (cards[ci]._extraDividers) {
+          for (var ei = 0; ei < cards[ci]._extraDividers.length; ei++) {
+            allDividers.push(cards[ci]._extraDividers[ei]);
+          }
+        }
+      }
+
+      function relayoutAll() {
+        for (var j = 0; j < allDividers.length; j++) {
+          layoutDots(allDividers[j]);
+        }
+      }
+      relayoutAll();
+      window.addEventListener("resize", relayoutAll);
+    }
+
+    function layoutDots(el) {
+      var vw = window.innerWidth;
+      var DOT_COUNT;
+      if (vw <= 400) DOT_COUNT = 32;
+      else if (vw <= 450) DOT_COUNT = 36;
+      else if (vw <= 500) DOT_COUNT = 40;
+      else if (vw <= 600) DOT_COUNT = 48;
+      else if (vw <= 700) DOT_COUNT = 54;
+      else DOT_COUNT = 60;
+      var w = el.offsetWidth;
+      if (w === 0) return;
+      // dot幅 : gap幅 = 2 : 1
+      var unit = w / (DOT_COUNT * 3 - 1);
+      var dotW = unit * 2;
+      var gapW = unit;
+      el.innerHTML = "";
+      for (var i = 0; i < DOT_COUNT; i++) {
+        var dot = document.createElement("div");
+        dot.className = "grading-dot";
+        dot.style.width = dotW + "px";
+        el.appendChild(dot);
+        if (i < DOT_COUNT - 1) {
+          var gap = document.createElement("div");
+          gap.className = "grading-gap";
+          gap.style.width = gapW + "px";
+          el.appendChild(gap);
+        }
+      }
+    }
+
+    // --- ツールチップ ---
+    (function() {
+      var tip = document.createElement("div");
+      tip.id = "tooltip";
+      document.body.appendChild(tip);
+
+      function showTip(wrap) {
+        tip.textContent = wrap.dataset.tooltip;
+        tip._currentWrap = wrap;
+        tip.classList.add("visible");
+        var rect = wrap.getBoundingClientRect();
+        var tipW = tip.offsetWidth;
+        var left = rect.left + rect.width / 2 - tipW / 2;
+        if (left < 4) left = 4;
+        if (left + tipW > window.innerWidth - 4) left = window.innerWidth - 4 - tipW;
+        tip.style.left = left + window.scrollX + "px";
+        tip.style.top = rect.top + window.scrollY - tip.offsetHeight - 6 + "px";
+      }
+
+      document.addEventListener("mouseover", function(e) {
+        var w = e.target.closest(".icon-wrap");
+        if (w) showTip(w);
+      });
+      document.addEventListener("mouseout", function(e) {
+        if (e.target.closest(".icon-wrap")) tip.classList.remove("visible");
+      });
+      document.addEventListener("click", function(e) {
+        var w = e.target.closest(".icon-wrap");
+        if (w) {
+          e.stopPropagation();
+          if (tip.classList.contains("visible") && tip._currentWrap === w) tip.classList.remove("visible");
+          else showTip(w);
+        } else tip.classList.remove("visible");
+      });
+      document.addEventListener("touchend", function(e) {
+        var w = e.target.closest(".icon-wrap");
+        if (w) {
+          e.preventDefault();
+          if (tip.classList.contains("visible") && tip._currentWrap === w) tip.classList.remove("visible");
+          else showTip(w);
+        } else tip.classList.remove("visible");
+      });
+    })();
+
+    render();
+  })();
+  </script>
+</body>
+</html>

@@ -48,12 +48,24 @@ function setDefaultDate() {
 function handleSubmit(e) {
   e.preventDefault();
 
+  const hazardLevel = Number(document.getElementById("hazard-level").value);
+  const goldenEggs = Number(document.getElementById("golden-eggs").value);
+
+  if (isNaN(hazardLevel) || hazardLevel < 0 || hazardLevel > 333) {
+    alert("キケン度は0〜333の数値を入力してください。");
+    return;
+  }
+  if (isNaN(goldenEggs) || goldenEggs < 0) {
+    alert("金イクラは0以上の数値を入力してください。");
+    return;
+  }
+
   const record = {
     id: Date.now(),
     date: document.getElementById("date").value,
     stage: document.getElementById("stage").value,
-    hazardLevel: Number(document.getElementById("hazard-level").value),
-    goldenEggs: Number(document.getElementById("golden-eggs").value),
+    hazardLevel,
+    goldenEggs,
     result: document.getElementById("result").value,
   };
 

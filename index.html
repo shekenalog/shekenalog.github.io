@@ -2,66 +2,65 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>サーモンラン記録</title>
+  <title>シェケナログ</title>
+  <meta name="description" content="スプラトゥーン3 サーモンランの総合情報サイト。ブキ評価・編成採点・開催履歴検索・オカシラ確率計算など。">
+  <meta property="og:title" content="シェケナログ">
+  <meta property="og:description" content="スプラトゥーン3 サーモンランの総合情報サイト。ブキ評価・編成採点・開催履歴検索・オカシラ確率計算など。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="シェケナログ">
+  <meta name="twitter:description" content="スプラトゥーン3 サーモンランの総合情報サイト。ブキ評価・編成採点・開催履歴検索・オカシラ確率計算など。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>サーモンラン記録</h1>
+  <header class="header-inline">
+    <h1><img src="png/logo.png" alt="" style="width:1em;height:1em;vertical-align:middle;margin-right:0.3em;border-radius:20%;">シェケナログ</h1>
   </header>
 
-  <main>
-    <section id="record-form">
-      <h2>記録を追加</h2>
-      <form id="form">
-        <label for="date">日付</label>
-        <input type="date" id="date" required>
-
-        <label for="stage">ステージ</label>
-        <select id="stage" required>
-          <option value="">選択してください</option>
-        </select>
-
-        <label for="hazard-level">キケン度</label>
-        <input type="number" id="hazard-level" min="0" max="333" required>
-
-        <label for="golden-eggs">金イクラ</label>
-        <input type="number" id="golden-eggs" min="0" required>
-
-        <label for="result">結果</label>
-        <select id="result" required>
-          <option value="">選択してください</option>
-          <option value="clear">クリア</option>
-          <option value="fail">失敗</option>
-        </select>
-
-        <button type="submit">記録する</button>
-      </form>
-    </section>
-
-    <section id="records">
-      <h2>記録一覧</h2>
-      <table id="record-table">
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>ステージ</th>
-            <th>キケン度</th>
-            <th>金イクラ</th>
-            <th>結果</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <section id="stats">
-      <h2>統計</h2>
-      <div id="stats-container"></div>
-    </section>
+  <main class="top-page">
+    <div class="app-grid">
+      <a href="ranking.html" class="app-item">
+        <div class="app-icon" style="background-color:#00acec;">
+          <img src="png/weapon_shooter_sploosh-o-matic.png" alt="">
+        </div>
+        <span class="app-label">ブキ評価</span>
+      </a>
+      <a href="grading.html" class="app-item">
+        <div class="app-icon" style="background-color:#fff;">
+          <img src="png/icon_grading.png" alt="">
+        </div>
+        <span class="app-label">編成精密採点</span>
+      </a>
+      <a href="schedule.html" class="app-item">
+        <div class="app-icon" style="background-color:#e95257;">
+          <img src="png/icon_eventhistory.png" alt="">
+        </div>
+        <span class="app-label">開催履歴</span>
+      </a>
+      <a href="record.html" class="app-item">
+        <div class="app-icon" style="background-color:#9949de;">
+          <img src="png/icon_catalogbox.png" alt="">
+        </div>
+        <span class="app-label">バイトシナリオ</span>
+      </a>
+      <a href="boss.html" class="app-item">
+        <div class="app-icon" style="background-color:#12c991;">
+          <img src="png/icon_boss_encounter.png" alt="">
+        </div>
+        <span class="app-label">オカシラ確率</span>
+      </a>
+    </div>
   </main>
-
-  <script src="js/app.js"></script>
 </body>
 </html>

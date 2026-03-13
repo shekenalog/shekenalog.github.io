@@ -1,2 +1,14 @@
 .DS_Store
 Thumbs.db
+
+# 公開除外
+scripts/
+*.xlsx
+メモ.txt
+fetch_log.txt
+salmon_history.html
+CLAUDE.md
+bandicam*.png
+js/weapon_data_new.js
+firestore.rules
+firestore_rules_paste.txt

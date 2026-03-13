@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>開催履歴検索 - シェケナログ</title>
+  <meta name="description" content="サーモンランの全開催履歴を検索。ブキ・年月・特殊編成で絞り込み、編成の採点結果も確認できます。">
+  <meta property="og:title" content="開催履歴検索 - シェケナログ">
+  <meta property="og:description" content="サーモンランの全開催履歴を検索。ブキ・年月・特殊編成で絞り込み、編成の採点結果も確認できます。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/schedule.html">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="開催履歴検索 - シェケナログ">
+  <meta name="twitter:description" content="サーモンランの全開催履歴を検索。ブキ・年月・特殊編成で絞り込み、編成の採点結果も確認できます。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ワイド時にmain拡張、検索セクションは中央維持 */
+    @media (min-width: 960px) {
+      main { max-width: 1400px; }
+      #search-section { max-width: 800px; margin-left: auto; margin-right: auto; }
+      .result-count-text { max-width: 800px; margin-left: auto; margin-right: auto; }
+    }
+
+    /* カードコンテナ: グリッド */
+    #results-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 960px) {
+      #results-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1440px) {
+      #results-cards {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .sc-card {
+      container-type: inline-size;
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.0rem;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+    .sc-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('png/bg_card.png') center/cover no-repeat;
+      z-index: 0;
+    }
+    .sc-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ホログラムカード */
+    .sc-card-holo::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 2;
+      background: linear-gradient(
+        135deg,
+        rgba(255,0,128,0.0) 0%,
+        rgba(255,0,128,0.12) 15%,
+        rgba(0,200,255,0.12) 30%,
+        rgba(100,255,100,0.10) 45%,
+        rgba(255,200,0,0.12) 60%,
+        rgba(200,0,255,0.12) 75%,
+        rgba(255,0,128,0.0) 100%
+      );
+      background-size: 300% 300%;
+      animation: scHoloShimmer 4s ease-in-out infinite;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+    @keyframes scHoloShimmer {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+    .sc-card-holo {
+      border: 1.5px solid rgba(255,255,255,0.25);
+    }
+
+    /* 黄金カード */
+    .sc-card-golden {
+      background: linear-gradient(160deg, #2a1f00 0%, #3d2e00 30%, #4a3800 50%, #3d2e00 70%, #2a1f00 100%);
+      border: 1.5px solid rgba(255,215,0,0.35);
+    }
+    .sc-card-golden::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%; right: 0; bottom: 0;
+      width: 300%;
+      z-index: 2;
+      background: linear-gradient(
+        110deg,
+        rgba(255,215,0,0.0) 0%,
+        rgba(255,215,0,0.0) 35%,
+        rgba(255,230,100,0.07) 42%,
+        rgba(255,255,200,0.1) 50%,
+        rgba(255,230,100,0.07) 58%,
+        rgba(255,215,0,0.0) 65%,
+        rgba(255,215,0,0.0) 100%
+      );
+      animation: scGoldenShine 10s linear infinite;
+      pointer-events: none;
+      will-change: transform;
+    }
+    @keyframes scGoldenShine {
+      0% { transform: translateX(-33%); }
+      40% { transform: translateX(33%); }
+      100% { transform: translateX(33%); }
+    }
+    .sc-card-golden.sc-card-holo::after {
+      left: 0;
+      width: auto;
+      background: linear-gradient(
+        135deg,
+        rgba(255,0,128,0.0) 0%,
+        rgba(255,0,128,0.12) 15%,
+        rgba(0,200,255,0.12) 30%,
+        rgba(100,255,100,0.10) 45%,
+        rgba(255,200,0,0.12) 60%,
+        rgba(200,0,255,0.12) 75%,
+        rgba(255,0,128,0.0) 100%
+      );
+      background-size: 300% 300%;
+      animation: scHoloShimmer 4s ease-in-out infinite;
+      mix-blend-mode: screen;
+      transform: none;
+      will-change: background-position;
+    }
+
+    /* 1行目: No + 年号 + 日時 */
+    .sc-date-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .sc-no {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #fff;
+      background: #000;
+      border: 1.5px solid #fff;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .sc-no.sc-status-badge {
+      background: #cd4500;
+      border-color: #cd4500;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .sc-year {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .sc-date {
+      font-family: "Splatfont2", Consolas, "Courier New", monospace;
+      font-size: 1.2rem;
+      color: #e0e0e0;
+    }
+
+    /* 2行目: ステージ画像 + ステージ名 + ブキ */
+    .sc-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding-bottom: 0.6rem;
+    }
+    .sc-stage-img {
+      width: 150px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .sc-stage-col {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 1;
+      min-width: 0;
+      gap: 0.2rem;
+    }
+    .sc-event-badge {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      background: #9e22d0;
+      border-radius: 4px;
+      padding: 0.02rem 0.3rem;
+      text-shadow: 1px 1px 0 #000;
+      width: fit-content;
+    }
+    .sc-stage-name {
+      font-family: "Splatfont2", "Segoe UI", "Hiragino Sans", sans-serif;
+      font-size: 1.25rem;
+      color: #e0e0e0;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .sc-weapons {
+      display: flex;
+      gap: 0.3rem;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .sc-weapons img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(2.6px 2.6px 0 #000);
+    }
+
+    /* 点線区切り */
+    .sc-divider {
+      display: flex;
+      height: 2px;
+      margin: 0.6rem 0;
+    }
+    .sc-dot {
+      height: 100%;
+      background: rgba(255,255,255,0.5);
+    }
+    .sc-gap {
+      height: 100%;
+    }
+
+    /* スコア行: 総合 + オカシラ横並び */
+    .sc-score-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.3rem 0;
+      flex-wrap: wrap;
+    }
+    .sc-total {
+      font-family: "Splatfont2", Consolas, monospace;
+      font-size: 2.0rem;
+      font-weight: normal;
+      text-shadow: 1.73px 1.73px 0 #000;
+    }
+    .sc-total-prefix {
+      font-size: 0.7em;
+      color: #e0e0e0;
+      margin-right: 0.3rem;
+    }
+    .sc-total-unit {
+      font-size: 0.7em;
+      margin-left: 0.1rem;
+    }
+    .sc-okashira {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .sc-okashira .icon-wrap,
+    .sc-unmeasurable .icon-wrap {
+      display: flex;
+      align-items: center;
+    }
+    .sc-okashira-icon {
+      width: 2.0rem;
+      height: 2.0rem;
+      object-fit: contain;
+      filter: drop-shadow(1.73px 1.73px 0 #000);
+      flex-shrink: 0;
+    }
+
+    .sc-unmeasurable {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 2.0rem;
+      color: #e0e0e0;
+      text-align: center;
+      text-shadow: 1.73px 1.73px 0 #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .sc-unmeasurable-icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      filter: drop-shadow(1.73px 1.73px 0 #000);
+    }
+
+    /* icon-hit for search */
+    .sc-weapons .icon-hit img {
+      filter: drop-shadow(0 0 4px #ff5133) drop-shadow(0 0 8px #ff5133);
+    }
+
+    /* カード内レスポンシブ（コンテナクエリ: カード幅で判定） */
+    @container (max-width: 620px) {
+      .sc-no { font-size: 1.05rem; }
+      .sc-year { font-size: 1.05rem; }
+      .sc-date { font-size: 1.05rem; }
+      .sc-total {
+        font-size: 1.87rem;
+        text-shadow: 1.59px 1.59px 0 #000;
+      }
+      .sc-unmeasurable {
+        font-size: 1.87rem;
+        text-shadow: 1.59px 1.59px 0 #000;
+      }
+      .sc-stage-img { width: 116px; height: 65px; }
+      .sc-event-badge { font-size: 0.95rem; }
+      .sc-stage-name { font-size: 1.05rem; }
+      .sc-weapons img {
+        width: 54px; height: 54px;
+        filter: drop-shadow(2.38px 2.38px 0 #000);
+      }
+      .sc-okashira-icon { width: 1.87rem; height: 1.87rem; }
+    }
+
+    @container (max-width: 520px) {
+      .sc-no { font-size: 1.0rem; }
+      .sc-year { font-size: 1.0rem; }
+      .sc-date { font-size: 1.0rem; }
+      .sc-total {
+        font-size: 1.73rem;
+        text-shadow: 1.44px 1.44px 0 #000;
+      }
+      .sc-unmeasurable {
+        font-size: 1.73rem;
+        text-shadow: 1.44px 1.44px 0 #000;
+      }
+      .sc-stage-img { width: 104px; height: 59px; }
+      .sc-event-badge { font-size: 0.9rem; }
+      .sc-stage-name { font-size: 1rem; }
+      .sc-weapons img {
+        width: 40px; height: 40px;
+        filter: drop-shadow(2.16px 2.16px 0 #000);
+      }
+      .sc-okashira-icon { width: 1.73rem; height: 1.73rem; }
+    }
+
+    @container (max-width: 440px) {
+      .sc-no { font-size: 0.95rem; }
+      .sc-year { font-size: 0.95rem; }
+      .sc-date { font-size: 0.95rem; }
+      .sc-total {
+        font-size: 1.6rem;
+        text-shadow: 1.29px 1.29px 0 #000;
+      }
+      .sc-unmeasurable {
+        font-size: 1.6rem;
+        text-shadow: 1.29px 1.29px 0 #000;
+      }
+      .sc-stage-img { width: 90px; height: 51px; }
+      .sc-event-badge { font-size: 0.82rem; }
+      .sc-stage-name { font-size: 0.9rem; }
+      .sc-weapons img {
+        width: 36px; height: 36px;
+        filter: drop-shadow(1.94px 1.94px 0 #000);
+      }
+      .sc-okashira-icon { width: 1.6rem; height: 1.6rem; }
+    }
+
+    @container (max-width: 380px) {
+      .sc-no { font-size: 0.85rem; }
+      .sc-year { font-size: 0.85rem; }
+      .sc-date { font-size: 0.85rem; }
+      .sc-total {
+        font-size: 1.47rem;
+        text-shadow: 1.15px 1.15px 0 #000;
+      }
+      .sc-unmeasurable {
+        font-size: 1.47rem;
+        text-shadow: 1.15px 1.15px 0 #000;
+      }
+      .sc-stage-img { width: 80px; height: 45px; }
+      .sc-event-badge { font-size: 0.76rem; }
+      .sc-stage-name { font-size: 0.85rem; }
+      .sc-weapons img {
+        width: 34px; height: 34px;
+        filter: drop-shadow(1.72px 1.72px 0 #000);
+      }
+      .sc-weapons { gap: 0.2rem; }
+      .sc-okashira-icon { width: 1.47rem; height: 1.47rem; }
+    }
+
+    @container (max-width: 330px) {
+      .sc-no { font-size: 0.75rem; }
+      .sc-year { font-size: 0.75rem; }
+      .sc-date { font-size: 0.78rem; }
+      .sc-total {
+        font-size: 1.33rem;
+        text-shadow: 1.0px 1.0px 0 #000;
+      }
+      .sc-unmeasurable {
+        font-size: 1.33rem;
+        text-shadow: 1.0px 1.0px 0 #000;
+      }
+      .sc-stage-img { width: 76px; height: 43px; }
+      .sc-event-badge { font-size: 0.7rem; }
+      .sc-stage-name { font-size: 0.78rem; }
+      .sc-weapons img {
+        width: 32px; height: 32px;
+        filter: drop-shadow(1.5px 1.5px 0 #000);
+      }
+      .sc-okashira-icon { width: 1.33rem; height: 1.33rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-inline">
+    <a href="index.html" class="back-link"><img src="png/btn_prev.png" alt="トップへ" class="back-btn-img"></a>
+    <h1>開催履歴検索</h1>
+  </header>
+
+  <main>
+    <section id="search-section">
+      <h2 class="search-heading">スケジュールを検索</h2>
+      <div class="search-tabs">
+        <button class="search-tab active" data-tab="recent">最新</button>
+        <button class="search-tab" data-tab="weapon">ブキ検索</button>
+        <button class="search-tab" data-tab="date">年月検索</button>
+        <button class="search-tab" data-tab="special">特殊編成</button>
+      </div>
+
+      <div class="search-panel active" id="panel-recent"></div>
+
+      <div class="search-panel" id="panel-weapon">
+        <input type="text" id="weapon-input" placeholder="ブキ名を入力（例: スプラシューター）" autocomplete="off">
+        <div id="weapon-suggestions" class="suggestions"></div>
+      </div>
+
+      <div class="search-panel" id="panel-special">
+        <div class="special-buttons">
+          <button class="special-btn" data-type="bigrun">ビッグラン</button>
+          <button class="special-btn" data-type="golden">黄金</button>
+          <button class="special-btn" data-type="all-random">オルラン</button>
+          <button class="special-btn" data-type="has-random">単ランダム</button>
+        </div>
+      </div>
+
+      <div class="search-panel" id="panel-date">
+        <div class="date-search-row">
+          <select id="date-year">
+            <option value="">年を選択</option>
+          </select>
+          <select id="date-month">
+            <option value="">月を選択</option>
+            <option value="01">1月</option>
+            <option value="02">2月</option>
+            <option value="03">3月</option>
+            <option value="04">4月</option>
+            <option value="05">5月</option>
+            <option value="06">6月</option>
+            <option value="07">7月</option>
+            <option value="08">8月</option>
+            <option value="09">9月</option>
+            <option value="10">10月</option>
+            <option value="11">11月</option>
+            <option value="12">12月</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <p id="result-count" class="result-count-text"></p>
+    <div id="results-cards"></div>
+  </main>
+
+  <script src="js/schedule_data.js"></script>
+  <script src="js/weapon_data.js"></script>
+  <script src="js/schedule.js"></script>
+</body>
+</html>
