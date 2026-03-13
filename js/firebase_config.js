@@ -31,18 +31,22 @@
             db.collection("users").doc(user.uid).get().then(function (doc) {
               if (doc.exists && doc.data().displayName) {
                 currentUser = { uid: user.uid, displayName: doc.data().displayName, needsName: false };
+                try { localStorage.setItem("fb_displayName", doc.data().displayName); } catch(e) {}
               } else {
                 currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: true };
               }
               fireAuthChange();
             });
           } else {
-            // Firestore未読込ページ: Google表示名をそのまま使用
-            currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: false };
+            // Firestore未読込ページ: キャッシュ済み表示名を使用
+            var cached = "";
+            try { cached = localStorage.getItem("fb_displayName") || ""; } catch(e) {}
+            currentUser = { uid: user.uid, displayName: cached || user.displayName || "", needsName: false };
             fireAuthChange();
           }
         } else {
           currentUser = null;
+          try { localStorage.removeItem("fb_displayName"); } catch(e) {}
           fireAuthChange();
         }
       });
@@ -89,6 +93,7 @@
       }, { merge: true }).then(function () {
         currentUser.displayName = name;
         currentUser.needsName = false;
+        try { localStorage.setItem("fb_displayName", name); } catch(e) {}
         fireAuthChange();
         if (callback) callback(null);
       }).catch(function (err) {
