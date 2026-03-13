@@ -1,0 +1,37 @@
+name: Update Salmon Run Schedules
+
+on:
+  schedule:
+    # JST 9:00, 17:00, 1:00 = UTC 0:00, 8:00, 16:00
+    - cron: '0 0,8,16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch and merge schedules
+        run: node scripts/merge_api_schedules.js
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet data/salmon_history.json || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/salmon_history.json js/schedule_data.js
+          git commit -m "開催履歴を自動更新"
+          git push

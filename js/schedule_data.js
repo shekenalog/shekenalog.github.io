@@ -12318,5 +12318,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 771,
+    "year": 2026,
+    "startDate": "03/20 01:00",
+    "endDate": "03/21 17:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "オーバーフロッシャー",
+      "ワイドローラー",
+      "わかばシューター",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
