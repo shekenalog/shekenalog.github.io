@@ -5,7 +5,7 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>バイトシナリオ - シェケナログ</title>
   <meta name="description" content="サーモンランのバイトシナリオコードを共有・検索。">
   <meta property="og:title" content="バイトシナリオ - シェケナログ">
@@ -23,6 +23,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    /* モバイル select/input 幅修正 */
+    select, input, textarea {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
     /* 認証エリア */
     #auth-area {
       position: absolute;
@@ -1239,13 +1245,14 @@
     }
     .sn-cf-input {
       font-family: "Noto Sans JP", sans-serif;
-      font-size: 0.95rem;
+      font-size: 16px;
       background: rgba(0,0,0,0.4);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.25);
       border-radius: 4px;
       padding: 0.45rem 0.6rem;
       width: 100%;
+      box-sizing: border-box;
     }
     .sn-cf-input:focus {
       outline: none;
@@ -1268,7 +1275,7 @@
     }
     .sn-cf-select {
       font-family: "Noto Sans JP", sans-serif;
-      font-size: 0.95rem;
+      font-size: 16px;
       background: rgba(0,0,0,0.4);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.25);
@@ -1549,13 +1556,13 @@
       .weapon-slot { width: 52px; height: 52px; }
       .weapon-add-btn { width: 52px; height: 52px; font-size: 1.3rem; }
       .wave-fields { gap: 0.35rem; }
-      .wave-select { font-size: 0.95rem; padding: 0.45rem; }
-      .form-input, .form-select { font-size: 1.0rem; }
+      .wave-select { font-size: 16px; padding: 0.45rem; }
+      .form-input, .form-select { font-size: 16px; }
       .form-label { font-size: 1.1rem; }
       .wave-card-title { font-size: 0.95rem; }
       .mode-btn { font-size: 0.95rem; }
       .submit-btn { font-size: 1.1rem; }
-      .form-textarea { font-size: 0.95rem; }
+      .form-textarea { font-size: 16px; }
       .checkbox-card-label { font-size: 0.9rem; }
       .weapon-popup-ok, .weapon-popup-cancel { font-size: 0.95rem; padding: 0.5rem 1.5rem; }
       .weapon-popup-preview-slot { width: 46px; height: 46px; }
@@ -1566,13 +1573,13 @@
       .form-card { padding: 0.8rem; }
       .weapon-slot { width: 46px; height: 46px; }
       .weapon-add-btn { width: 46px; height: 46px; font-size: 1.1rem; }
-      .wave-select { font-size: 0.9rem; padding: 0.5rem; }
-      .form-input, .form-select { font-size: 0.95rem; padding: 0.5rem; }
+      .wave-select { font-size: 16px; padding: 0.5rem; }
+      .form-input, .form-select { font-size: 16px; padding: 0.5rem; }
       .mode-btn { font-size: 0.85rem; padding: 0.55rem; }
       .form-label { font-size: 1.0rem; }
       .wave-card-title { font-size: 0.9rem; }
       .submit-btn { font-size: 1.0rem; padding: 0.8rem; }
-      .form-textarea { font-size: 0.9rem; }
+      .form-textarea { font-size: 16px; }
       .checkbox-card-label { font-size: 0.85rem; }
       .weapon-popup-ok, .weapon-popup-cancel { font-size: 0.85rem; padding: 0.45rem 1.2rem; }
       .checkbox-card-desc { font-size: 0.78rem; }
