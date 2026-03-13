@@ -7,6 +7,7 @@
   var authLoginBtn = document.getElementById("auth-login-btn");
   var authUserInfo = document.getElementById("auth-user-info");
   var authAvatar = document.getElementById("auth-avatar");
+  var authNameLabel = document.getElementById("auth-user-name-label");
 
   if (useFirebase) {
     authLoginBtn.style.display = "";
@@ -28,10 +29,12 @@
           authAvatar.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>';
         }
         authAvatar.title = user.displayName;
+        if (authNameLabel) authNameLabel.textContent = user.displayName;
       } else {
         authLoginBtn.style.display = "";
         authUserInfo.style.display = "none";
         authAvatar.textContent = "";
+        if (authNameLabel) authNameLabel.textContent = "";
       }
     });
     authLoginBtn.addEventListener("click", function () { FB.signIn(); });
