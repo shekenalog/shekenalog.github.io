@@ -607,6 +607,7 @@
           if (err2) { alert("投稿に失敗しました: " + err2.message); return; }
           alert("シナリオを投稿しました！");
           resetForm();
+          viewHistory = [];
           showView("top");
           renderRecent();
         });
