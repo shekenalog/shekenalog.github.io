@@ -31,7 +31,7 @@
             db.collection("users").doc(user.uid).get().then(function (doc) {
               if (doc.exists && doc.data().displayName) {
                 currentUser = { uid: user.uid, displayName: doc.data().displayName, needsName: false };
-                try { localStorage.setItem("fb_displayName", doc.data().displayName); } catch(e) {}
+                try { localStorage.setItem("fb_displayName", doc.data().displayName); localStorage.setItem("fb_uid", user.uid); } catch(e) {}
               } else {
                 currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: true };
               }
@@ -46,7 +46,7 @@
           }
         } else {
           currentUser = null;
-          try { localStorage.removeItem("fb_displayName"); } catch(e) {}
+          try { localStorage.removeItem("fb_displayName"); localStorage.removeItem("fb_uid"); } catch(e) {}
           fireAuthChange();
         }
       });
@@ -111,7 +111,7 @@
       }, { merge: true }).then(function () {
         currentUser.displayName = name;
         currentUser.needsName = false;
-        try { localStorage.setItem("fb_displayName", name); } catch(e) {}
+        try { localStorage.setItem("fb_displayName", name); localStorage.setItem("fb_uid", currentUser.uid); } catch(e) {}
         fireAuthChange();
         if (callback) callback(null);
       }).catch(function (err) {

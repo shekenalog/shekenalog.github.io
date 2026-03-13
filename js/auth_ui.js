@@ -15,7 +15,8 @@
 
   // localStorageにキャッシュがあればログイン済みと推定し、ボタンを最初から隠す
   var cachedName = "";
-  try { cachedName = localStorage.getItem("fb_displayName") || ""; } catch(e) {}
+  var cachedUid = "";
+  try { cachedName = localStorage.getItem("fb_displayName") || ""; cachedUid = localStorage.getItem("fb_uid") || ""; } catch(e) {}
   var likelyLoggedIn = !!cachedName;
 
   var loginBtn = document.createElement("button");
@@ -31,8 +32,9 @@
   avatar.className = "auth-avatar";
   var userName = document.createElement("span");
   userName.className = "auth-user-name";
-  // キャッシュ名で仮表示
+  // キャッシュ名+UIDで仮表示
   if (likelyLoggedIn) {
+    if (cachedUid && typeof FB !== "undefined") avatar.style.backgroundColor = FB.avatarColor(cachedUid);
     var ch = cachedName.charAt(0);
     var isJpChar = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uF900-\uFAFFa-zA-Z0-9]/.test(ch);
     if (isJpChar) {
