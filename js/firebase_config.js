@@ -25,13 +25,12 @@
 
       auth.onAuthStateChanged(function (user) {
         if (user) {
-          // Firestoreからユーザー情報を取得
           db.collection("users").doc(user.uid).get().then(function (doc) {
             if (doc.exists && doc.data().displayName) {
-              currentUser = { uid: user.uid, displayName: doc.data().displayName };
+              currentUser = { uid: user.uid, displayName: doc.data().displayName, needsName: false };
             } else {
-              // 初回ログイン: Google表示名を仮設定
-              currentUser = { uid: user.uid, displayName: user.displayName || "ユーザー" };
+              // 初回ログイン: 表示名未設定
+              currentUser = { uid: user.uid, displayName: user.displayName || "", needsName: true };
             }
             fireAuthChange();
           });
@@ -67,12 +66,7 @@
     signIn: function () {
       if (!auth) return;
       var provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch(function (err) {
-        // ポップアップブロック時はリダイレクトにフォールバック
-        if (err.code === "auth/popup-blocked") {
-          auth.signInWithRedirect(provider);
-        }
-      });
+      auth.signInWithRedirect(provider);
     },
 
     signOut: function () {

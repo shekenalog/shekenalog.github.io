@@ -13,6 +13,10 @@
     authLoginBtn.style.display = "";
     FB.onAuthChange(function (user) {
       if (user) {
+        if (user.needsName) {
+          showNameModal(user.displayName);
+          return;
+        }
         authLoginBtn.style.display = "none";
         authUserInfo.style.display = "";
         authUserName.textContent = user.displayName;
@@ -25,6 +29,51 @@
     });
     authLoginBtn.addEventListener("click", function () { FB.signIn(); });
     authLogoutBtn.addEventListener("click", function () { FB.signOut(); });
+  }
+
+  // 初回ログイン: 表示名設定モーダル
+  function showNameModal(defaultName) {
+    var overlay = document.createElement("div");
+    overlay.className = "name-modal-overlay";
+    var modal = document.createElement("div");
+    modal.className = "name-modal";
+    var title = document.createElement("div");
+    title.className = "name-modal-title";
+    title.textContent = "表示名を設定してください";
+    modal.appendChild(title);
+    var desc = document.createElement("div");
+    desc.className = "name-modal-desc";
+    desc.textContent = "この名前が投稿時に表示されます。あとから変更できます。";
+    modal.appendChild(desc);
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "name-modal-input";
+    input.value = defaultName || "";
+    input.maxLength = 14;
+    input.placeholder = "14文字以内";
+    modal.appendChild(input);
+    var btnRow = document.createElement("div");
+    btnRow.className = "name-modal-btns";
+    var okBtn = document.createElement("button");
+    okBtn.className = "name-modal-ok";
+    okBtn.textContent = "決定";
+    btnRow.appendChild(okBtn);
+    modal.appendChild(btnRow);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    input.focus();
+    input.select();
+
+    okBtn.addEventListener("click", function () {
+      var name = input.value.trim();
+      if (!name) { alert("表示名を入力してください。"); return; }
+      if (name.length > 14) { alert("14文字以内で入力してください。"); return; }
+      okBtn.disabled = true;
+      FB.setDisplayName(name, function (err) {
+        if (err) { alert("保存に失敗しました: " + err.message); okBtn.disabled = false; return; }
+        document.body.removeChild(overlay);
+      });
+    });
   }
   // file://では認証エリア非表示のまま
 
