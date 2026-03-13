@@ -512,19 +512,18 @@ tr:hover {
 
 .date-search-row select {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 16px;
+  padding: 0.5rem;
 }
 
 @media (max-width: 600px) {
   .date-search-row select {
-    font-size: 0.8rem;
-    padding: 0.4rem;
+    padding: 0.45rem;
   }
 }
 @media (max-width: 450px) {
   .date-search-row select {
-    font-size: 0.75rem;
-    padding: 0.35rem;
+    padding: 0.4rem;
   }
 }
 
