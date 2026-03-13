@@ -224,13 +224,23 @@
 
   // === シナリオコード入力 ===
   scenarioCode.addEventListener("input", function () {
-    // 大文字化 & ハイフン自動挿入
-    var v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    // 全角英数→半角変換、大文字化、ハイフン自動挿入
+    var raw = this.value;
+    // 全角英数字を半角に変換
+    raw = raw.replace(/[\uFF01-\uFF5E]/g, function (ch) {
+      return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+    });
+    var v = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
     var parts = [];
     for (var i = 0; i < v.length && i < 16; i += 4) {
       parts.push(v.substring(i, Math.min(i + 4, v.length)));
     }
     this.value = parts.join("-");
+  });
+  // IME確定時にも変換を適用
+  scenarioCode.addEventListener("compositionend", function () {
+    var e = new Event("input", { bubbles: true });
+    this.dispatchEvent(e);
   });
 
   // === キケン度バリデーション ===
