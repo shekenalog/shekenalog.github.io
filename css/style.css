@@ -541,12 +541,22 @@ tr:hover {
 }
 
 .suggestion-item {
-  padding: 0.5rem;
+  padding: 12px 10px;
+  font-size: 16px !important;
+  line-height: 1.4;
+  min-height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   background-color: #0f3460;
   border: 1px solid #333;
   border-top: none;
   cursor: pointer;
-  font-size: 0.9rem;
+}
+.suggestion-item .icon-weapon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
 
 .suggestion-item:first-child {
@@ -557,26 +567,6 @@ tr:hover {
   background-color: #1a3a6e;
 }
 
-@media (max-width: 600px) {
-  .suggestion-item {
-    font-size: 0.8rem;
-    padding: 0.4rem;
-  }
-  .suggestion-item .icon-weapon {
-    width: 20px;
-    height: 20px;
-  }
-}
-@media (max-width: 450px) {
-  .suggestion-item {
-    font-size: 0.75rem;
-    padding: 0.35rem;
-  }
-  .suggestion-item .icon-weapon {
-    width: 18px;
-    height: 18px;
-  }
-}
 
 /* 特殊編成ボタン */
 .special-buttons {
@@ -1232,6 +1222,15 @@ thead .boss-weapon-name-col {
   }
 }
 
+@media (max-width: 500px) {
+  .special-buttons {
+    flex-wrap: wrap;
+  }
+  .special-btn {
+    flex: 1 1 calc(50% - 0.25rem);
+  }
+}
+
 /* 段階4: 狭画面でアイコン・文字縮小 */
 @media (max-width: 450px) {
   main {
@@ -1277,11 +1276,7 @@ thead .boss-weapon-name-col {
     font-size: 16px;
   }
 
-  .special-buttons {
-    flex-wrap: wrap;
-  }
   .special-btn {
-    flex: 1 1 calc(50% - 0.25rem);
     padding: 0.5rem 0.3rem;
     font-size: 16px;
   }
