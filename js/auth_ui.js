@@ -16,7 +16,7 @@
   var loginBtn = document.createElement("button");
   loginBtn.className = "auth-btn";
   loginBtn.textContent = "ログイン";
-  loginBtn.style.display = "none";
+  loginBtn.style.display = "";
   area.appendChild(loginBtn);
 
   var userInfo = document.createElement("div");
