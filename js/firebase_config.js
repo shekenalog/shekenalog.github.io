@@ -297,8 +297,115 @@
         .add(doc).then(function (ref) {
           callback(null, ref.id);
         }).catch(function (err) { callback(err); });
+    },
+
+    // --- ブックマーク ---
+
+    // ブックマークトグル（追加/削除 + カウント更新をバッチ処理）
+    toggleBookmark: function (scenarioId, callback) {
+      if (!db || !currentUser) return callback(new Error("ログインが必要です"));
+      var bmDocId = scenarioId + "_" + currentUser.uid;
+      var bmRef = db.collection("bookmarks").doc(bmDocId);
+      var scenarioRef = db.collection("scenarios").doc(scenarioId);
+
+      bmRef.get().then(function (doc) {
+        var batch = db.batch();
+        var wasBookmarked = doc.exists;
+
+        if (wasBookmarked) {
+          batch.delete(bmRef);
+          batch.update(scenarioRef, {
+            bookmarkCount: firebase.firestore.FieldValue.increment(-1)
+          });
+        } else {
+          batch.set(bmRef, {
+            scenarioId: scenarioId,
+            userId: currentUser.uid,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          batch.update(scenarioRef, {
+            bookmarkCount: firebase.firestore.FieldValue.increment(1)
+          });
+        }
+
+        return batch.commit().then(function () {
+          // ローカルのbookmarkSetも更新
+          if (wasBookmarked) {
+            bookmarkSet["delete"](scenarioId);
+          } else {
+            bookmarkSet.add(scenarioId);
+          }
+          callback(null, { bookmarked: !wasBookmarked });
+        });
+      }).catch(function (err) { callback(err); });
+    },
+
+    // 自分のブックマーク済みシナリオIDセットを取得（ページロード時に1回呼ぶ）
+    loadMyBookmarks: function (callback) {
+      if (!db || !currentUser) { bookmarkSet = new Set(); return callback(null, bookmarkSet); }
+      db.collection("bookmarks")
+        .where("userId", "==", currentUser.uid)
+        .get().then(function (snap) {
+          bookmarkSet = new Set();
+          snap.forEach(function (doc) {
+            bookmarkSet.add(doc.data().scenarioId);
+          });
+          callback(null, bookmarkSet);
+        }).catch(function (err) { callback(err); });
+    },
+
+    // ブックマーク済みかチェック（loadMyBookmarks後に使う）
+    isBookmarked: function (scenarioId) {
+      return bookmarkSet.has(scenarioId);
+    },
+
+    // ブックマークしたシナリオ一覧を取得
+    getMyBookmarkedScenarios: function (callback) {
+      if (!db || !currentUser) return callback(null, []);
+      db.collection("bookmarks")
+        .where("userId", "==", currentUser.uid)
+        .orderBy("createdAt", "desc")
+        .limit(50)
+        .get().then(function (snap) {
+          var ids = [];
+          snap.forEach(function (doc) { ids.push(doc.data().scenarioId); });
+          if (ids.length === 0) return callback(null, []);
+
+          // シナリオ本体を取得（10件ずつwhereInで分割）
+          var chunks = [];
+          for (var i = 0; i < ids.length; i += 10) {
+            chunks.push(ids.slice(i, i + 10));
+          }
+          var results = [];
+          var done = 0;
+          for (var c = 0; c < chunks.length; c++) {
+            (function (chunk) {
+              db.collection("scenarios").where(firebase.firestore.FieldPath.documentId(), "in", chunk)
+                .get().then(function (snap2) {
+                  snap2.forEach(function (doc2) {
+                    var d = doc2.data();
+                    d.id = doc2.id;
+                    if (d.postedAt && d.postedAt.toDate) {
+                      d.postedAt = formatTimestamp(d.postedAt.toDate());
+                    }
+                    results.push(d);
+                  });
+                  done++;
+                  if (done === chunks.length) {
+                    // ブックマーク順（createdAt desc）に並べ直す
+                    var order = {};
+                    for (var j = 0; j < ids.length; j++) order[ids[j]] = j;
+                    results.sort(function (a, b) { return (order[a.id] || 0) - (order[b.id] || 0); });
+                    callback(null, results);
+                  }
+                }).catch(function (err) { callback(err); });
+            })(chunks[c]);
+          }
+        }).catch(function (err) { callback(err); });
     }
   };
+
+  var bookmarkSet = new Set();
 
   function formatTimestamp(date) {
     var y = date.getFullYear();

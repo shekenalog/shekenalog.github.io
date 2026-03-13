@@ -41,7 +41,9 @@
       loginPrompt.style.display = "none";
       profMain.style.display = "";
       updateProfileCard(user);
-      loadTab(currentTab);
+      FB.loadMyBookmarks(function () {
+        loadTab(currentTab);
+      });
     } else {
       loginPrompt.style.display = "";
       profMain.style.display = "none";
@@ -397,15 +399,26 @@
     modeRow.appendChild(dangerWrap);
     var bmBtn = document.createElement("button");
     bmBtn.className = "sn-bookmark-btn";
-    bmBtn.textContent = "☆ " + (sc.bookmarkCount || 0);
+    var bmCount = sc.bookmarkCount || 0;
+    var bmActive = useFirebase && FB.isBookmarked(sc.id);
+    bmBtn.textContent = (bmActive ? "★ " : "☆ ") + bmCount;
+    if (bmActive) bmBtn.classList.add("sn-bookmarked");
     bmBtn.addEventListener("click", function () {
-      if (bmBtn.classList.toggle("sn-bookmarked")) {
-        sc.bookmarkCount = (sc.bookmarkCount || 0) + 1;
-        bmBtn.textContent = "★ " + sc.bookmarkCount;
-      } else {
-        sc.bookmarkCount = Math.max(0, (sc.bookmarkCount || 0) - 1);
-        bmBtn.textContent = "☆ " + sc.bookmarkCount;
-      }
+      if (!useFirebase || !FB.currentUser) return;
+      bmBtn.disabled = true;
+      FB.toggleBookmark(sc.id, function (err, result) {
+        bmBtn.disabled = false;
+        if (err) { alert("エラー: " + err.message); return; }
+        if (result.bookmarked) {
+          bmCount++;
+          bmBtn.classList.add("sn-bookmarked");
+        } else {
+          bmCount = Math.max(0, bmCount - 1);
+          bmBtn.classList.remove("sn-bookmarked");
+        }
+        sc.bookmarkCount = bmCount;
+        bmBtn.textContent = (result.bookmarked ? "★ " : "☆ ") + bmCount;
+      });
     });
     modeRow.appendChild(bmBtn);
     card.appendChild(modeRow);
@@ -708,8 +721,22 @@
     return card;
   }
 
-  // === ブックマーク（未実装） ===
+  // === ブックマーク ===
   function loadBookmarks() {
-    profContent.innerHTML = '<div class="prof-empty">ブックマーク機能は準備中です</div>';
+    FB.getMyBookmarkedScenarios(function (err, results) {
+      profContent.innerHTML = "";
+      if (err) { profContent.innerHTML = '<div class="prof-empty">読み込みに失敗しました</div>'; return; }
+      if (!results || results.length === 0) {
+        profContent.innerHTML = '<div class="prof-empty">ブックマークしたシナリオはまだありません</div>';
+        return;
+      }
+      var grid = document.createElement("div");
+      grid.className = "sn-list";
+      for (var i = 0; i < results.length; i++) {
+        grid.appendChild(buildScenarioCard(results[i]));
+      }
+      profContent.appendChild(grid);
+      requestAnimationFrame(refreshDividers);
+    });
   }
 })();

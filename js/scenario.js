@@ -1298,15 +1298,26 @@
     modeRow.appendChild(dangerWrap);
     var bmBtn = document.createElement("button");
     bmBtn.className = "sn-bookmark-btn";
-    bmBtn.textContent = "☆ " + (sc.bookmarks || 0);
+    var bmCount = sc.bookmarkCount || 0;
+    var bmActive = useFirebase && FB.isBookmarked(sc.id);
+    bmBtn.textContent = (bmActive ? "★ " : "☆ ") + bmCount;
+    if (bmActive) bmBtn.classList.add("sn-bookmarked");
     bmBtn.addEventListener("click", function () {
-      if (bmBtn.classList.toggle("sn-bookmarked")) {
-        sc.bookmarks = (sc.bookmarks || 0) + 1;
-        bmBtn.textContent = "★ " + sc.bookmarks;
-      } else {
-        sc.bookmarks = Math.max(0, (sc.bookmarks || 0) - 1);
-        bmBtn.textContent = "☆ " + sc.bookmarks;
-      }
+      if (!useFirebase || !FB.currentUser) { alert("ブックマークするにはログインが必要です"); return; }
+      bmBtn.disabled = true;
+      FB.toggleBookmark(sc.id, function (err, result) {
+        bmBtn.disabled = false;
+        if (err) { alert("エラー: " + err.message); return; }
+        if (result.bookmarked) {
+          bmCount++;
+          bmBtn.classList.add("sn-bookmarked");
+        } else {
+          bmCount = Math.max(0, bmCount - 1);
+          bmBtn.classList.remove("sn-bookmarked");
+        }
+        sc.bookmarkCount = bmCount;
+        bmBtn.textContent = (result.bookmarked ? "★ " : "☆ ") + bmCount;
+      });
     });
     modeRow.appendChild(bmBtn);
     card.appendChild(modeRow);
@@ -1461,15 +1472,26 @@
     modeRow.appendChild(dangerWrapD);
     var bmBtnD = document.createElement("button");
     bmBtnD.className = "sn-bookmark-btn";
-    bmBtnD.textContent = "☆ " + (sc.bookmarks || 0);
+    var bmCountD = sc.bookmarkCount || 0;
+    var bmActiveD = useFirebase && FB.isBookmarked(sc.id);
+    bmBtnD.textContent = (bmActiveD ? "★ " : "☆ ") + bmCountD;
+    if (bmActiveD) bmBtnD.classList.add("sn-bookmarked");
     bmBtnD.addEventListener("click", function () {
-      if (bmBtnD.classList.toggle("sn-bookmarked")) {
-        sc.bookmarks = (sc.bookmarks || 0) + 1;
-        bmBtnD.textContent = "★ " + sc.bookmarks;
-      } else {
-        sc.bookmarks = Math.max(0, (sc.bookmarks || 0) - 1);
-        bmBtnD.textContent = "☆ " + sc.bookmarks;
-      }
+      if (!useFirebase || !FB.currentUser) { alert("ブックマークするにはログインが必要です"); return; }
+      bmBtnD.disabled = true;
+      FB.toggleBookmark(sc.id, function (err, result) {
+        bmBtnD.disabled = false;
+        if (err) { alert("エラー: " + err.message); return; }
+        if (result.bookmarked) {
+          bmCountD++;
+          bmBtnD.classList.add("sn-bookmarked");
+        } else {
+          bmCountD = Math.max(0, bmCountD - 1);
+          bmBtnD.classList.remove("sn-bookmarked");
+        }
+        sc.bookmarkCount = bmCountD;
+        bmBtnD.textContent = (result.bookmarked ? "★ " : "☆ ") + bmCountD;
+      });
     });
     modeRow.appendChild(bmBtnD);
     card.appendChild(modeRow);
@@ -2165,7 +2187,24 @@
   // 初期化
   applyMode();
   renderWeaponSlots();
-  renderRecent();
+
+  // ログイン時にブックマーク状態を読み込んでからカード描画
+  if (useFirebase) {
+    var bookmarksLoaded = false;
+    FB.onAuthChange(function () {
+      if (FB.currentUser && !bookmarksLoaded) {
+        FB.loadMyBookmarks(function () {
+          bookmarksLoaded = true;
+          renderRecent();
+        });
+      } else {
+        bookmarksLoaded = false;
+        renderRecent();
+      }
+    });
+  } else {
+    renderRecent();
+  }
 
   // リサイズ時に点線を再描画
   window.addEventListener("resize", function () { requestAnimationFrame(refreshDividers); });
