@@ -524,22 +524,43 @@
         profContent.innerHTML = '<div class="prof-empty">クリア報告はまだありません</div>';
         return;
       }
+      var grid = document.createElement("div");
+      grid.className = "sn-list";
+      profContent.appendChild(grid);
+
+      // 各クリアの親シナリオを取得してカード生成
+      var remaining = results.length;
       for (var i = 0; i < results.length; i++) {
-        profContent.appendChild(buildClearCard(results[i]));
+        (function (clear, index) {
+          FB.getScenario(clear.scenarioId, function (err2, sc) {
+            if (!err2 && sc) {
+              // シナリオカードにクリア情報を付加
+              var card = buildScenarioCard(sc);
+              // クリア結果セクションを点線の前に挿入
+              var clearInfo = buildClearInfo(clear);
+              card.appendChild(clearInfo);
+              card._sortIndex = index;
+              grid.appendChild(card);
+            }
+            remaining--;
+            if (remaining === 0) {
+              // 元の順序にソート
+              var cards = Array.prototype.slice.call(grid.children);
+              cards.sort(function (a, b) { return (a._sortIndex || 0) - (b._sortIndex || 0); });
+              for (var k = 0; k < cards.length; k++) grid.appendChild(cards[k]);
+              requestAnimationFrame(refreshDividers);
+            }
+          });
+        })(results[i], i);
       }
     });
   }
 
-  function buildClearCard(clear) {
-    var card = document.createElement("div");
-    card.className = "prof-clear-card";
+  function buildClearInfo(clear) {
+    var wrap = document.createElement("div");
+    wrap.className = "prof-clear-info";
 
-    var scenarioLink = document.createElement("div");
-    scenarioLink.className = "prof-clear-scenario";
-    scenarioLink.textContent = "シナリオ: " + clear.scenarioId;
-    card.appendChild(scenarioLink);
-
-    // 金イクラ
+    // 金イクラ + 赤イクラ
     var eggs = document.createElement("div");
     eggs.className = "prof-clear-eggs";
     if (clear.waveEggs) {
@@ -551,23 +572,25 @@
         eggs.innerHTML += "　<img src='" + ICON_DIR + "icon_poweregg.png' alt='赤'> " + clear.redEggs;
       }
     }
-    card.appendChild(eggs);
+    wrap.appendChild(eggs);
 
     // チームメイト
     if (clear.teammates && clear.teammates.length > 0) {
       var tm = document.createElement("div");
-      tm.style.cssText = "font-size:0.8rem;color:#aaa;margin-bottom:0.3rem;";
+      tm.className = "prof-clear-teammates";
       tm.textContent = "メンバー: " + clear.userName + ", " + clear.teammates.join(", ");
-      card.appendChild(tm);
+      wrap.appendChild(tm);
     }
 
-    // 日時
-    var date = document.createElement("div");
-    date.className = "prof-clear-date";
-    date.textContent = clear.reportedAt || "";
-    card.appendChild(date);
+    // 報告日時
+    if (clear.reportedAt) {
+      var date = document.createElement("div");
+      date.className = "prof-clear-date";
+      date.textContent = "報告: " + clear.reportedAt;
+      wrap.appendChild(date);
+    }
 
-    return card;
+    return wrap;
   }
 
   // === ブックマーク（未実装） ===
