@@ -557,40 +557,101 @@
   }
 
   function buildClearInfo(clear) {
-    var wrap = document.createElement("div");
-    wrap.className = "prof-clear-info";
+    // scenario.jsのbuildClearCardと同じデザイン（順位なし）
+    var card = document.createElement("div");
+    card.className = "sn-clear-card";
+    card.style.marginTop = "0.6rem";
 
-    // 金イクラ + 赤イクラ
-    var eggs = document.createElement("div");
-    eggs.className = "prof-clear-eggs";
-    if (clear.waveEggs) {
-      var goldImg = '<img src="' + ICON_DIR + 'icon_goldenegg.png" alt="金">';
-      var total = 0;
-      for (var i = 0; i < clear.waveEggs.length; i++) total += (clear.waveEggs[i] || 0);
-      eggs.innerHTML = goldImg + " " + total;
-      if (clear.redEggs) {
-        eggs.innerHTML += "　<img src='" + ICON_DIR + "icon_poweregg.png' alt='赤'> " + clear.redEggs;
-      }
-    }
-    wrap.appendChild(eggs);
+    var infoCol = document.createElement("div");
+    infoCol.className = "sn-cc-info";
+
+    // 名前
+    var header = document.createElement("div");
+    header.className = "sn-cc-header";
+    var name = document.createElement("span");
+    name.className = "sn-cc-name";
+    name.textContent = clear.userName.length > 14 ? clear.userName.substring(0, 14) + "..." : clear.userName;
+    if (clear.userName.length > 14) name.title = clear.userName;
+    header.appendChild(name);
+    infoCol.appendChild(header);
 
     // チームメイト
     if (clear.teammates && clear.teammates.length > 0) {
-      var tm = document.createElement("div");
-      tm.className = "prof-clear-teammates";
-      tm.textContent = "メンバー: " + clear.userName + ", " + clear.teammates.join(", ");
-      wrap.appendChild(tm);
+      var tmRow = document.createElement("div");
+      tmRow.className = "sn-cc-tm-row";
+      for (var ti = 0; ti < clear.teammates.length; ti++) {
+        var badge = document.createElement("span");
+        badge.className = "sn-cc-tm-badge";
+        var tmName = clear.teammates[ti];
+        badge.textContent = tmName.length > 14 ? tmName.substring(0, 14) + "..." : tmName;
+        if (tmName.length > 14) badge.title = tmName;
+        tmRow.appendChild(badge);
+      }
+      infoCol.appendChild(tmRow);
     }
 
-    // 報告日時
+    // イクラ表示
+    var eggRow = document.createElement("div");
+    eggRow.className = "sn-cc-egg-row";
+    var goldSum = 0;
+    if (clear.waveEggs) {
+      for (var e = 0; e < clear.waveEggs.length; e++) goldSum += (clear.waveEggs[e] || 0);
+    }
+    var goldWrap = document.createElement("span");
+    goldWrap.className = "sn-cc-egg";
+    var goldImg = document.createElement("img");
+    goldImg.src = ICON_DIR + "icon_goldenegg.png";
+    goldImg.alt = "金イクラ";
+    goldWrap.appendChild(goldImg);
+    var goldText = document.createElement("span");
+    goldText.className = "sn-cc-egg-num";
+    goldText.textContent = "x" + goldSum;
+    goldWrap.appendChild(goldText);
+    eggRow.appendChild(goldWrap);
+    if (clear.redEggs != null) {
+      var redWrap = document.createElement("span");
+      redWrap.className = "sn-cc-egg";
+      var redImg = document.createElement("img");
+      redImg.src = ICON_DIR + "icon_poweregg.png";
+      redImg.alt = "赤イクラ";
+      redWrap.appendChild(redImg);
+      var redText = document.createElement("span");
+      redText.className = "sn-cc-egg-num sn-cc-egg-red";
+      redText.textContent = "x" + clear.redEggs;
+      redWrap.appendChild(redText);
+      eggRow.appendChild(redWrap);
+    }
+    infoCol.appendChild(eggRow);
+
+    // WAVE内訳
+    if (clear.waveEggs && clear.waveEggs.length > 0) {
+      var waveDetail = document.createElement("div");
+      waveDetail.className = "sn-cc-wave-detail";
+      for (var w = 0; w < clear.waveEggs.length; w++) {
+        var wSpan = document.createElement("span");
+        wSpan.className = "sn-cc-wave-item";
+        wSpan.appendChild(document.createTextNode("W" + (w + 1) + " "));
+        var wImg = document.createElement("img");
+        wImg.src = ICON_DIR + "icon_goldenegg.png";
+        wImg.alt = "金イクラ";
+        wImg.className = "sn-cc-wave-egg-icon";
+        wSpan.appendChild(wImg);
+        wSpan.appendChild(document.createTextNode("x" + clear.waveEggs[w]));
+        waveDetail.appendChild(wSpan);
+      }
+      infoCol.appendChild(waveDetail);
+    }
+
+    // 日時
     if (clear.reportedAt) {
-      var date = document.createElement("div");
-      date.className = "prof-clear-date";
-      date.textContent = "報告: " + clear.reportedAt;
-      wrap.appendChild(date);
+      var dateSpan = document.createElement("div");
+      dateSpan.className = "sn-cc-date";
+      dateSpan.textContent = clear.reportedAt;
+      infoCol.appendChild(dateSpan);
     }
 
-    return wrap;
+    card.appendChild(infoCol);
+    return card;
   }
 
   // === ブックマーク（未実装） ===
