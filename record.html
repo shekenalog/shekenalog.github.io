@@ -23,18 +23,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* モバイル select/input 幅修正 + 自動ズーム防止 */
+    /* モバイル select/input 幅修正 */
     select, input, textarea {
       max-width: 100%;
-      box-sizing: border-box;
-    }
-    @supports (-webkit-overflow-scrolling: touch) {
-      select, input, textarea { font-size: 16px !important; }
-    }
-    @media screen and (-webkit-min-device-pixel-ratio: 0) {
-      select:focus, input:focus, textarea:focus {
-        font-size: 16px !important;
-      }
     }
 
     /* 認証エリア */
