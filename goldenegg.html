@@ -505,6 +505,7 @@
       btnMinus.addEventListener('pointerdown', onStepDown);
       btnMinus.addEventListener('pointerup', onStepUp);
       btnMinus.addEventListener('pointercancel', function() { stopStep(); });
+      btnMinus.addEventListener('contextmenu', function(e) { e.preventDefault(); });
       row.appendChild(btnMinus);
 
       var inp = document.createElement('input');
@@ -526,6 +527,7 @@
       btnPlus.addEventListener('pointerdown', onStepDown);
       btnPlus.addEventListener('pointerup', onStepUp);
       btnPlus.addEventListener('pointercancel', function() { stopStep(); });
+      btnPlus.addEventListener('contextmenu', function(e) { e.preventDefault(); });
       row.appendChild(btnPlus);
 
       div.appendChild(row);
