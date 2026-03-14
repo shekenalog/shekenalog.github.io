@@ -12334,5 +12334,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 772,
+    "year": 2026,
+    "startDate": "03/21 17:00",
+    "endDate": "03/23 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "タツ",
+    "weapons": [
+      "スプラローラー",
+      "ケルビン525",
+      ".96ガロン",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
