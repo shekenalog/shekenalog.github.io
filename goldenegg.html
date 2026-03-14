@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <title>金イクラ総数 - シェケナログ</title>
+  <meta name="description" content="サーモンランのキケン度から昼WAVEでの金イクラ出現総数を計算。4人の評価値またはキケン度を入力。">
+  <meta property="og:title" content="金イクラ総数 - シェケナログ">
+  <meta property="og:description" content="サーモンランのキケン度から昼WAVEでの金イクラ出現総数を計算。4人の評価値またはキケン度を入力。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/goldenegg.html">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="金イクラ総数 - シェケナログ">
+  <meta name="twitter:description" content="サーモンランのキケン度から昼WAVEでの金イクラ出現総数を計算。4人の評価値またはキケン度を入力。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    /* --- カード背景 --- */
+    section {
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.0rem;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+    section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('png/bg_card.png') center/cover no-repeat;
+      z-index: 0;
+    }
+    section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- タブ --- */
+    .calc-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .calc-tab {
+      flex: 1;
+      padding: 0.6rem 0.4rem;
+      background-color: #0f3460;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      text-align: center;
+      font-family: "Noto Sans JP", sans-serif;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .calc-tab.active {
+      background-color: #ff5133;
+      color: #fff;
+      border-color: #ff5133;
+    }
+
+    /* --- パネル --- */
+    .calc-panel { display: none; }
+    .calc-panel.active { display: block; }
+
+    /* --- 4人入力 --- */
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .player-input {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 6px;
+      padding: 0.8rem;
+    }
+    .player-input .player-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 600;
+      margin: 0;
+    }
+    .player-input select,
+    .player-input input[type="number"] {
+      padding: 0.5rem;
+      background: #0f3460;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-size: 16px;
+      width: 100%;
+    }
+    .stepper-row {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .stepper-row input[type="number"] {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+    }
+    .stepper-btn {
+      flex-shrink: 0;
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background: #0f3460;
+      color: #e0e0e0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+    }
+    .stepper-btn:active {
+      background: #ff5133;
+    }
+
+    /* --- キケン度直接入力 --- */
+    .danger-direct {
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .danger-direct-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .danger-direct input {
+      width: 120px;
+      text-align: center;
+      padding: 0.5rem;
+      background: #0f3460;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      font-family: "Splatfont2", Consolas, monospace;
+    }
+    .danger-direct .unit {
+      color: #aaa;
+      font-size: 1.2rem;
+    }
+
+    /* --- 結果表示 --- */
+    .result-section {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .danger-label {
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+    .danger-result {
+      font-size: 2.4rem;
+      font-weight: normal;
+      color: #ff6b35;
+      font-family: "Splatfont2", Consolas, monospace;
+      text-shadow: 2px 2px 0 #000;
+      margin-bottom: 1rem;
+    }
+    .pct-sign {
+      font-size: 0.8em;
+      margin-left: 0.15em;
+    }
+    .wave-cards {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .wave-card {
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      min-width: 100px;
+      flex: 1;
+      max-width: 160px;
+    }
+    .wave-card-title {
+      font-family: "Splatfont2", sans-serif;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    .wave-card-eggs {
+      font-family: "Splatfont2", Consolas, monospace;
+      font-size: 1.8rem;
+      color: #ffd700;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .wave-card-eggs img {
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: -0.15em;
+      margin-right: 0.1em;
+    }
+    .wave-card-detail {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 0.3rem;
+      line-height: 1.4;
+    }
+    .total-section {
+      margin-top: 0.5rem;
+    }
+    .total-label {
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 0.8rem;
+    }
+    .total-eggs {
+      font-family: "Splatfont2", Consolas, monospace;
+      font-size: 2.4rem;
+      color: #ffd700;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .total-eggs img {
+      width: 1.2em;
+      height: 1.2em;
+      vertical-align: -0.1em;
+      margin-right: 0.2em;
+    }
+
+    /* --- レスポンシブ --- */
+    @media (max-width: 450px) {
+      .players-grid {
+        grid-template-columns: 1fr;
+        max-width: 280px;
+      }
+    }
+    @media (max-width: 500px) {
+      .wave-cards {
+        gap: 0.4rem;
+      }
+      .wave-card {
+        padding: 0.6rem 0.5rem;
+        min-width: 0;
+      }
+      .wave-card-title {
+        font-size: 0.95rem;
+      }
+      .wave-card-eggs {
+        font-size: 1.6rem;
+      }
+      .wave-card-detail {
+        font-size: 0.8rem;
+      }
+      .total-label {
+        font-size: 0.85rem;
+      }
+      .total-eggs {
+        font-size: 2.1rem;
+        text-shadow: 1.56px 1.56px 0 #000;
+      }
+      .danger-result {
+        font-size: 2.1rem;
+        text-shadow: 1.56px 1.56px 0 #000;
+      }
+    }
+    @media (max-width: 450px) {
+      .calc-tab {
+        font-size: max(16px, 3.6vw);
+        padding: max(0.4rem, 1.3vw) max(0.3rem, 0.9vw);
+      }
+      .calc-tabs {
+        gap: max(0.3rem, 1vw);
+      }
+      .danger-result {
+        font-size: 1.9rem;
+        text-shadow: 1.25px 1.25px 0 #000;
+      }
+      .total-eggs {
+        font-size: 1.9rem;
+        text-shadow: 1.25px 1.25px 0 #000;
+      }
+      .wave-card-eggs {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header-inline">
+    <a href="index.html" class="back-link"><img src="png/btn_prev.png" alt="トップへ" class="back-btn-img"></a>
+    <h1>金イクラ総数</h1>
+  </header>
+
+  <main>
+    <section>
+      <!-- タブ -->
+      <div class="calc-tabs">
+        <button class="calc-tab active" data-mode="danger">キケン度入力</button>
+        <button class="calc-tab" data-mode="party">詳細入力</button>
+      </div>
+
+      <!-- キケン度入力パネル -->
+      <div class="calc-panel active" id="panel-danger">
+        <div class="danger-direct">
+          <div class="danger-direct-row">
+            <input type="number" id="danger-input" min="0" max="333" step="1" value="168" placeholder="0" inputmode="numeric">
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4人入力パネル -->
+      <div class="calc-panel" id="panel-party">
+        <div class="players-grid" id="players-grid"></div>
+      </div>
+
+      <!-- 結果 -->
+      <div class="result-section">
+        <div class="danger-label" id="danger-label" style="display:none"></div>
+        <div class="danger-result" id="danger-result" style="display:none">0.0<span class="pct-sign">%</span></div>
+        <div class="wave-cards">
+          <div class="wave-card">
+            <div class="wave-card-title">WAVE 1</div>
+            <div class="wave-card-eggs" id="w1-eggs">9</div>
+            <div class="wave-card-detail" id="w1-detail">オオモノ 3体<br>ノルマ 3個</div>
+          </div>
+          <div class="wave-card">
+            <div class="wave-card-title">WAVE 2</div>
+            <div class="wave-card-eggs" id="w2-eggs">9</div>
+            <div class="wave-card-detail" id="w2-detail">オオモノ 3体<br>ノルマ 4個</div>
+          </div>
+          <div class="wave-card">
+            <div class="wave-card-title">WAVE 3</div>
+            <div class="wave-card-eggs" id="w3-eggs">9</div>
+            <div class="wave-card-detail" id="w3-detail">オオモノ 3体<br>ノルマ 5個</div>
+          </div>
+        </div>
+        <div class="total-section">
+          <div class="total-label">昼WAVE 金イクラ出現総数</div>
+          <div class="total-eggs" id="total-eggs"><img src="png/icon_goldenegg.png" alt="">27</div>
+        </div>
+      </div>
+    </section>
+    <div style="height:6rem;"></div>
+  </main>
+
+  <script>
+  (function() {
+    var RANKS = [
+      { name: 'かけだし', base: 0, max: 99 },
+      { name: 'はんにんまえ', base: 100, max: 99 },
+      { name: 'いちにんまえ', base: 200, max: 99 },
+      { name: 'じゅくれん', base: 300, max: 99 },
+      { name: 'たつじん', base: 400, max: 99 },
+      { name: 'たつじん+1', base: 500, max: 99 },
+      { name: 'たつじん+2', base: 600, max: 99 },
+      { name: 'たつじん+3', base: 700, max: 99 },
+      { name: 'でんせつ', base: 800, max: 999 }
+    ];
+
+    // [キケン度%, オオモノW1, ノルマW1, オオモノW2, ノルマW2, オオモノW3, ノルマW3]
+    var DATA = [
+      [0.0, 3,3, 3,4, 3,5],
+      [4.0, 3,4, 3,5, 3,6],
+      [8.0, 3,5, 3,6, 4,7],
+      [12.0, 3,6, 4,7, 5,8],
+      [14.0, 4,6, 4,7, 5,8],
+      [16.0, 4,7, 5,8, 6,9],
+      [20.0, 5,8, 6,9, 7,10],
+      [30.0, 5,8, 6,9, 8,11],
+      [40.0, 6,9, 7,10, 9,12],
+      [50.0, 6,10, 8,11, 10,13],
+      [60.0, 7,11, 9,12, 11,14],
+      [70.0, 8,12, 10,13, 12,15],
+      [80.0, 9,13, 11,14, 13,16],
+      [86.8, 9,14, 11,15, 13,17],
+      [90.0, 10,14, 12,15, 14,17],
+      [93.4, 10,15, 12,16, 14,18],
+      [100.0, 11,16, 13,17, 15,19],
+      [109.2, 11,16, 13,18, 15,20],
+      [110.0, 11,17, 13,18, 15,20],
+      [111.2, 12,17, 14,18, 16,20],
+      [118.2, 12,17, 14,19, 16,21],
+      [120.0, 12,18, 14,19, 16,21],
+      [122.4, 13,18, 15,19, 17,21],
+      [127.4, 13,18, 15,20, 17,22],
+      [130.0, 13,19, 15,20, 17,22],
+      [133.4, 14,19, 16,20, 18,22],
+      [136.4, 14,19, 16,21, 18,23],
+      [140.0, 14,20, 16,21, 18,23],
+      [144.6, 15,20, 17,21, 19,23],
+      [145.6, 15,20, 17,22, 19,24],
+      [150.0, 15,21, 17,22, 19,24],
+      [154.6, 15,21, 17,23, 19,25],
+      [155.6, 16,21, 18,23, 20,25],
+      [160.0, 16,22, 18,23, 20,25],
+      [163.8, 16,22, 18,24, 20,26],
+      [166.8, 17,22, 19,24, 21,26],
+      [170.0, 17,23, 19,24, 21,26],
+      [172.8, 17,23, 19,25, 21,27],
+      [177.8, 18,23, 20,25, 22,27],
+      [180.0, 18,24, 20,25, 22,27],
+      [182.0, 18,24, 20,26, 22,28],
+      [189.0, 19,24, 21,26, 23,28],
+      [190.0, 19,25, 21,26, 23,28],
+      [191.0, 19,25, 21,27, 23,29],
+      [200.0, 20,26, 22,28, 24,30],
+      [212.2, 20,26, 22,28, 25,30],
+      [213.4, 21,26, 23,28, 25,30],
+      [224.2, 21,26, 23,28, 26,30],
+      [226.6, 22,26, 24,28, 26,31],
+      [233.4, 22,27, 24,29, 26,31],
+      [236.4, 22,27, 24,29, 27,31],
+      [240.0, 23,27, 25,29, 27,31],
+      [248.4, 23,27, 25,29, 28,31],
+      [253.2, 24,27, 26,29, 28,32],
+      [260.6, 24,27, 26,29, 29,32],
+      [266.6, 25,28, 27,30, 29,32],
+      [272.6, 25,28, 27,30, 30,32],
+      [279.8, 26,28, 28,30, 30,33],
+      [284.8, 26,28, 28,30, 31,33],
+      [293.2, 27,28, 29,30, 31,33],
+      [296.8, 27,28, 29,30, 32,33],
+      [299.8, 27,29, 29,31, 32,33],
+      [306.4, 28,29, 30,31, 32,34],
+      [309.0, 28,29, 30,31, 33,34],
+      [319.8, 29,29, 31,31, 33,34],
+      [321.0, 29,29, 31,31, 34,34],
+      [333.0, 30,30, 32,32, 35,35]
+    ];
+
+    var mode = 'danger';
+    var playerRanks = [8, 8, 8, 8];
+    var playerValues = [40, 40, 40, 40];
+
+    // --- UI生成 ---
+    var grid = document.getElementById('players-grid');
+    for (var p = 0; p < 4; p++) {
+      var div = document.createElement('div');
+      div.className = 'player-input';
+
+      var lbl = document.createElement('span');
+      lbl.className = 'player-label';
+      lbl.textContent = 'プレイヤー ' + (p + 1);
+      div.appendChild(lbl);
+
+      var sel = document.createElement('select');
+      sel.dataset.player = p;
+      for (var r = 0; r < RANKS.length; r++) {
+        var opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = RANKS[r].name;
+        if (r === 8) opt.selected = true;
+        sel.appendChild(opt);
+      }
+      sel.addEventListener('change', onRankChange);
+      div.appendChild(sel);
+
+      var row = document.createElement('div');
+      row.className = 'stepper-row';
+
+      var btnMinus = document.createElement('button');
+      btnMinus.type = 'button';
+      btnMinus.className = 'stepper-btn';
+      btnMinus.textContent = '\u2212';
+      btnMinus.dataset.player = p;
+      btnMinus.dataset.delta = -5;
+      btnMinus.addEventListener('pointerdown', onStepDown);
+      btnMinus.addEventListener('pointerup', onStepUp);
+      btnMinus.addEventListener('pointercancel', function() { stopStep(); });
+      row.appendChild(btnMinus);
+
+      var inp = document.createElement('input');
+      inp.type = 'number';
+      inp.min = 0;
+      inp.max = RANKS[8].max;
+      inp.value = 40;
+      inp.dataset.player = p;
+      inp.inputMode = 'numeric';
+      inp.addEventListener('input', onValueChange);
+      row.appendChild(inp);
+
+      var btnPlus = document.createElement('button');
+      btnPlus.type = 'button';
+      btnPlus.className = 'stepper-btn';
+      btnPlus.textContent = '+';
+      btnPlus.dataset.player = p;
+      btnPlus.dataset.delta = 5;
+      btnPlus.addEventListener('pointerdown', onStepDown);
+      btnPlus.addEventListener('pointerup', onStepUp);
+      btnPlus.addEventListener('pointercancel', function() { stopStep(); });
+      row.appendChild(btnPlus);
+
+      div.appendChild(row);
+      grid.appendChild(div);
+    }
+
+    // --- タブ切替 ---
+    var tabs = document.querySelectorAll('.calc-tab');
+    for (var t = 0; t < tabs.length; t++) {
+      tabs[t].addEventListener('click', (function(tab) {
+        return function() {
+          for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+          tab.classList.add('active');
+          mode = tab.dataset.mode;
+          document.getElementById('panel-party').className = 'calc-panel' + (mode === 'party' ? ' active' : '');
+          document.getElementById('panel-danger').className = 'calc-panel' + (mode === 'danger' ? ' active' : '');
+          document.getElementById('danger-label').style.display = mode === 'danger' ? 'none' : '';
+          document.getElementById('danger-label').textContent = 'キケン度';
+          document.getElementById('danger-result').style.display = mode === 'danger' ? 'none' : '';
+          update();
+        };
+      })(tabs[t]));
+    }
+
+    document.getElementById('danger-input').addEventListener('input', function() {
+      if (mode === 'danger') update();
+    });
+
+    function onRankChange(e) {
+      var p = parseInt(e.target.dataset.player);
+      playerRanks[p] = parseInt(e.target.value);
+      var inp = e.target.parentNode.querySelector('input[type="number"]');
+      var newMax = RANKS[playerRanks[p]].max;
+      inp.max = newMax;
+      if (parseInt(inp.value) > newMax) {
+        inp.value = newMax;
+        playerValues[p] = newMax;
+      }
+      update();
+    }
+
+    function doStep(p, delta) {
+      var max = RANKS[playerRanks[p]].max;
+      var val = playerValues[p] + delta;
+      if (val < 0) val = 0;
+      if (val > max) val = max;
+      playerValues[p] = val;
+      var inputs = document.querySelectorAll('.stepper-row input[type="number"]');
+      inputs[p].value = val;
+      update();
+    }
+
+    var stepDelay = null;
+    var stepTimer = null;
+    var stepDone = false;
+    function stopStep() {
+      if (stepDelay) { clearTimeout(stepDelay); stepDelay = null; }
+      if (stepTimer) { clearInterval(stepTimer); stepTimer = null; }
+      stepDone = false;
+    }
+
+    function onStepDown(e) {
+      stopStep();
+      var btn = e.currentTarget;
+      var p = parseInt(btn.dataset.player);
+      var delta = parseInt(btn.dataset.delta);
+      stepDone = false;
+      stepDelay = setTimeout(function() {
+        stepDone = true;
+        doStep(p, delta);
+        stepTimer = setInterval(function() { doStep(p, delta); }, 50);
+      }, 300);
+    }
+
+    function onStepUp(e) {
+      var wasHeld = stepDone;
+      stopStep();
+      if (!wasHeld) {
+        var btn = e.currentTarget;
+        var p = parseInt(btn.dataset.player);
+        var delta = parseInt(btn.dataset.delta);
+        doStep(p, delta);
+      }
+    }
+
+    function onValueChange(e) {
+      var p = parseInt(e.target.dataset.player);
+      var val = parseInt(e.target.value) || 0;
+      var max = RANKS[playerRanks[p]].max;
+      if (val < 0) val = 0;
+      if (val > max) val = max;
+      playerValues[p] = val;
+      update();
+    }
+
+    function getDangerRate() {
+      if (mode === 'danger') {
+        var val = parseInt(document.getElementById('danger-input').value) || 0;
+        return Math.min(Math.max(val, 0), 333);
+      }
+      var sum = 0;
+      for (var i = 0; i < 4; i++) {
+        sum += RANKS[playerRanks[i]].base + playerValues[i];
+      }
+      return Math.min(sum / 20, 333);
+    }
+
+    function lookup(dangerRate) {
+      var entry = DATA[0];
+      for (var i = 0; i < DATA.length; i++) {
+        if (DATA[i][0] <= dangerRate) entry = DATA[i];
+        else break;
+      }
+      return entry;
+    }
+
+    function update() {
+      var danger = getDangerRate();
+      var entry = lookup(danger);
+
+      document.getElementById('danger-result').innerHTML =
+        danger.toFixed(1) + '<span class="pct-sign">%</span>';
+
+      var eggs = [entry[1] * 3, entry[3] * 3, entry[5] * 3];
+      var total = eggs[0] + eggs[1] + eggs[2];
+
+      document.getElementById('w1-eggs').innerHTML = '<img src="png/icon_goldenegg.png" alt="">x' + eggs[0];
+      document.getElementById('w1-detail').innerHTML = 'オオモノ ' + entry[1] + '体<br>ノルマ ' + entry[2] + '個';
+      document.getElementById('w2-eggs').innerHTML = '<img src="png/icon_goldenegg.png" alt="">x' + eggs[1];
+      document.getElementById('w2-detail').innerHTML = 'オオモノ ' + entry[3] + '体<br>ノルマ ' + entry[4] + '個';
+      document.getElementById('w3-eggs').innerHTML = '<img src="png/icon_goldenegg.png" alt="">x' + eggs[2];
+      document.getElementById('w3-detail').innerHTML = 'オオモノ ' + entry[5] + '体<br>ノルマ ' + entry[6] + '個';
+
+      document.getElementById('total-eggs').innerHTML =
+        '<img src="png/icon_goldenegg.png" alt="">x' + total;
+    }
+
+    update();
+  })();
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase_config.js"></script>
+  <script src="js/auth_ui.js"></script>
+</body>
+</html>
