@@ -195,7 +195,6 @@ select {
 
 html {
   background-color: #1a1a2e;
-  overscroll-behavior: none;
 }
 body {
   font-family: "Noto Sans JP", "Segoe UI", "Hiragino Sans", sans-serif;
