@@ -12350,5 +12350,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 773,
+    "year": 2026,
+    "startDate": "03/23 09:00",
+    "endDate": "03/25 01:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      "スクリュースロッシャー",
+      "カーボンローラー",
+      "デンタルワイパーミント",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
