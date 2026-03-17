@@ -308,33 +308,6 @@
       outline: none;
       border-color: #ff6b35;
     }
-    .ar-candidates {
-      margin-top: 0.4rem;
-    }
-    .ar-candidates .ar-candidate {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 0.5rem 0.6rem;
-      margin-bottom: 0.3rem;
-      font-family: "Noto Sans JP", sans-serif;
-      font-size: 0.82rem;
-      background: rgba(255,255,255,0.08);
-      border: 1.5px solid rgba(255,255,255,0.2);
-      border-radius: 4px;
-      color: #e0e0e0;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .ar-candidate:hover {
-      border-color: #ff6b35;
-      background: rgba(255,107,53,0.15);
-    }
-    .ar-candidate.selected {
-      border-color: #50c878;
-      background: rgba(80,200,120,0.12);
-      color: #50c878;
-    }
 
     /* WAVEカード */
     .wave-cards {
@@ -1700,22 +1673,17 @@
           <div class="allrandom-selector" id="allrandom-selector">
             <div class="ar-title">オールランダム編成です — 開催回を指定してください</div>
             <div class="ar-method-toggle">
-              <button type="button" class="ar-method-btn active" data-ar-method="yearmonth">年月選択</button>
+              <button type="button" class="ar-method-btn active" data-ar-method="version">バージョン入力</button>
               <button type="button" class="ar-method-btn" data-ar-method="no">開催番号指定</button>
             </div>
-            <!-- 年月パネル -->
-            <div class="ar-panel active" id="ar-panel-yearmonth">
+            <!-- バージョンパネル -->
+            <div class="ar-panel active" id="ar-panel-version">
               <div class="ar-row">
                 <div class="ar-field">
-                  <label>年</label>
-                  <select class="ar-input" id="ar-year"><option value="">-</option></select>
-                </div>
-                <div class="ar-field">
-                  <label>月</label>
-                  <select class="ar-input" id="ar-month"><option value="">-</option></select>
+                  <label>バージョン</label>
+                  <input type="text" class="ar-input" id="ar-version-input" placeholder="XX.X.X" inputmode="numeric" autocomplete="off">
                 </div>
               </div>
-              <div class="ar-candidates" id="ar-candidates"></div>
             </div>
             <!-- 開催番号パネル -->
             <div class="ar-panel" id="ar-panel-no">

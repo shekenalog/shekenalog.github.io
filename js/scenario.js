@@ -486,14 +486,87 @@
   // === オールランダム開催回選択 ===
   var arSelector = document.getElementById("allrandom-selector");
   var arMethodBtns = arSelector.querySelectorAll(".ar-method-btn");
-  var arPanelYM = document.getElementById("ar-panel-yearmonth");
+  var arPanelVer = document.getElementById("ar-panel-version");
   var arPanelNo = document.getElementById("ar-panel-no");
-  var arYearSel = document.getElementById("ar-year");
-  var arMonthSel = document.getElementById("ar-month");
-  var arCandidates = document.getElementById("ar-candidates");
+  var arVersionInput = document.getElementById("ar-version-input");
   var arNoInput = document.getElementById("ar-no-input");
   var arCurrentCandidates = []; // 現在のオールランダム候補リスト
   var arIsGolden = false;       // 黄金かどうか
+  var arVerCandidates = [];     // バージョンで絞った候補
+
+  // バージョン→開催期間マッピング
+  var GAME_VERSIONS = [
+    { ver: "1.1.0",  start: "2022-09-08T01:00:00Z" },
+    { ver: "1.1.1",  start: "2022-09-16T01:00:00Z" },
+    { ver: "1.1.2",  start: "2022-09-30T01:00:00Z" },
+    { ver: "1.2.0",  start: "2022-10-26T01:00:00Z" },
+    { ver: "1.2.1",  start: "2022-10-28T06:00:00Z" },
+    { ver: "2.0.0",  start: "2022-11-30T01:00:00Z" },
+    { ver: "2.0.1",  start: "2022-12-09T01:00:00Z" },
+    { ver: "2.1.0",  start: "2023-01-18T01:00:00Z" },
+    { ver: "2.1.1",  start: "2023-02-09T00:00:00Z" },
+    { ver: "3.0.0",  start: "2023-02-28T01:00:00Z" },
+    { ver: "3.0.1",  start: "2023-03-09T01:00:00Z" },
+    { ver: "3.1.0",  start: "2023-03-31T01:00:00Z" },
+    { ver: "3.1.1",  start: "2023-05-02T01:00:00Z" },
+    { ver: "4.0.0",  start: "2023-05-31T01:00:00Z" },
+    { ver: "4.0.1",  start: "2023-06-02T06:00:00Z" },
+    { ver: "4.0.2",  start: "2023-06-14T01:00:00Z" },
+    { ver: "4.1.0",  start: "2023-07-27T01:00:00Z" },
+    { ver: "5.0.0",  start: "2023-08-31T01:00:00Z" },
+    { ver: "5.0.1",  start: "2023-09-15T00:00:00Z" },
+    { ver: "5.1.0",  start: "2023-10-18T01:00:00Z" },
+    { ver: "5.2.0",  start: "2023-11-16T01:00:00Z" },
+    { ver: "6.0.0",  start: "2023-11-30T01:00:00Z" },
+    { ver: "6.0.1",  start: "2023-12-08T01:00:00Z" },
+    { ver: "6.0.2",  start: "2023-12-22T01:00:00Z" },
+    { ver: "6.1.0",  start: "2024-01-25T01:00:00Z" },
+    { ver: "7.0.0",  start: "2024-02-22T01:00:00Z" },
+    { ver: "7.1.0",  start: "2024-03-22T01:00:00Z" },
+    { ver: "7.2.0",  start: "2024-04-18T01:00:00Z" },
+    { ver: "8.0.0",  start: "2024-05-31T01:00:00Z" },
+    { ver: "8.1.0",  start: "2024-07-18T01:00:00Z" },
+    { ver: "9.0.0",  start: "2024-08-30T01:00:00Z" },
+    { ver: "9.1.0",  start: "2024-09-12T01:00:00Z" },
+    { ver: "9.2.0",  start: "2024-11-21T01:00:00Z" },
+    { ver: "10.0.0", start: "2025-06-12T01:00:00Z" },
+    { ver: "10.0.1", start: "2025-06-27T01:00:00Z" },
+    { ver: "10.1.0", start: "2025-09-04T01:00:00Z" },
+    { ver: "11.0.0", start: "2026-01-29T01:00:00Z" },
+    { ver: "11.0.1", start: "2026-02-05T01:00:00Z" }
+  ];
+  // 各バージョンの終了日 = 次バージョンの開始日
+  for (var vi = 0; vi < GAME_VERSIONS.length; vi++) {
+    GAME_VERSIONS[vi].startDate = new Date(GAME_VERSIONS[vi].start);
+    GAME_VERSIONS[vi].endDate = (vi < GAME_VERSIONS.length - 1)
+      ? new Date(GAME_VERSIONS[vi + 1].start)
+      : new Date("2099-01-01T00:00:00Z");
+  }
+
+  function parseSchedDateUTC(year, dateStr) {
+    var parts = dateStr.split(" ");
+    var md = parts[0].split("/");
+    var hm = parts[1].split(":");
+    // JST→UTC: -9h
+    return new Date(Date.UTC(year, parseInt(md[0], 10) - 1, parseInt(md[1], 10),
+      parseInt(hm[0], 10) - 9, parseInt(hm[1], 10)));
+  }
+
+  function getScheduleVersions(rec) {
+    var sStart = parseSchedDateUTC(rec.year, rec.startDate);
+    var endMd = rec.endDate.split(" ")[0].split("/");
+    var endM = parseInt(endMd[0], 10);
+    var endYear = rec.year;
+    if (endM < parseInt(rec.startDate.split("/")[0], 10)) endYear++;
+    var sEnd = parseSchedDateUTC(endYear, rec.endDate);
+    var vers = [];
+    for (var i = 0; i < GAME_VERSIONS.length; i++) {
+      if (GAME_VERSIONS[i].startDate < sEnd && GAME_VERSIONS[i].endDate > sStart) {
+        vers.push(GAME_VERSIONS[i].ver);
+      }
+    }
+    return vers;
+  }
 
   // メソッド切替
   for (var mi = 0; mi < arMethodBtns.length; mi++) {
@@ -501,9 +574,13 @@
       for (var mj = 0; mj < arMethodBtns.length; mj++) arMethodBtns[mj].classList.remove("active");
       this.classList.add("active");
       var method = this.getAttribute("data-ar-method");
-      arPanelYM.className = "ar-panel" + (method === "yearmonth" ? " active" : "");
+      arPanelVer.className = "ar-panel" + (method === "version" ? " active" : "");
       arPanelNo.className = "ar-panel" + (method === "no" ? " active" : "");
       // 切替時にリセット
+      arVersionInput.value = "";
+      arNoInput.value = "";
+      arVerCandidates = [];
+
       clearArMatch();
     });
   }
@@ -518,32 +595,18 @@
 
   function hideArSelector() {
     arSelector.classList.remove("active");
-    arYearSel.innerHTML = '<option value="">-</option>';
-    arMonthSel.innerHTML = '<option value="">-</option>';
-    arCandidates.innerHTML = "";
+    arVersionInput.value = "";
     arNoInput.value = "";
     arCurrentCandidates = [];
-    arYmCandidates = [];
+    arVerCandidates = [];
+    arLastMatchedVer = "";
   }
 
   function showArSelector(candidates, isGolden) {
     arCurrentCandidates = candidates;
     arIsGolden = isGolden;
     arSelector.classList.add("active");
-
-    // 年のドロップダウン生成
-    var years = {};
-    for (var i = 0; i < candidates.length; i++) years[candidates[i].year] = true;
-    var yearList = Object.keys(years).sort();
-    arYearSel.innerHTML = '<option value="">-</option>';
-    for (var i = 0; i < yearList.length; i++) {
-      var opt = document.createElement("option");
-      opt.value = yearList[i];
-      opt.textContent = yearList[i] + "年";
-      arYearSel.appendChild(opt);
-    }
-    arMonthSel.innerHTML = '<option value="">-</option>';
-    arCandidates.innerHTML = "";
+    arVersionInput.value = "";
     arNoInput.value = "";
 
     var typeLabel = isGolden ? "黄金" : "オールランダム";
@@ -551,75 +614,81 @@
       typeLabel + "編成です — 開催回を指定してください";
   }
 
-  // 年選択 → 月ドロップダウン更新
-  arYearSel.addEventListener("change", function () {
-    var year = parseInt(this.value, 10);
-    arMonthSel.innerHTML = '<option value="">-</option>';
-    arCandidates.innerHTML = "";
-    arYmCandidates = [];
-    clearArMatch();
-    if (!year) return;
+  // バージョン入力: ドット自動挿入
+  // minor/patchは常に1桁 → 数字3桁=X.Y.Z, 4桁=XX.Y.Z
+  // 3桁は入力途中で X.Y.Z か XX.Y の途中か判別不能なのでblur時にフォーマット
+  function formatVersionDigits(v) {
+    if (v.length <= 3) return v; // 3桁以下はそのまま
+    // 4桁以上: 末尾2桁を .minor.patch にする
+    var major = v.substring(0, v.length - 2);
+    return major + "." + v.charAt(v.length - 2) + "." + v.charAt(v.length - 1);
+  }
 
-    var months = {};
-    for (var i = 0; i < arCurrentCandidates.length; i++) {
-      if (arCurrentCandidates[i].year === year) {
-        var m = parseInt(arCurrentCandidates[i].startDate.split("/")[0], 10);
-        months[m] = true;
-      }
-    }
-    var monthList = Object.keys(months).sort(function (a, b) { return a - b; });
-    for (var i = 0; i < monthList.length; i++) {
-      var opt = document.createElement("option");
-      opt.value = monthList[i];
-      opt.textContent = monthList[i] + "月";
-      arMonthSel.appendChild(opt);
-    }
+  arVersionInput.addEventListener("input", function () {
+    var v = this.value.replace(/[０-９]/g, function (s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).replace(/[^0-9]/g, "");
+    if (v.length > 5) v = v.substring(0, 5);
+    this.value = formatVersionDigits(v);
   });
 
-  // 年月で絞った候補（複数ヒット時にステージで判定するため保持）
-  var arYmCandidates = [];
+  // blur時: フォーマット確定 + マッチ試行
+  arVersionInput.addEventListener("blur", function () {
+    // まず数字だけ取り出してフォーマット
+    var v = this.value.replace(/[^0-9]/g, "");
+    if (v.length === 3) {
+      this.value = v.charAt(0) + "." + v.charAt(1) + "." + v.charAt(2);
+    } else if (v.length >= 4) {
+      this.value = formatVersionDigits(v);
+    }
+    // マッチ試行
+    tryVersionMatch();
+  });
 
-  // 月選択 → マッチ試行
-  arMonthSel.addEventListener("change", function () {
+  function tryVersionMatch() {
+    arVerCandidates = [];
     clearArMatch();
-    arYmCandidates = [];
-    var year = parseInt(arYearSel.value, 10);
-    var month = parseInt(this.value, 10);
-    if (!year || !month) return;
+    var ver = arVersionInput.value.trim();
+    if (!ver) return;
 
+    // 入力バージョンに該当する候補を検索
     for (var i = 0; i < arCurrentCandidates.length; i++) {
-      var c = arCurrentCandidates[i];
-      var cm = parseInt(c.startDate.split("/")[0], 10);
-      if (c.year === year && cm === month) arYmCandidates.push(c);
+      var rec = arCurrentCandidates[i];
+      var recVers = getScheduleVersions(rec);
+      if (recVers.indexOf(ver) >= 0) {
+        arVerCandidates.push(rec);
+      }
     }
 
-    if (arYmCandidates.length === 1) {
-      applyArMatch(arYmCandidates[0]);
-    } else if (arYmCandidates.length > 1) {
-      // 複数候補: ステージ選択も必要
-      matchResult.textContent = "この月には" + arYmCandidates.length + "回あります — ステージも選択してください";
+    if (arVerCandidates.length === 0) {
+      matchResult.textContent = "Ver." + ver + " に該当する" + (arIsGolden ? "黄金" : "オールランダム") + "の開催回はありません";
+      matchResult.className = "match-result match-result-ng";
+    } else if (arVerCandidates.length === 1) {
+      applyArMatch(arVerCandidates[0]);
+    } else {
+      // 複数候補: ステージ選択で絞り込み
+      matchResult.textContent = "Ver." + ver + " には" + arVerCandidates.length + "回あります — ステージも選択してください";
       matchResult.className = "match-result match-result-ng";
       stageSelect.disabled = false;
       stageSelect.value = "";
-      // 現在のステージ値で即判定試行
       tryArStageMatch();
     }
-  });
+  }
 
   // ステージ選択でオールランダム候補を絞り込む
   stageSelect.addEventListener("change", function () {
-    if (arYmCandidates.length > 1) {
+    if (arVerCandidates.length > 1) {
       tryArStageMatch();
     }
   });
 
   function tryArStageMatch() {
-    if (arYmCandidates.length <= 1) return;
+    if (arVerCandidates.length <= 1) return;
     var stage = stageSelect.value;
     if (!stage) return;
-    for (var i = 0; i < arYmCandidates.length; i++) {
-      if (arYmCandidates[i].stage === stage) {
-        applyArMatch(arYmCandidates[i]);
+    for (var i = 0; i < arVerCandidates.length; i++) {
+      if (arVerCandidates[i].stage === stage) {
+        applyArMatch(arVerCandidates[i]);
         // ステージは自分で選んだのでdisabledにしない
         stageSelect.disabled = false;
         return;
@@ -627,7 +696,7 @@
     }
     // ステージが候補にない
     matchedScheduleNo = null;
-    matchResult.textContent = "この月の" + (arIsGolden ? "黄金" : "オールランダム") + "にこのステージはありません";
+    matchResult.textContent = "Ver." + arVersionInput.value + " の" + (arIsGolden ? "黄金" : "オールランダム") + "にこのステージはありません";
     matchResult.className = "match-result match-result-ng";
   }
 
