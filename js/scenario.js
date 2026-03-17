@@ -193,6 +193,7 @@
       stageSelect.disabled = false;
       matchResult.textContent = "";
       matchedScheduleNo = null;
+      hideArSelector();
       // EX-WAVE無効化
       extraCard.style.opacity = "0.35";
       extraCard.style.pointerEvents = "none";
@@ -472,6 +473,7 @@
         matchResult.textContent = "";
         matchResult.className = "match-result";
         stageSelect.disabled = false;
+        hideArSelector();
         renderWeaponSlots();
       });
       slot.appendChild(removeBtn);
@@ -481,26 +483,240 @@
     weaponAddBtn.disabled = selectedWeapons.length >= 4;
   }
 
+  // === オールランダム開催回選択 ===
+  var arSelector = document.getElementById("allrandom-selector");
+  var arMethodBtns = arSelector.querySelectorAll(".ar-method-btn");
+  var arPanelYM = document.getElementById("ar-panel-yearmonth");
+  var arPanelNo = document.getElementById("ar-panel-no");
+  var arYearSel = document.getElementById("ar-year");
+  var arMonthSel = document.getElementById("ar-month");
+  var arCandidates = document.getElementById("ar-candidates");
+  var arNoInput = document.getElementById("ar-no-input");
+  var arCurrentCandidates = []; // 現在のオールランダム候補リスト
+  var arIsGolden = false;       // 黄金かどうか
+
+  // メソッド切替
+  for (var mi = 0; mi < arMethodBtns.length; mi++) {
+    arMethodBtns[mi].addEventListener("click", function () {
+      for (var mj = 0; mj < arMethodBtns.length; mj++) arMethodBtns[mj].classList.remove("active");
+      this.classList.add("active");
+      var method = this.getAttribute("data-ar-method");
+      arPanelYM.className = "ar-panel" + (method === "yearmonth" ? " active" : "");
+      arPanelNo.className = "ar-panel" + (method === "no" ? " active" : "");
+      // 切替時にリセット
+      clearArMatch();
+    });
+  }
+
+  function clearArMatch() {
+    matchedScheduleNo = null;
+    matchResult.textContent = "";
+    matchResult.className = "match-result";
+    stageSelect.value = "";
+    stageSelect.disabled = false;
+  }
+
+  function hideArSelector() {
+    arSelector.classList.remove("active");
+    arYearSel.innerHTML = '<option value="">-</option>';
+    arMonthSel.innerHTML = '<option value="">-</option>';
+    arCandidates.innerHTML = "";
+    arNoInput.value = "";
+    arCurrentCandidates = [];
+    arYmCandidates = [];
+  }
+
+  function showArSelector(candidates, isGolden) {
+    arCurrentCandidates = candidates;
+    arIsGolden = isGolden;
+    arSelector.classList.add("active");
+
+    // 年のドロップダウン生成
+    var years = {};
+    for (var i = 0; i < candidates.length; i++) years[candidates[i].year] = true;
+    var yearList = Object.keys(years).sort();
+    arYearSel.innerHTML = '<option value="">-</option>';
+    for (var i = 0; i < yearList.length; i++) {
+      var opt = document.createElement("option");
+      opt.value = yearList[i];
+      opt.textContent = yearList[i] + "年";
+      arYearSel.appendChild(opt);
+    }
+    arMonthSel.innerHTML = '<option value="">-</option>';
+    arCandidates.innerHTML = "";
+    arNoInput.value = "";
+
+    var typeLabel = isGolden ? "黄金" : "オールランダム";
+    arSelector.querySelector(".ar-title").textContent =
+      typeLabel + "編成です — 開催回を指定してください";
+  }
+
+  // 年選択 → 月ドロップダウン更新
+  arYearSel.addEventListener("change", function () {
+    var year = parseInt(this.value, 10);
+    arMonthSel.innerHTML = '<option value="">-</option>';
+    arCandidates.innerHTML = "";
+    arYmCandidates = [];
+    clearArMatch();
+    if (!year) return;
+
+    var months = {};
+    for (var i = 0; i < arCurrentCandidates.length; i++) {
+      if (arCurrentCandidates[i].year === year) {
+        var m = parseInt(arCurrentCandidates[i].startDate.split("/")[0], 10);
+        months[m] = true;
+      }
+    }
+    var monthList = Object.keys(months).sort(function (a, b) { return a - b; });
+    for (var i = 0; i < monthList.length; i++) {
+      var opt = document.createElement("option");
+      opt.value = monthList[i];
+      opt.textContent = monthList[i] + "月";
+      arMonthSel.appendChild(opt);
+    }
+  });
+
+  // 年月で絞った候補（複数ヒット時にステージで判定するため保持）
+  var arYmCandidates = [];
+
+  // 月選択 → マッチ試行
+  arMonthSel.addEventListener("change", function () {
+    clearArMatch();
+    arYmCandidates = [];
+    var year = parseInt(arYearSel.value, 10);
+    var month = parseInt(this.value, 10);
+    if (!year || !month) return;
+
+    for (var i = 0; i < arCurrentCandidates.length; i++) {
+      var c = arCurrentCandidates[i];
+      var cm = parseInt(c.startDate.split("/")[0], 10);
+      if (c.year === year && cm === month) arYmCandidates.push(c);
+    }
+
+    if (arYmCandidates.length === 1) {
+      applyArMatch(arYmCandidates[0]);
+    } else if (arYmCandidates.length > 1) {
+      // 複数候補: ステージ選択も必要
+      matchResult.textContent = "この月には" + arYmCandidates.length + "回あります — ステージも選択してください";
+      matchResult.className = "match-result match-result-ng";
+      stageSelect.disabled = false;
+      stageSelect.value = "";
+      // 現在のステージ値で即判定試行
+      tryArStageMatch();
+    }
+  });
+
+  // ステージ選択でオールランダム候補を絞り込む
+  stageSelect.addEventListener("change", function () {
+    if (arYmCandidates.length > 1) {
+      tryArStageMatch();
+    }
+  });
+
+  function tryArStageMatch() {
+    if (arYmCandidates.length <= 1) return;
+    var stage = stageSelect.value;
+    if (!stage) return;
+    for (var i = 0; i < arYmCandidates.length; i++) {
+      if (arYmCandidates[i].stage === stage) {
+        applyArMatch(arYmCandidates[i]);
+        // ステージは自分で選んだのでdisabledにしない
+        stageSelect.disabled = false;
+        return;
+      }
+    }
+    // ステージが候補にない
+    matchedScheduleNo = null;
+    matchResult.textContent = "この月の" + (arIsGolden ? "黄金" : "オールランダム") + "にこのステージはありません";
+    matchResult.className = "match-result match-result-ng";
+  }
+
+  // 開催番号入力
+  arNoInput.addEventListener("change", function () {
+    clearArMatch();
+    var val = this.value.replace(/[０-９]/g, function (s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).trim();
+    var no = parseInt(val, 10);
+    if (!no) return;
+
+    // 候補リスト内で検索
+    for (var i = 0; i < arCurrentCandidates.length; i++) {
+      if (arCurrentCandidates[i].no === no) {
+        applyArMatch(arCurrentCandidates[i]);
+        return;
+      }
+    }
+    matchResult.textContent = "No." + no + " は" + (arIsGolden ? "黄金" : "オールランダム") + "の開催回ではありません";
+    matchResult.className = "match-result match-result-ng";
+  });
+
+  function applyArMatch(rec) {
+    matchedScheduleNo = rec.no;
+    matchResult.textContent = "No." + rec.no + " " + rec.stage + " にマッチしました";
+    matchResult.className = "match-result match-result-ok";
+    stageSelect.value = rec.stage;
+    stageSelect.disabled = true;
+  }
+
   // === 開催No.自動マッチ ===
   function tryMatchSchedule() {
     if (typeof SCHEDULE_DATA === "undefined") return;
+    hideArSelector();
 
     var inputSet = [];
+    var allGolden = true;
+    var allRandom = true;
     for (var i = 0; i < selectedWeapons.length; i++) {
+      var wn = selectedWeapons[i].name;
+      if (wn !== "？(金)") allGolden = false;
+      if (wn !== "？" && wn !== "？(金)") allRandom = false;
       // 金ランダムも通常ランダムと同じ"？"として比較
-      var wn = selectedWeapons[i].name === "？(金)" ? "？" : selectedWeapons[i].name;
-      inputSet.push(wn);
+      inputSet.push(wn === "？(金)" ? "？" : wn);
     }
     inputSet.sort();
 
+    // オールランダム判定（4つ全て？系）
+    if (allRandom) {
+      var isGolden = allGolden;
+      // 候補を集める（ビッグラン除外、シナリオ実装日以降、isGolden一致）
+      var candidates = [];
+      for (var j = 0; j < SCHEDULE_DATA.length; j++) {
+        var rec = SCHEDULE_DATA[j];
+        if (rec.eventType === "bigrun" || rec.eventType === "bigbigrun") continue;
+        var recYear = rec.year;
+        var md = rec.startDate.split(" ")[0].split("/");
+        var recMonth = parseInt(md[0], 10) - 1;
+        var recDay = parseInt(md[1], 10);
+        var recDate = new Date(recYear, recMonth, recDay);
+        if (recDate < SCENARIO_START) continue;
+        if (!rec.weapons.every(function (w) { return w === "？"; })) continue;
+        if (rec.isGolden !== isGolden) continue;
+        candidates.push(rec);
+      }
+
+      if (candidates.length === 0) {
+        matchedScheduleNo = null;
+        matchResult.textContent = "該当する開催回が見つかりません";
+        matchResult.className = "match-result match-result-ng";
+        stageSelect.disabled = false;
+        return;
+      }
+
+      // オールランダムは手動選択
+      matchResult.textContent = "";
+      matchResult.className = "match-result";
+      showArSelector(candidates, isGolden);
+      return;
+    }
+
+    // 通常ブキ: 従来のマッチロジック（最新を採用）
     var bestNo = null;
     var bestRec = null;
 
     for (var j = 0; j < SCHEDULE_DATA.length; j++) {
       var rec = SCHEDULE_DATA[j];
-      // ビッグラン/ビッグビッグランは対象外
       if (rec.eventType === "bigrun" || rec.eventType === "bigbigrun") continue;
-      // シナリオ実装日以降のみ
       var recYear = rec.year;
       var md = rec.startDate.split(" ")[0].split("/");
       var recMonth = parseInt(md[0], 10) - 1;
@@ -508,7 +724,6 @@
       var recDate = new Date(recYear, recMonth, recDay);
       if (recDate < SCENARIO_START) continue;
 
-      // ブキセット比較（順序無視）
       var recSet = rec.weapons.slice().sort();
       if (recSet.length !== inputSet.length) continue;
       var match = true;
@@ -527,7 +742,6 @@
       matchedScheduleNo = bestNo;
       matchResult.textContent = "No." + bestNo + " " + bestRec.stage + " にマッチしました";
       matchResult.className = "match-result match-result-ok";
-      // ステージ自動設定
       stageSelect.value = bestRec.stage;
       stageSelect.disabled = true;
     } else {
