@@ -180,10 +180,8 @@
     }
 
     .record-total-icon {
-      width: 75%;
-      height: 75%;
-      max-width: 3rem;
-      max-height: 3rem;
+      width: 1.8rem;
+      height: 1.8rem;
       object-fit: contain;
     }
 
@@ -2834,23 +2832,26 @@
     document.getElementById('wave-tide-filter').addEventListener('change', function() { renderAllTables(); });
     document.getElementById('wave-event-filter').addEventListener('change', function() { renderAllTables(); });
 
-    // === iOS対応: aspect-ratioフォールバック ===
+    // === totalアイコンエリア正方形化（全環境対応） ===
     function fixTotalIconSquare() {
-      var areas = document.querySelectorAll('.record-total-icon-area');
-      areas.forEach(function(area) {
-        // aspect-ratioが効いていれば幅>0のはず
-        if (area.offsetWidth > 0) return;
-        var card = area.closest('.record-total-card');
-        if (card) area.style.width = card.offsetHeight + 'px';
+      document.querySelectorAll('.record-total-card').forEach(function(card) {
+        var area = card.querySelector('.record-total-icon-area');
+        var icon = card.querySelector('.record-total-icon');
+        if (!area) return;
+        var h = card.offsetHeight;
+        if (h > 0) {
+          area.style.width = h + 'px';
+          area.style.height = h + 'px';
+          if (icon) {
+            var iconSize = Math.round(h * 0.75) + 'px';
+            icon.style.width = iconSize;
+            icon.style.height = iconSize;
+          }
+        }
       });
     }
 
-    window.addEventListener('resize', function() {
-      // リサイズ時にリセットしてaspect-ratio再評価
-      var areas = document.querySelectorAll('.record-total-icon-area');
-      areas.forEach(function(a) { a.style.width = ''; });
-      requestAnimationFrame(fixTotalIconSquare);
-    });
+    window.addEventListener('resize', fixTotalIconSquare);
 
     // 初期描画（ログイン前はlocalStorageから、ログイン後はonAuthChangeで再描画）
     renderAllTables();
