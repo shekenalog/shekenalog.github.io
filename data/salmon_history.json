@@ -12366,5 +12366,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 774,
+    "year": 2026,
+    "startDate": "03/25 01:00",
+    "endDate": "03/26 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ガエンFF",
+      "N-ZAP85",
+      "ホットブラスター",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
