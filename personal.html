@@ -166,11 +166,12 @@
 
     .record-total-icon-area {
       align-self: stretch;
-      aspect-ratio: 1;
-      min-height: 0;
-      position: relative;
+      width: 3rem;
       flex-shrink: 0;
       background: #e57197;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .record-total-card:last-child .record-total-icon-area {
@@ -178,12 +179,8 @@
     }
 
     .record-total-icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 75%;
-      height: 75%;
+      width: 2rem;
+      height: 2rem;
       object-fit: contain;
     }
 
@@ -1123,6 +1120,15 @@
         padding: 0.5rem;
       }
 
+      .record-total-icon-area {
+        width: 2.5rem;
+      }
+
+      .record-total-icon {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+
 
       .record-stage-img {
         width: 1.5rem;
@@ -1195,6 +1201,15 @@
 
       .record-total-value {
         font-size: 1.8rem;
+      }
+
+      .record-total-icon-area {
+        width: 3.5rem;
+      }
+
+      .record-total-icon {
+        width: 2.4rem;
+        height: 2.4rem;
       }
 
       .record-header-icon {
