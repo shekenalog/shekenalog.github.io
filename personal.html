@@ -2838,6 +2838,10 @@
         var area = card.querySelector('.record-total-icon-area');
         var icon = card.querySelector('.record-total-icon');
         if (!area) return;
+        // リセットしてカードの自然な高さを取得
+        area.style.width = '0';
+        area.style.height = 'auto';
+        if (icon) { icon.style.width = '0'; icon.style.height = '0'; }
         var h = card.offsetHeight;
         if (h > 0) {
           area.style.width = h + 'px';
