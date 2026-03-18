@@ -160,13 +160,10 @@
       display: flex;
       align-items: center;
       overflow: hidden;
-      outline: 1.5px solid #3a4a6a;
-      outline-offset: -1.5px;
+      box-shadow: inset 0 0 0 1.5px #3a4a6a;
     }
 
     .record-total-icon-area {
-      align-self: stretch;
-      width: 3rem;
       flex-shrink: 0;
       background: #e57197;
       display: flex;
@@ -179,8 +176,8 @@
     }
 
     .record-total-icon {
-      width: 2rem;
-      height: 2rem;
+      width: 75%;
+      height: 75%;
       object-fit: contain;
     }
 
@@ -1120,14 +1117,6 @@
         padding: 0.5rem;
       }
 
-      .record-total-icon-area {
-        width: 2.5rem;
-      }
-
-      .record-total-icon {
-        width: 1.6rem;
-        height: 1.6rem;
-      }
 
 
       .record-stage-img {
@@ -1201,15 +1190,6 @@
 
       .record-total-value {
         font-size: 1.8rem;
-      }
-
-      .record-total-icon-area {
-        width: 3.5rem;
-      }
-
-      .record-total-icon {
-        width: 2.4rem;
-        height: 2.4rem;
       }
 
       .record-header-icon {
@@ -2848,8 +2828,25 @@
     document.getElementById('wave-tide-filter').addEventListener('change', function() { renderAllTables(); });
     document.getElementById('wave-event-filter').addEventListener('change', function() { renderAllTables(); });
 
+    // === totalアイコンエリアを正方形に ===
+    function fixTotalIconSquare() {
+      var cards = document.querySelectorAll('.record-total-card');
+      cards.forEach(function(card) {
+        var area = card.querySelector('.record-total-icon-area');
+        if (!area) return;
+        area.style.width = '';
+        area.style.height = '';
+        var h = card.offsetHeight;
+        area.style.width = h + 'px';
+        area.style.height = h + 'px';
+      });
+    }
+
+    window.addEventListener('resize', fixTotalIconSquare);
+
     // 初期描画（ログイン前はlocalStorageから、ログイン後はonAuthChangeで再描画）
     renderAllTables();
+    requestAnimationFrame(fixTotalIconSquare);
   </script>
 
   <script src="js/auth_ui.js"></script>
