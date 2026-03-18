@@ -2838,11 +2838,10 @@
         var area = card.querySelector('.record-total-icon-area');
         var icon = card.querySelector('.record-total-icon');
         if (!area) return;
-        // リセットしてカードの自然な高さを取得
-        area.style.width = '0';
-        area.style.height = 'auto';
-        if (icon) { icon.style.width = '0'; icon.style.height = '0'; }
+        // アイコンエリアを非表示にしてカードの自然な高さを取得
+        area.style.display = 'none';
         var h = card.offsetHeight;
+        area.style.display = '';
         if (h > 0) {
           area.style.width = h + 'px';
           area.style.height = h + 'px';
@@ -2855,7 +2854,9 @@
       });
     }
 
-    window.addEventListener('resize', fixTotalIconSquare);
+    window.addEventListener('resize', function() {
+      requestAnimationFrame(fixTotalIconSquare);
+    });
 
     // 初期描画（ログイン前はlocalStorageから、ログイン後はonAuthChangeで再描画）
     renderAllTables();
