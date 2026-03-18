@@ -354,6 +354,83 @@
         }).catch(function (err) { callback(err); });
     },
 
+    // --- 個人記録 ---
+
+    // 個人記録を保存（新規 or 更新）
+    savePersonalRecord: function (record, callback) {
+      if (!db || !currentUser) return callback(new Error("ログインが必要です"));
+      var docId = currentUser.uid + "_" + record.id;
+      var doc = JSON.parse(JSON.stringify(record));
+      doc.userId = currentUser.uid;
+      doc.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+      db.collection("personalRecords").doc(docId).set(doc).then(function () {
+        callback(null);
+      }).catch(function (err) { callback(err); });
+    },
+
+    // 個人記録を全件取得
+    getPersonalRecords: function (callback) {
+      if (!db || !currentUser) return callback(null, []);
+      db.collection("personalRecords")
+        .where("userId", "==", currentUser.uid)
+        .get().then(function (snap) {
+          var results = [];
+          snap.forEach(function (doc) {
+            var d = doc.data();
+            // serverTimestampをミリ秒に変換
+            if (d.updatedAt && d.updatedAt.toDate) {
+              d.updatedAt = d.updatedAt.toDate().getTime();
+            }
+            results.push(d);
+          });
+          callback(null, results);
+        }).catch(function (err) { callback(err); });
+    },
+
+    // 個人記録を削除
+    deletePersonalRecord: function (recordId, callback) {
+      if (!db || !currentUser) return callback(new Error("ログインが必要です"));
+      var docId = currentUser.uid + "_" + recordId;
+      db.collection("personalRecords").doc(docId).delete().then(function () {
+        callback(null);
+      }).catch(function (err) { callback(err); });
+    },
+
+    // localStorageの記録をFirestoreにマージ
+    mergeLocalRecords: function (localRecords, callback) {
+      if (!db || !currentUser) return callback(new Error("ログインが必要です"));
+      if (!localRecords || localRecords.length === 0) return callback(null);
+
+      // 既存のFirestoreデータを取得
+      var self = this;
+      self.getPersonalRecords(function (err, firestoreRecords) {
+        if (err) return callback(err);
+
+        // 既存IDセット
+        var existingIds = {};
+        firestoreRecords.forEach(function (r) { existingIds[r.id] = true; });
+
+        // 重複しないローカル記録をFirestoreに追加
+        var batch = db.batch();
+        var count = 0;
+        localRecords.forEach(function (r) {
+          if (existingIds[r.id]) return; // 重複スキップ
+          var docId = currentUser.uid + "_" + r.id;
+          var doc = JSON.parse(JSON.stringify(r));
+          doc.userId = currentUser.uid;
+          doc.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+          batch.set(db.collection("personalRecords").doc(docId), doc);
+          count++;
+        });
+
+        if (count === 0) return callback(null);
+
+        batch.commit().then(function () {
+          callback(null);
+        }).catch(function (err) { callback(err); });
+      });
+    },
+
     // ブックマーク済みかチェック（loadMyBookmarks後に使う）
     isBookmarked: function (scenarioId) {
       return bookmarkSet.has(scenarioId);

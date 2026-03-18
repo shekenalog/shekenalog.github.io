@@ -1,0 +1,2848 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFG497M0RD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZFG497M0RD');
+  </script>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <title>個人記録 - シェケナログ</title>
+  <meta name="description" content="サーモンランの個人記録を管理。金イクラ・赤イクラの乱獲記録をステージ別に記録・閲覧できます。">
+  <meta property="og:title" content="個人記録 - シェケナログ">
+  <meta property="og:description" content="サーモンランの個人記録を管理。金イクラ・赤イクラの乱獲記録をステージ別に記録・閲覧できます。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shekenalog.github.io/personal.html">
+  <meta property="og:image" content="https://shekenalog.github.io/icon-512.png">
+  <meta property="og:site_name" content="シェケナログ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="個人記録 - シェケナログ">
+  <meta name="twitter:description" content="サーモンランの個人記録を管理。金イクラ・赤イクラの乱獲記録をステージ別に記録・閲覧できます。">
+  <meta name="twitter:image" content="https://shekenalog.github.io/icon-512.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* カード背景 */
+    .personal-card {
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.0rem;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid #3a4a6a;
+      margin-bottom: 1.5rem;
+    }
+
+    .personal-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('png/bg_card.png') center/cover no-repeat;
+      z-index: 0;
+    }
+
+    .personal-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 表エリア背景 */
+    .record-table-area {
+      background: #30303099;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 8px;
+      padding: 0.6rem;
+      outline: 1.5px solid #3a4a6a;
+      outline-offset: -1.5px;
+    }
+
+    /* 納品記録カード */
+    .record-section-title {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .rank-toggle {
+      display: flex;
+    }
+
+    .rank-btn {
+      padding: 0.55rem 1.8rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      border: 1.5px solid #3a4a6a;
+      background: #202020;
+      color: #888;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .rank-btn:first-child { border-radius: 4px 0 0 4px; }
+    .rank-btn:last-child { border-radius: 0 4px 4px 0; }
+    .rank-btn + .rank-btn { margin-left: -1.5px; }
+
+    .rank-btn.active {
+      background: #e0622f;
+      color: #fff;
+      border-color: #e0622f;
+      position: relative;
+      z-index: 1;
+    }
+
+    .record-section-title h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: normal;
+      color: #fff;
+      text-shadow: 1.5px 1.5px 0 #000;
+    }
+
+    @media (max-width: 450px) {
+      .record-section-title {
+        margin-bottom: 1.2rem;
+      }
+      .record-section-title h2 {
+        font-size: 1.5rem;
+        text-shadow: 1px 1px 0 #000;
+      }
+      .record-section-title {
+        gap: 1rem;
+      }
+      .rank-btn {
+        font-size: 16px;
+        padding: 0.6rem 1.5rem;
+      }
+    }
+
+    @media (min-width: 800px) {
+      .personal-card {
+        padding: 1.5rem;
+      }
+      .record-section-title {
+        margin-bottom: 1.5rem;
+        gap: 2rem;
+      }
+      .record-section-title h2 {
+        font-size: 2.2rem;
+        text-shadow: 2px 2px 0 #000;
+      }
+      .rank-btn {
+        font-size: 16px;
+        padding: 0.6rem 2.2rem;
+      }
+    }
+
+    /* 7ステ総合 */
+    .record-total {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .record-total-card {
+      flex: 1;
+      background: #202020;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      outline: 1.5px solid #3a4a6a;
+      outline-offset: -1.5px;
+    }
+
+    .record-total-icon-area {
+      align-self: stretch;
+      aspect-ratio: 1;
+      min-height: 0;
+      position: relative;
+      flex-shrink: 0;
+      background: #e57197;
+    }
+
+    .record-total-card:last-child .record-total-icon-area {
+      background: #52cec5;
+    }
+
+    .record-total-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 75%;
+      height: 75%;
+      object-fit: contain;
+    }
+
+    .record-total-value {
+      flex: 1;
+      text-align: center;
+      font-family: "Splatfont2", "Consolas", monospace;
+      font-size: 1.4rem;
+      font-weight: normal;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+      padding: 0.6rem;
+    }
+
+    /* === 記録入力フォーム === */
+    #personal-post-section {
+      display: none;
+    }
+
+    .pform-card {
+      background: #243556;
+      border-radius: 8px;
+      padding: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.22);
+      margin-bottom: 1rem;
+    }
+
+    .pform-card > * {
+      position: relative;
+    }
+
+    .pform-row {
+      margin-bottom: 1rem;
+    }
+
+    .pform-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .pform-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pform-required-tag {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 3px;
+      padding: 0.05rem 0.3rem;
+      line-height: 1.3;
+    }
+
+    .pform-input, .pform-select {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.1rem;
+      background-color: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.32);
+      border-radius: 4px;
+      padding: 0.55rem 0.7rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .pform-input:focus, .pform-select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    .pform-input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ブキ選択 */
+    .pweapon-slots {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+
+    .pweapon-slot {
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+
+    .pweapon-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(2px 2px 0 #000);
+    }
+
+    .pweapon-slot-remove {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      background: #ff3333;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 12px;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+      padding: 0;
+      z-index: 2;
+    }
+
+    .pweapon-add-btn {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.12);
+      border: 2px dashed rgba(255,255,255,0.38);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .pweapon-add-btn:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+    }
+
+    .pweapon-add-btn:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+
+    .pmatch-result {
+      font-size: 0.85rem;
+      padding: 0.3rem 0;
+      min-height: 1.4em;
+    }
+
+    .pmatch-result-ok { color: #50c878; }
+    .pmatch-result-ng { color: #ff5133; }
+
+    /* WAVEカード */
+    .pwave-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .pwave-card {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+    }
+
+    .pwave-card-title {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .pwave-fields {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pwave-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+    }
+
+    .pwave-field-label {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .pwave-select, .pwave-input {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.05rem;
+      background-color: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 4px;
+      padding: 0.55rem 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .pwave-select:focus, .pwave-input:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    .pwave-input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* リザルトカード */
+    .presult-card {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+    }
+
+    .presult-fields {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .presult-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* 投稿ボタン */
+    .psubmit-btn {
+      display: block;
+      width: 100%;
+      margin: 1.2rem auto 0;
+      padding: 0.9rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: #e0622f;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .psubmit-btn:hover {
+      background: #c8572a;
+    }
+
+    /* === 記録修正セクション === */
+    #personal-edit-section {
+      display: none;
+    }
+
+    .pedit-sort {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .pedit-sort-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.9rem;
+      color: #ccc;
+      white-space: nowrap;
+    }
+
+    .pedit-sort-select {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      background-color: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 4px;
+      padding: 0.4rem 0.5rem;
+    }
+
+    .pedit-sort-select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    .pedit-card {
+      background: #243556;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.6rem;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      position: relative;
+    }
+
+    .pedit-card-info {
+      min-width: 0;
+    }
+
+    /* 1行目: ステージ + キケン度 */
+    .pedit-card-line1 {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .pedit-card-stage {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .pedit-card-danger {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+
+    .pedit-card-danger-val {
+      font-family: "SplatHeading", sans-serif;
+      font-size: 1.4rem;
+      position: relative;
+      top: 0.1rem;
+    }
+
+    /* 2行目: 総合金 + 昼夜バッジ */
+    .pedit-card-line2 {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.35rem;
+      padding: 0.15rem 0;
+    }
+
+    .pedit-card-total {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .pedit-card-total-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    .pedit-card-total-val {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1.15rem;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .pedit-card-total-icon {
+      width: 1.38rem;
+      height: 1.38rem;
+      vertical-align: middle;
+    }
+
+    .pedit-card-badge {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      color: #fff;
+    }
+
+    .pedit-badge-day {
+      background: #c4507a;
+    }
+
+    .pedit-badge-night {
+      background: #3a9e97;
+    }
+
+    /* WAVE詳細行 */
+    .pedit-card-waves {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+      color: #fff;
+      flex-wrap: wrap;
+      row-gap: 0.15rem;
+    }
+
+    /* 討伐・金イクラ・赤イクラ行 */
+    .pedit-card-line3 {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.25rem;
+      color: #fff;
+    }
+
+    .pedit-card-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .pedit-card-stat-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .pedit-wave-badge {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      border: 1px solid #fff;
+      border-radius: 3px;
+      padding: 0 0.3rem;
+      margin-right: 0.2rem;
+      line-height: 1.4;
+    }
+
+    .pedit-assist {
+      opacity: 0.67;
+    }
+
+    .pedit-card-stat-val {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1rem;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .pedit-card-stat-icon {
+      width: 1.2rem;
+      height: 1.2rem;
+      vertical-align: middle;
+    }
+
+    /* 4行目: タイムスタンプ */
+    .pedit-card-line4 {
+      margin-top: 0.3rem;
+    }
+
+    .pedit-card-date {
+      font-family: "Consolas", monospace;
+      font-size: 0.88rem;
+      color: #aaa;
+    }
+
+    /* ボタン行 */
+    .pedit-card-line5 {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.4rem;
+    }
+
+    .pedit-card-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .pedit-btn {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 16px;
+      padding: 0.4rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .pedit-btn-edit {
+      background: #e0622f;
+      color: #fff;
+    }
+
+    .pedit-btn-edit:hover {
+      background: #c8572a;
+    }
+
+    .pedit-btn-delete {
+      background: rgba(255,255,255,0.15);
+      color: #ccc;
+    }
+
+    .pedit-btn-delete:hover {
+      background: #ff3333;
+      color: #fff;
+    }
+
+    .pedit-empty {
+      text-align: center;
+      color: #888;
+      padding: 2rem;
+      font-size: 0.95rem;
+    }
+
+    /* ページネーション */
+    .pedit-pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.3rem;
+      margin-top: 1rem;
+    }
+
+    .pedit-page-btn {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.7rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      background: transparent;
+      color: #ccc;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pedit-page-btn.active {
+      background: #e0622f;
+      color: #fff;
+      border-color: #e0622f;
+    }
+
+    .pedit-page-btn:hover:not(.active) {
+      border-color: #ff6b35;
+      color: #fff;
+    }
+
+    @media (min-width: 800px) {
+      .pedit-card-stage { font-size: 1.2rem; }
+      .pedit-card-danger { font-size: 0.9rem; }
+      .pedit-card-danger-val { font-size: 1.6rem; }
+      .pedit-card-total-label { font-size: 1.15rem; }
+      .pedit-card-total-val { font-size: 1.25rem; }
+      .pedit-card-total-icon { width: 1.5rem; height: 1.5rem; }
+      .pedit-card-stat-val { font-size: 1.1rem; }
+      .pedit-card-stat-icon { width: 1.32rem; height: 1.32rem; }
+      .pedit-card-stat-label { font-size: 0.9rem; }
+      .pedit-wave-badge { font-size: 0.9rem; }
+      .pedit-card-waves { margin-bottom: 0.7rem; }
+      .pedit-card-badge { font-size: 0.9rem; }
+      .pedit-card-date { font-size: 0.95rem; }
+      .pedit-card-line4 { margin-top: 0.4rem; }
+      .pedit-btn { font-size: 16px; padding: 0.5rem 2rem; }
+    }
+
+    @media (max-width: 450px) {
+      .pedit-card { padding: 0.7rem 0.8rem; }
+      .pedit-card-stage { font-size: 0.95rem; }
+      .pedit-card-danger { font-size: 0.72rem; }
+      .pedit-card-danger-val { font-size: 1.2rem; }
+      .pedit-card-total-label { font-size: 0.9rem; }
+      .pedit-card-total-val { font-size: 1rem; }
+      .pedit-card-total-icon { width: 1.2rem; height: 1.2rem; }
+      .pedit-card-stat-val { font-size: 0.88rem; }
+      .pedit-card-stat-icon { width: 1.05rem; height: 1.05rem; }
+      .pedit-card-stat-label { font-size: 0.78rem; }
+      .pedit-wave-badge { font-size: 0.78rem; }
+      .pedit-card-waves { gap: 0.4rem; margin-bottom: 0.5rem; }
+      .pedit-card-line3 { gap: 0.5rem; }
+      .pedit-card-badge { font-size: 0.78rem; }
+      .pedit-card-date { font-size: 0.8rem; }
+      .pedit-card-line4 { margin-top: 0.2rem; }
+      .pedit-btn { font-size: 16px; padding: 0.4rem 1.2rem; }
+    }
+
+    /* ブキ選択ポップアップ */
+    .weapon-popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    .weapon-popup-overlay.active { display: flex; }
+    .weapon-popup {
+      background: #16213e;
+      border: 1.5px solid rgba(255,255,255,0.28);
+      border-radius: 8px;
+      padding: 1.2rem;
+      max-width: 560px;
+      width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .weapon-popup-title {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .weapon-popup-preview {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      flex-shrink: 0;
+    }
+    .weapon-popup-preview-slot {
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px dashed rgba(255,255,255,0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .weapon-popup-preview-slot.filled {
+      border-style: solid;
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+    }
+    .weapon-popup-preview-slot img {
+      width: 42px; height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(1px 1px 0 #000);
+    }
+    .weapon-popup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 0.45rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .weapon-popup-item {
+      width: 100%;
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 4px;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .weapon-popup-item:hover {
+      border-color: #ff6b35;
+      background: rgba(255,107,53,0.15);
+    }
+    .weapon-popup-item.selected {
+      border-color: #ff6b35;
+      background: rgba(255,107,53,0.25);
+    }
+    .weapon-popup-badge {
+      position: absolute; top: -4px; right: -4px;
+      background: #e0622f; color: #fff;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      width: 20px; height: 20px; line-height: 20px;
+      text-align: center; border-radius: 50%;
+      display: none;
+    }
+    .weapon-popup-item.popup-disabled {
+      opacity: 0.25; pointer-events: none; cursor: not-allowed;
+    }
+    .weapon-popup-item img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(1.5px 1.5px 0 #000);
+    }
+    .weapon-popup-actions {
+      display: flex; gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.8rem;
+      flex-shrink: 0;
+    }
+    .weapon-popup-ok, .weapon-popup-cancel {
+      padding: 0.55rem 1.8rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.05rem; font-weight: 500;
+      border: none; border-radius: 4px; cursor: pointer;
+    }
+    .weapon-popup-ok { background: #ff6b35; color: #fff; }
+    .weapon-popup-cancel { background: rgba(255,255,255,0.2); color: #e0e0e0; }
+
+    /* レスポンシブ: フォーム */
+    @media (max-width: 800px) {
+      .pwave-fields { flex-direction: column; align-items: stretch; }
+      .presult-fields { flex-direction: column; align-items: stretch; }
+    }
+
+    @media (max-width: 600px) {
+      .pform-card { padding: 1rem; }
+      .pwave-select, .pwave-input { font-size: 16px; padding: 0.45rem; }
+      .pform-input, .pform-select { font-size: 16px; }
+      .pform-label { font-size: 1.1rem; }
+      .pwave-card-title { font-size: 0.95rem; }
+      .psubmit-btn { font-size: 1.1rem; }
+      .pweapon-slot { width: 52px; height: 52px; }
+      .pweapon-add-btn { width: 52px; height: 52px; font-size: 1.3rem; }
+    }
+
+    @media (max-width: 450px) {
+      .pform-card { padding: 0.8rem; }
+      .pwave-select, .pwave-input { font-size: 16px; padding: 0.5rem; }
+      .pform-input, .pform-select { font-size: 16px; padding: 0.5rem; }
+      .pform-label { font-size: 1.0rem; }
+      .pwave-card-title { font-size: 0.9rem; }
+      .psubmit-btn { font-size: 1.0rem; padding: 0.8rem; }
+      .pweapon-slot { width: 46px; height: 46px; }
+      .pweapon-add-btn { width: 46px; height: 46px; font-size: 1.1rem; }
+    }
+
+    /* WAVE種類別ドロップダウン */
+    .wave-filter {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .wave-filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+    }
+
+    .wave-filter-label {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+
+    .wave-filter-select {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 1.05rem;
+      background-color: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 4px;
+      padding: 0.55rem 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .wave-filter-select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    /* 単一セルテーブル */
+    .record-stage-single-val {
+      width: 5rem;
+      text-align: center;
+      font-family: "Splatfont2", "Consolas", monospace;
+      font-size: 1.2rem;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+      background: #202020;
+      border-radius: 9999px;
+      padding: 0.3rem 0;
+    }
+
+    @media (max-width: 800px) {
+      .wave-filter { flex-direction: column; align-items: stretch; }
+      .wave-filter-select { width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .wave-filter-select { font-size: 16px; padding: 0.45rem; }
+    }
+
+    @media (max-width: 450px) {
+      .wave-filter-select { font-size: 16px; padding: 0.5rem; }
+      .record-stage-single-val {
+        width: 4rem;
+        font-size: 1rem;
+      }
+    }
+
+    @media (min-width: 800px) {
+      .record-stage-single-val {
+        width: 6rem;
+        font-size: 1.5rem;
+      }
+    }
+
+    /* ステージ別ヘッダ */
+    .record-stage-header {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 0.5rem;
+      margin-bottom: 0.3rem;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.9rem;
+      color: #ccc;
+      text-shadow: 1px 1px #000;
+    }
+
+    .record-stage-header-name {
+      flex: 1;
+    }
+
+    .record-stage-header-values {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.3rem 0;
+    }
+
+    .record-stage-header-values span {
+      width: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      padding: 0.4rem 0;
+    }
+
+    .record-stage-header-values span:first-child {
+      background: #e57197;
+    }
+
+    .record-stage-header-values span:last-child {
+      background: #52cec5;
+    }
+
+    .record-stage-header-values span.header-kill {
+      background: #000;
+    }
+
+    .record-stage-header-values span.header-egg {
+      background: #000;
+    }
+
+    .record-header-icon {
+      width: 2rem;
+      height: 2rem;
+      object-fit: contain;
+    }
+
+    /* ステージ別行 */
+    .record-stage-row {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 0.5rem;
+    }
+
+    .record-stage-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+
+    .record-stage-img {
+      width: 1.8rem;
+      height: 1.8rem;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: url(#stage-outline);
+    }
+
+    .record-stage-name {
+      font-family: "Splatfont2", sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      text-shadow: 1px 1px #000;
+      word-break: break-all;
+    }
+
+    .record-stage-values {
+      display: flex;
+      gap: 0.4rem;
+      background: #202020;
+      border-radius: 9999px;
+      padding: 0.3rem 0;
+      width: calc(5rem * 2 + 0.4rem);
+    }
+
+    .record-stage-val {
+      width: 5rem;
+      text-align: center;
+      font-family: "Splatfont2", "Consolas", monospace;
+      font-size: 1.2rem;
+      color: #fff;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .record-stage-val.max-val,
+    .record-stage-single-val.max-val {
+      color: #e6fa3d;
+    }
+
+    .record-note {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 0.95rem;
+      color: #fff;
+      text-align: center;
+      margin-top: 0.8rem;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 640px) {
+      .record-note { font-size: 0.85rem; }
+    }
+
+    @media (max-width: 450px) {
+      .record-note { font-size: 0.8rem; }
+    }
+
+    .ex-mark {
+      font-size: 0.8em;
+      color: #ff6b35;
+      margin-left: 0.1em;
+      vertical-align: baseline;
+      position: relative;
+      top: 0;
+    }
+
+    .record-stage-val.no-data {
+      color: #555;
+      font-size: 1rem;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 450px) {
+      .record-total-value {
+        font-size: 1.2rem;
+        padding: 0.5rem;
+      }
+
+
+      .record-stage-img {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      .record-stage-name {
+        font-size: 0.95rem;
+      }
+
+      .record-stage-val {
+        font-size: 1rem;
+        width: 4rem;
+      }
+
+      .record-stage-val.no-data {
+        font-size: 0.85rem;
+      }
+
+      .record-stage-header-values span {
+        width: 4rem;
+        padding: 0.5rem 0;
+      }
+
+      .record-stage-values {
+        width: calc(4rem * 2 + 0.4rem);
+      }
+
+      .record-header-icon {
+        width: 1.7rem;
+        height: 1.7rem;
+      }
+
+    }
+
+    @media (max-width: 374px) {
+      .record-stage-name {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (min-width: 800px) {
+      .record-stage-img {
+        width: 2.4rem;
+        height: 2.4rem;
+      }
+
+      .record-stage-name {
+        font-size: 1.35rem;
+      }
+
+      .record-stage-val {
+        font-size: 1.5rem;
+        width: 6rem;
+      }
+
+      .record-stage-val.no-data {
+        font-size: 1.2rem;
+      }
+
+
+
+      .record-stage-header-values span {
+        width: 6rem;
+      }
+
+      .record-stage-values {
+        width: calc(6rem * 2 + 0.4rem);
+      }
+
+      .record-total-value {
+        font-size: 1.8rem;
+      }
+
+      .record-header-icon {
+        width: 2.4rem;
+        height: 2.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <filter id="stage-outline" color-interpolation-filters="sRGB">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.5" result="expanded"/>
+        <feFlood flood-color="#fff" result="white"/>
+        <feComposite in="white" in2="expanded" operator="in" result="outline"/>
+        <feMerge>
+          <feMergeNode in="outline"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+  <header class="header-inline">
+    <a href="index.html" class="back-link"><img src="png/btn_prev.png" alt="トップへ" class="back-btn-img"></a>
+    <h1>個人記録</h1>
+  </header>
+
+  <main>
+    <section id="personal-actions">
+      <p class="scenario-desc">記録はブラウザに保存されます（無期限）。iPhoneでは7日間未訪問で消える場合があります。<br class="br-wide">ログインするとクラウド保存され、どの端末からでも利用できます。</p>
+      <div class="scenario-buttons">
+        <button class="scenario-btn" id="btn-add-record">記録を入力</button>
+        <button class="scenario-btn" id="btn-edit-record">記録を修正</button>
+      </div>
+    </section>
+
+    <!-- 記録入力フォーム -->
+    <section id="personal-post-section">
+      <h2 class="search-heading">記録を入力</h2>
+
+      <div class="pform-card">
+        <!-- ステージ -->
+        <div class="pform-row">
+          <span class="pform-label">ステージ<span class="pform-required-tag">必須</span></span>
+          <select id="p-stage-select" class="pform-select">
+            <option value="アラマキ砦">アラマキ砦</option>
+            <option value="ムニ・エール海洋発電所">ムニ・エール海洋発電所</option>
+            <option value="シェケナダム">シェケナダム</option>
+            <option value="難破船ドン・ブラコ">難破船ドン・ブラコ</option>
+            <option value="すじこジャンクション跡">すじこジャンクション跡</option>
+            <option value="トキシラズいぶし工房">トキシラズいぶし工房</option>
+            <option value="どんぴこ闘技場">どんぴこ闘技場</option>
+          </select>
+        </div>
+
+        <!-- キケン度 -->
+        <div class="pform-row">
+          <span class="pform-label">キケン度<span class="pform-required-tag">必須</span></span>
+          <div style="display:flex;align-items:center;gap:0.3rem;">
+            <input type="text" id="p-danger-input" class="pform-input" style="max-width:120px;" placeholder="0" inputmode="numeric" autocomplete="off">
+            <span style="color:#e0e0e0;font-size:0.95rem;">%</span>
+          </div>
+        </div>
+
+        <!-- 支給ブキ -->
+        <div class="pform-row" id="p-weapon-section">
+          <span class="pform-label">支給ブキ<span class="pform-required-tag">必須</span></span>
+          <div class="pweapon-slots" id="p-weapon-slots"></div>
+          <button type="button" class="pweapon-add-btn" id="p-weapon-add-btn">＋</button>
+          <div class="pmatch-result" id="p-match-result"></div>
+        </div>
+
+        <!-- WAVE内容 -->
+        <div class="pform-row">
+          <span class="pform-label">WAVE内容</span>
+          <div class="pwave-cards">
+            <!-- WAVE 1 -->
+            <div class="pwave-card" data-wave="1">
+              <div class="pwave-card-title">WAVE 1 <span class="pform-required-tag">必須</span></div>
+              <div class="pwave-fields">
+                <div class="pwave-field">
+                  <span class="pwave-field-label">潮位</span>
+                  <select class="pwave-select p-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">内容</span>
+                  <select class="pwave-select p-wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">納品数</span>
+                  <input type="text" class="pwave-input p-wave-delivery" placeholder="0" inputmode="numeric" autocomplete="off">
+                </div>
+              </div>
+            </div>
+            <!-- WAVE 2 -->
+            <div class="pwave-card" data-wave="2">
+              <div class="pwave-card-title">WAVE 2 <span class="pform-required-tag">必須</span></div>
+              <div class="pwave-fields">
+                <div class="pwave-field">
+                  <span class="pwave-field-label">潮位</span>
+                  <select class="pwave-select p-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">内容</span>
+                  <select class="pwave-select p-wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">納品数</span>
+                  <input type="text" class="pwave-input p-wave-delivery" placeholder="0" inputmode="numeric" autocomplete="off">
+                </div>
+              </div>
+            </div>
+            <!-- WAVE 3 -->
+            <div class="pwave-card" data-wave="3">
+              <div class="pwave-card-title">WAVE 3 <span class="pform-required-tag">必須</span></div>
+              <div class="pwave-fields">
+                <div class="pwave-field">
+                  <span class="pwave-field-label">潮位</span>
+                  <select class="pwave-select p-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">内容</span>
+                  <select class="pwave-select p-wave-event">
+                    <option value="">-</option>
+                    <option value="昼">昼</option>
+                    <option value="ラッシュ">ラッシュ</option>
+                    <option value="霧">霧</option>
+                    <option value="グリル発進">グリル発進</option>
+                    <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+                    <option value="キンシャケ探し">キンシャケ探し</option>
+                    <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+                    <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+                    <option value="巨大タツマキ">巨大タツマキ</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">納品数</span>
+                  <input type="text" class="pwave-input p-wave-delivery" placeholder="0" inputmode="numeric" autocomplete="off">
+                </div>
+              </div>
+            </div>
+            <!-- EX-WAVE -->
+            <div class="pwave-card" data-wave="extra">
+              <div class="pwave-card-title">EX-WAVE</div>
+              <div class="pwave-fields">
+                <div class="pwave-field">
+                  <span class="pwave-field-label">潮位</span>
+                  <select class="pwave-select p-wave-tide">
+                    <option value="">-</option>
+                    <option value="普通">普通</option>
+                    <option value="満潮">満潮</option>
+                    <option value="干潮">干潮</option>
+                  </select>
+                </div>
+                <div class="pwave-field">
+                  <span class="pwave-field-label">オカシラ</span>
+                  <select class="pwave-select p-wave-boss">
+                    <option value="">-</option>
+                    <option value="ヨコヅナ">ヨコヅナ</option>
+                    <option value="タツ">タツ</option>
+                    <option value="ジョー">ジョー</option>
+                    <option value="オカシラ連合">オカシラ連合</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- あなたのリザルト -->
+        <div class="pform-row">
+          <span class="pform-label">あなたのリザルト<span class="pform-required-tag">必須</span></span>
+          <div class="presult-card">
+            <div class="presult-fields">
+              <div class="presult-field">
+                <span class="pwave-field-label">オオモノシャケ討伐数</span>
+                <input type="text" class="pwave-input" id="p-result-kill" placeholder="0" inputmode="numeric" autocomplete="off">
+              </div>
+              <div class="presult-field">
+                <span class="pwave-field-label">納品数</span>
+                <input type="text" class="pwave-input" id="p-result-deliver" placeholder="0" inputmode="numeric" autocomplete="off">
+              </div>
+              <div class="presult-field">
+                <span class="pwave-field-label">納品アシスト</span>
+                <input type="text" class="pwave-input" id="p-result-assist" placeholder="0" inputmode="numeric" autocomplete="off">
+              </div>
+              <div class="presult-field">
+                <span class="pwave-field-label">赤イクラ</span>
+                <input type="text" class="pwave-input" id="p-result-poweregg" placeholder="0" inputmode="numeric" autocomplete="off">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 保存ボタン -->
+      <button type="button" class="psubmit-btn" id="p-submit-btn">記録を保存する</button>
+    </section>
+
+    <!-- 記録修正セクション -->
+    <section id="personal-edit-section">
+      <h2 class="search-heading">記録を修正</h2>
+      <div class="pwave-card">
+        <div class="pwave-fields">
+          <div class="pwave-field">
+            <span class="pwave-field-label">カスタム</span>
+            <select class="pwave-select" id="pedit-sort-select">
+              <option value="newest">新しい順</option>
+              <option value="oldest">古い順</option>
+              <option value="delivery-desc">総合金が多い順</option>
+              <option value="poweregg-desc">赤イクラが多い順</option>
+              <option value="kill-desc">討伐数が多い順</option>
+            </select>
+          </div>
+          <div class="pwave-field">
+            <span class="pwave-field-label">ステージ</span>
+            <select class="pwave-select" id="pedit-stage-filter">
+              <option value="">すべて</option>
+              <option value="アラマキ砦">アラマキ砦</option>
+              <option value="ムニ・エール海洋発電所">ムニ・エール海洋発電所</option>
+              <option value="シェケナダム">シェケナダム</option>
+              <option value="難破船ドン・ブラコ">難破船ドン・ブラコ</option>
+              <option value="すじこジャンクション跡">すじこジャンクション跡</option>
+              <option value="トキシラズいぶし工房">トキシラズいぶし工房</option>
+              <option value="どんぴこ闘技場">どんぴこ闘技場</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="pedit-list" style="margin-top:1.2rem;"></div>
+      <div id="pedit-pagination" class="pedit-pagination"></div>
+    </section>
+
+    <!-- 納品記録 -->
+    <section class="personal-card">
+      <div class="record-section-title">
+        <h2>総合納品記録</h2>
+        <div class="rank-toggle">
+          <button type="button" class="rank-btn active" data-rank="1st">1st</button>
+          <button type="button" class="rank-btn" data-rank="2nd">2nd</button>
+        </div>
+      </div>
+
+      <!-- 7ステ総合 -->
+      <div class="record-total">
+        <div class="record-total-card">
+          <div class="record-total-icon-area">
+            <img src="png/icon_day.png" alt="昼のみ" class="record-total-icon">
+          </div>
+          <div class="record-total-value">-</div>
+        </div>
+        <div class="record-total-card">
+          <div class="record-total-icon-area">
+            <img src="png/icon_night.png" alt="夜あり" class="record-total-icon">
+          </div>
+          <div class="record-total-value">-</div>
+        </div>
+      </div>
+
+      <!-- ステージ別 -->
+      <div class="record-table-area">
+      <div class="record-stage-list">
+        <div class="record-stage-header">
+          <span class="record-stage-header-name"></span>
+          <div class="record-stage-header-values">
+            <span><img src="png/icon_day.png" alt="昼のみ" class="record-header-icon"></span>
+            <span><img src="png/icon_night.png" alt="夜あり" class="record-header-icon"></span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_sockeye_station.png" alt="">
+            <span class="record-stage-name">アラマキ砦</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_gone_fission_hydroplant.png" alt="">
+            <span class="record-stage-name">ムニ・エール海洋発電所</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_spawning_grounds.png" alt="">
+            <span class="record-stage-name">シェケナダム</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_marooners_bay.png" alt="">
+            <span class="record-stage-name">難破船ドン・ブラコ</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_jammin_salmon_junction.png" alt="">
+            <span class="record-stage-name">すじこジャンクション跡</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_salmonid_smokeyard.png" alt="">
+            <span class="record-stage-name">トキシラズいぶし工房</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_bonerattle_arena.png" alt="">
+            <span class="record-stage-name">どんぴこ闘技場</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- WAVE種類別納品記録 -->
+    <section class="personal-card">
+      <div class="record-section-title">
+        <h2>WAVE種類別納品記録</h2>
+      </div>
+
+      <div class="wave-filter">
+        <div class="wave-filter-field">
+          <span class="wave-filter-label">潮位</span>
+          <select class="wave-filter-select" id="wave-tide-filter">
+            <option value="普通" selected>普通</option>
+            <option value="満潮">満潮</option>
+            <option value="干潮">干潮</option>
+          </select>
+        </div>
+        <div class="wave-filter-field">
+          <span class="wave-filter-label">内容</span>
+          <select class="wave-filter-select" id="wave-event-filter">
+            <option value="昼" selected>昼</option>
+            <option value="ラッシュ">ラッシュ</option>
+            <option value="霧">霧</option>
+            <option value="グリル発進">グリル発進</option>
+            <option value="ドスコイ大量発生">ドスコイ大量発生</option>
+            <option value="キンシャケ探し">キンシャケ探し</option>
+            <option value="ハコビヤ襲来">ハコビヤ襲来</option>
+            <option value="ドロシャケ噴出">ドロシャケ噴出</option>
+            <option value="巨大タツマキ">巨大タツマキ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="record-table-area">
+      <div class="record-stage-list">
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_sockeye_station.png" alt="">
+            <span class="record-stage-name">アラマキ砦</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_gone_fission_hydroplant.png" alt="">
+            <span class="record-stage-name">ムニ・エール海洋発電所</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_spawning_grounds.png" alt="">
+            <span class="record-stage-name">シェケナダム</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_marooners_bay.png" alt="">
+            <span class="record-stage-name">難破船ドン・ブラコ</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_jammin_salmon_junction.png" alt="">
+            <span class="record-stage-name">すじこジャンクション跡</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_salmonid_smokeyard.png" alt="">
+            <span class="record-stage-name">トキシラズいぶし工房</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_bonerattle_arena.png" alt="">
+            <span class="record-stage-name">どんぴこ闘技場</span>
+          </div>
+          <div class="record-stage-single-val">-</div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- 討伐記録 -->
+    <section class="personal-card">
+      <div class="record-section-title">
+        <h2>個人討伐記録</h2>
+      </div>
+
+      <div class="record-table-area">
+      <div class="record-stage-list">
+        <div class="record-stage-header">
+          <span class="record-stage-header-name"></span>
+          <div class="record-stage-header-values">
+            <span class="header-kill"><img src="png/icon_kill.png" alt="討伐" class="record-header-icon"></span>
+            <span class="header-egg"><img src="png/icon_poweregg_personal.png" alt="赤イクラ" class="record-header-icon"></span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_sockeye_station.png" alt="">
+            <span class="record-stage-name">アラマキ砦</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_gone_fission_hydroplant.png" alt="">
+            <span class="record-stage-name">ムニ・エール海洋発電所</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_spawning_grounds.png" alt="">
+            <span class="record-stage-name">シェケナダム</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_marooners_bay.png" alt="">
+            <span class="record-stage-name">難破船ドン・ブラコ</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_jammin_salmon_junction.png" alt="">
+            <span class="record-stage-name">すじこジャンクション跡</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_salmonid_smokeyard.png" alt="">
+            <span class="record-stage-name">トキシラズいぶし工房</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+
+        <div class="record-stage-row">
+          <div class="record-stage-info">
+            <img class="record-stage-img" src="png/stage_bonerattle_arena.png" alt="">
+            <span class="record-stage-name">どんぴこ闘技場</span>
+          </div>
+          <div class="record-stage-values">
+            <span class="record-stage-val">-</span>
+            <span class="record-stage-val">-</span>
+          </div>
+        </div>
+      </div>
+      </div>
+      <p class="record-note">※EXはオカシラありの記録です。</p>
+    </section>
+  </main>
+
+  <!-- ブキ選択ポップアップ -->
+  <div class="weapon-popup-overlay" id="p-weapon-popup-overlay">
+    <div class="weapon-popup">
+      <div class="weapon-popup-title">ブキを選択</div>
+      <div class="weapon-popup-preview" id="p-weapon-popup-preview"></div>
+      <div class="weapon-popup-grid" id="p-weapon-popup-grid"></div>
+      <div class="weapon-popup-actions">
+        <button type="button" class="weapon-popup-cancel" id="p-weapon-popup-cancel">キャンセル</button>
+        <button type="button" class="weapon-popup-ok" id="p-weapon-popup-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/schedule_data.js"></script>
+  <script src="js/weapon_data.js"></script>
+
+  <script>
+    // 1st/2nd切り替え
+    var currentRank = 1;
+    document.querySelectorAll('.rank-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.rank-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentRank = btn.getAttribute('data-rank') === '2nd' ? 2 : 1;
+        renderAllTables();
+      });
+    });
+
+    // ビュー管理
+    var pViewHistory = [];
+    var pCurrentView = 'top';
+    var pActionsSection = document.getElementById('personal-actions');
+    var pPostSection = document.getElementById('personal-post-section');
+    var pEditSection = document.getElementById('personal-edit-section');
+    var pCards = document.querySelectorAll('.personal-card');
+    var pBackLink = document.querySelector('.back-link');
+
+    function pShowView(view) {
+      pViewHistory.push(pCurrentView);
+      pCurrentView = view;
+      pActionsSection.style.display = view === 'top' ? '' : 'none';
+      pPostSection.style.display = view === 'post' ? 'block' : 'none';
+      pEditSection.style.display = view === 'edit' ? 'block' : 'none';
+      pCards.forEach(function(c) { c.style.display = view === 'top' ? '' : 'none'; });
+      window.scrollTo(0, 0);
+    }
+
+    function pGoBack() {
+      if (pViewHistory.length > 0) {
+        var prev = pViewHistory.pop();
+        pCurrentView = prev;
+        pActionsSection.style.display = prev === 'top' ? '' : 'none';
+        pPostSection.style.display = prev === 'post' ? 'block' : 'none';
+        pEditSection.style.display = prev === 'edit' ? 'block' : 'none';
+        pCards.forEach(function(c) { c.style.display = prev === 'top' ? '' : 'none'; });
+        window.scrollTo(0, 0);
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // 戻るボタン上書き
+    pBackLink.addEventListener('click', function(e) {
+      if (pCurrentView !== 'top') {
+        e.preventDefault();
+        pGoBack();
+      }
+    });
+
+    // 記録を入力ボタン
+    document.getElementById('btn-add-record').addEventListener('click', function() {
+      pEditingId = null;
+      pResetForm();
+      document.querySelector('#personal-post-section .search-heading').textContent = '記録を入力';
+      document.getElementById('p-submit-btn').textContent = '記録を保存する';
+      pShowView('post');
+    });
+
+    // 記録を修正ボタン
+    document.getElementById('btn-edit-record').addEventListener('click', function() {
+      peditCurrentPage = 1;
+      renderEditList();
+      pShowView('edit');
+    });
+
+    // リザルトバリデーション
+    var resultValidation = {
+      'p-result-kill': { min: 0, max: 120, name: '討伐数' },
+      'p-result-deliver': { min: 0, max: 300, name: '納品数' },
+      'p-result-assist': { min: 0, max: 300, name: '納品アシスト' },
+      'p-result-poweregg': { min: 0, max: 9999, name: '赤イクラ' }
+    };
+
+    Object.keys(resultValidation).forEach(function(id) {
+      var el = document.getElementById(id);
+      var rule = resultValidation[id];
+      el.addEventListener('blur', function() {
+        var v = this.value.replace(/[０-９]/g, function(s) {
+          return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+        });
+        this.value = v;
+        var n = parseInt(v, 10);
+        if (v !== '' && (isNaN(n) || n < rule.min || n > rule.max)) {
+          alert(rule.name + 'は' + rule.min + '〜' + rule.max + 'の範囲で入力してください');
+        }
+      });
+    });
+
+    // === ブキ選択 ===
+    var pSelectedWeapons = []; // {name, icon} の配列
+    var pPopupSelectedWeapons = [];
+    var pPopupOverlay = document.getElementById('p-weapon-popup-overlay');
+    var pPopupGrid = document.getElementById('p-weapon-popup-grid');
+    var pPopupPreview = document.getElementById('p-weapon-popup-preview');
+    var pPopupOk = document.getElementById('p-weapon-popup-ok');
+    var pPopupCancel = document.getElementById('p-weapon-popup-cancel');
+    var pWeaponSlots = document.getElementById('p-weapon-slots');
+    var pWeaponAddBtn = document.getElementById('p-weapon-add-btn');
+    var pMatchResult = document.getElementById('p-match-result');
+    var pStageSelect = document.getElementById('p-stage-select');
+    var ICON_DIR = 'png/';
+
+    function pRenderWeaponSlots() {
+      pWeaponSlots.innerHTML = '';
+      for (var i = 0; i < pSelectedWeapons.length; i++) {
+        var w = pSelectedWeapons[i];
+        var slot = document.createElement('div');
+        slot.className = 'pweapon-slot';
+        var img = document.createElement('img');
+        img.src = ICON_DIR + w.icon;
+        img.alt = w.name;
+        img.title = w.name;
+        slot.appendChild(img);
+        var removeBtn = document.createElement('button');
+        removeBtn.className = 'pweapon-slot-remove';
+        removeBtn.textContent = '×';
+        removeBtn.setAttribute('data-index', i);
+        removeBtn.addEventListener('click', function() {
+          var idx = parseInt(this.getAttribute('data-index'), 10);
+          pSelectedWeapons.splice(idx, 1);
+          pMatchResult.textContent = '';
+          pStageSelect.disabled = false;
+          pRenderWeaponSlots();
+        });
+        slot.appendChild(removeBtn);
+        pWeaponSlots.appendChild(slot);
+      }
+      pWeaponAddBtn.disabled = pSelectedWeapons.length >= 4;
+    }
+
+    function pBuildPopupGrid() {
+      pPopupGrid.innerHTML = '';
+      var allWeapons = Object.keys(WEAPON_ICONS);
+      for (var i = 0; i < allWeapons.length; i++) {
+        var name = allWeapons[i];
+        if (name === '？' || name.indexOf('クマサン印') === 0) continue;
+        var iconFile = WEAPON_ICONS[name];
+        var item = document.createElement('div');
+        item.className = 'weapon-popup-item';
+        item.setAttribute('data-weapon', name);
+        item.setAttribute('data-icon', iconFile);
+        item.title = name;
+        var img = document.createElement('img');
+        img.src = ICON_DIR + iconFile;
+        img.alt = name;
+        item.appendChild(img);
+        item.addEventListener('click', function() {
+          var wName = this.getAttribute('data-weapon');
+          var wIcon = this.getAttribute('data-icon');
+          var totalCount = pSelectedWeapons.length + pPopupSelectedWeapons.length;
+          if (this.classList.contains('selected')) {
+            this.classList.remove('selected');
+            for (var r = 0; r < pPopupSelectedWeapons.length; r++) {
+              if (pPopupSelectedWeapons[r].name === wName) {
+                pPopupSelectedWeapons.splice(r, 1);
+                break;
+              }
+            }
+          } else {
+            if (totalCount >= 4) return;
+            this.classList.add('selected');
+            pPopupSelectedWeapons.push({ name: wName, icon: wIcon });
+          }
+          pUpdatePopupDisabled();
+        });
+        pPopupGrid.appendChild(item);
+      }
+    }
+
+    function pUpdatePopupDisabled() {
+      var totalCount = pSelectedWeapons.length + pPopupSelectedWeapons.length;
+      var items = pPopupGrid.querySelectorAll('.weapon-popup-item');
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].classList.contains('selected')) {
+          items[i].classList.remove('popup-disabled');
+        } else if (totalCount >= 4) {
+          items[i].classList.add('popup-disabled');
+        } else {
+          items[i].classList.remove('popup-disabled');
+        }
+      }
+      pRenderPopupPreview();
+    }
+
+    function pRenderPopupPreview() {
+      pPopupPreview.innerHTML = '';
+      var all = pSelectedWeapons.concat(pPopupSelectedWeapons);
+      for (var i = 0; i < 4; i++) {
+        var slot = document.createElement('div');
+        slot.className = 'weapon-popup-preview-slot';
+        if (i < all.length) {
+          slot.classList.add('filled');
+          var img = document.createElement('img');
+          img.src = ICON_DIR + all[i].icon;
+          img.alt = all[i].name;
+          slot.appendChild(img);
+        }
+        pPopupPreview.appendChild(slot);
+      }
+    }
+
+    pWeaponAddBtn.addEventListener('click', function() {
+      if (pSelectedWeapons.length >= 4) return;
+      pPopupSelectedWeapons = [];
+      var items = pPopupGrid.querySelectorAll('.weapon-popup-item');
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.remove('selected');
+        items[i].classList.remove('popup-disabled');
+      }
+      pRenderPopupPreview();
+      pPopupOverlay.classList.add('active');
+    });
+
+    pPopupOk.addEventListener('click', function() {
+      if (pPopupSelectedWeapons.length === 0) return;
+      for (var i = 0; i < pPopupSelectedWeapons.length; i++) {
+        if (pSelectedWeapons.length >= 4) break;
+        pSelectedWeapons.push(pPopupSelectedWeapons[i]);
+      }
+      pPopupSelectedWeapons = [];
+      pPopupOverlay.classList.remove('active');
+      pRenderWeaponSlots();
+      if (pSelectedWeapons.length === 4) {
+        pMatchWeapons();
+      }
+    });
+
+    pPopupCancel.addEventListener('click', function() {
+      pPopupSelectedWeapons = [];
+      pPopupOverlay.classList.remove('active');
+    });
+
+    pPopupOverlay.addEventListener('click', function(e) {
+      if (e.target === pPopupOverlay) {
+        pPopupSelectedWeapons = [];
+        pPopupOverlay.classList.remove('active');
+      }
+    });
+
+    pBuildPopupGrid();
+
+    // === 開催Noマッチング ===
+    function pMatchWeapons() {
+      if (pSelectedWeapons.length !== 4) {
+        pMatchResult.textContent = '';
+        pStageSelect.disabled = false;
+        return;
+      }
+      var sorted = pSelectedWeapons.map(function(w) { return w.name; }).sort();
+      var matches = [];
+      if (typeof SCHEDULE_DATA !== 'undefined') {
+        SCHEDULE_DATA.forEach(function(s) {
+          // ビッグラン除外
+          if (s.eventType === 'bigrun' || s.eventType === 'bigbigrun') return;
+          // No.51以降（バイトシナリオ実装後）
+          if (s.no < 51) return;
+          // ランダム・黄金編成除外
+          var ws = s.weapons || [];
+          if (ws.indexOf('？') >= 0) return;
+          if (ws.length !== 4) return;
+          var wsSorted = ws.slice().sort();
+          if (wsSorted[0] === sorted[0] && wsSorted[1] === sorted[1] && wsSorted[2] === sorted[2] && wsSorted[3] === sorted[3]) {
+            matches.push(s);
+          }
+        });
+      }
+      if (matches.length === 1) {
+        pMatchResult.innerHTML = '<span class="pmatch-result-ok">No.' + matches[0].no + ' ' + matches[0].stage + ' にマッチしました</span>';
+        pStageSelect.value = matches[0].stage;
+        pStageSelect.disabled = true;
+      } else if (matches.length > 1) {
+        var latest = matches[matches.length - 1];
+        pMatchResult.innerHTML = '<span class="pmatch-result-ok">No.' + latest.no + ' ' + latest.stage + ' にマッチしました（' + matches.length + '件中最新）</span>';
+        pStageSelect.value = latest.stage;
+        pStageSelect.disabled = true;
+      } else {
+        pMatchResult.innerHTML = '<span class="pmatch-result-ng">マッチする開催回が見つかりません</span>';
+        pStageSelect.disabled = false;
+      }
+    }
+
+    // === 列ごとの最大値ハイライト ===
+    function highlightMaxInColumns() {
+      document.querySelectorAll('.personal-card').forEach(function(card) {
+        // 2列テーブル（納品記録・討伐記録）
+        var rows = card.querySelectorAll('.record-stage-row');
+        if (rows.length === 0) return;
+        var firstRow = rows[0].querySelector('.record-stage-values');
+        if (!firstRow) {
+          // 単一セル（WAVE種類別）
+          var singleVals = card.querySelectorAll('.record-stage-single-val');
+          var maxVal = -1;
+          singleVals.forEach(function(el) {
+            el.classList.remove('max-val');
+            var n = parseInt(el.textContent, 10);
+            if (!isNaN(n) && n > maxVal) maxVal = n;
+          });
+          if (maxVal > 0) {
+            singleVals.forEach(function(el) {
+              if (parseInt(el.textContent, 10) === maxVal) el.classList.add('max-val');
+            });
+          }
+          return;
+        }
+        var colCount = firstRow.querySelectorAll('.record-stage-val').length;
+        for (var col = 0; col < colCount; col++) {
+          var maxVal = -1;
+          var cells = [];
+          rows.forEach(function(row) {
+            var vals = row.querySelectorAll('.record-stage-val');
+            if (vals[col]) {
+              vals[col].classList.remove('max-val');
+              cells.push(vals[col]);
+              var n = parseInt(vals[col].textContent, 10);
+              if (!isNaN(n) && n > maxVal) maxVal = n;
+            }
+          });
+          if (maxVal > 0) {
+            cells.forEach(function(el) {
+              if (parseInt(el.textContent, 10) === maxVal) el.classList.add('max-val');
+            });
+          }
+        }
+      });
+    }
+
+    // === 7ステ合計計算 ===
+    function updateTotals() {
+      // 総合納品記録カード（最初のpersonal-card）
+      var deliveryCard = document.querySelectorAll('.personal-card')[0];
+      if (!deliveryCard) return;
+      var rows = deliveryCard.querySelectorAll('.record-stage-row');
+      var totalCards = deliveryCard.querySelectorAll('.record-total-value');
+      if (totalCards.length < 2) return;
+
+      // 昼(col0)と夜(col1)の合計
+      for (var col = 0; col < 2; col++) {
+        var sum = 0;
+        var hasAny = false;
+        rows.forEach(function(row) {
+          var vals = row.querySelectorAll('.record-stage-val');
+          if (vals[col]) {
+            var n = parseInt(vals[col].textContent, 10);
+            if (!isNaN(n)) {
+              sum += n;
+              hasAny = true;
+            }
+          }
+        });
+        totalCards[col].textContent = hasAny ? sum : '-';
+      }
+    }
+
+    updateTotals();
+    highlightMaxInColumns();
+
+    // === 潮位×内容 存在しない組み合わせバリデーション ===
+    var INVALID_COMBOS = [
+      ['干潮', 'ラッシュ'],
+      ['干潮', 'グリル発進'],
+      ['普通', 'ドスコイ大量発生'],
+      ['満潮', 'ドスコイ大量発生'],
+      ['干潮', 'キンシャケ探し'],
+      ['干潮', 'ドロシャケ噴出'],
+      ['普通', '巨大タツマキ'],
+      ['満潮', '巨大タツマキ']
+    ];
+
+    document.querySelectorAll('.pwave-card').forEach(function(card) {
+      var tideEl = card.querySelector('.p-wave-tide');
+      var eventEl = card.querySelector('.p-wave-event');
+      if (!tideEl || !eventEl) return;
+
+      function checkCombo() {
+        var tide = tideEl.value;
+        var event = eventEl.value;
+        if (!tide || !event) return;
+        for (var i = 0; i < INVALID_COMBOS.length; i++) {
+          if (INVALID_COMBOS[i][0] === tide && INVALID_COMBOS[i][1] === event) {
+            alert(tide + '×' + event + ' の組み合わせは存在しません');
+            eventEl.value = '';
+            return;
+          }
+        }
+      }
+
+      tideEl.addEventListener('change', checkCombo);
+      eventEl.addEventListener('change', checkCombo);
+    });
+
+    // キケン度バリデーション
+    document.getElementById('p-danger-input').addEventListener('blur', function() {
+      var v = this.value.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      this.value = v;
+      var n = parseInt(v, 10);
+      if (v !== '' && (isNaN(n) || n < 0 || n > 333)) {
+        alert('キケン度は0〜333の範囲で入力してください');
+      }
+    });
+
+    // === 保存ボタン バリデーション ===
+    document.getElementById('p-submit-btn').addEventListener('click', function() {
+      var errors = [];
+
+      // キケン度
+      var danger = document.getElementById('p-danger-input').value.trim();
+      if (danger === '') errors.push('キケン度');
+
+      // 支給ブキ
+      if (pSelectedWeapons.length !== 4) errors.push('支給ブキ（4つ選択してください）');
+
+      // WAVE 1-3: 潮位・内容・納品数
+      var waveCards = document.querySelectorAll('#personal-post-section .pwave-card');
+      for (var i = 0; i < waveCards.length; i++) {
+        var card = waveCards[i];
+        var waveNum = card.getAttribute('data-wave');
+        if (waveNum === 'extra') continue; // EXはスキップ
+
+        var tide = card.querySelector('.p-wave-tide');
+        var event = card.querySelector('.p-wave-event');
+        var delivery = card.querySelector('.p-wave-delivery');
+
+        if (tide && !tide.value) errors.push('WAVE ' + waveNum + ' の潮位');
+        if (event && !event.value) errors.push('WAVE ' + waveNum + ' の内容');
+        if (delivery && delivery.value.trim() === '') errors.push('WAVE ' + waveNum + ' の納品数');
+      }
+
+      // あなたのリザルト
+      var resultKill = document.getElementById('p-result-kill').value.trim();
+      var resultDeliver = document.getElementById('p-result-deliver').value.trim();
+      var resultAssist = document.getElementById('p-result-assist').value.trim();
+      var resultPoweregg = document.getElementById('p-result-poweregg').value.trim();
+      if (resultKill === '') errors.push('オオモノシャケ討伐数');
+      if (resultDeliver === '') errors.push('納品数');
+      if (resultAssist === '') errors.push('納品アシスト');
+      if (resultPoweregg === '') errors.push('赤イクラ');
+
+      // バリデーションエラー
+      if (errors.length > 0) {
+        alert('以下の項目を入力してください:\n\n' + errors.join('\n'));
+        return;
+      }
+
+      // リザルト範囲チェック
+      var rangeErrors = [];
+      var killVal = parseInt(resultKill, 10);
+      var deliverVal = parseInt(resultDeliver, 10);
+      var assistVal = parseInt(resultAssist, 10);
+      var eggVal = parseInt(resultPoweregg, 10);
+      if (isNaN(killVal) || killVal < 0 || killVal > 120) rangeErrors.push('オオモノシャケ討伐数（0〜120）');
+      if (isNaN(deliverVal) || deliverVal < 0 || deliverVal > 300) rangeErrors.push('納品数（0〜300）');
+      if (isNaN(assistVal) || assistVal < 0 || assistVal > 300) rangeErrors.push('納品アシスト（0〜300）');
+      if (isNaN(eggVal) || eggVal < 0 || eggVal > 9999) rangeErrors.push('赤イクラ（0〜9999）');
+
+      var dangerVal = parseInt(danger, 10);
+      if (isNaN(dangerVal) || dangerVal < 0 || dangerVal > 333) rangeErrors.push('キケン度（0〜333）');
+
+      if (rangeErrors.length > 0) {
+        alert('以下の項目が範囲外です:\n\n' + rangeErrors.join('\n'));
+        return;
+      }
+
+      // === localStorageに保存 ===
+      var stage = pStageSelect.value;
+      var waves = [];
+      var waveCards = document.querySelectorAll('#personal-post-section .pwave-card');
+      for (var wi = 0; wi < waveCards.length; wi++) {
+        var wc = waveCards[wi];
+        var wNum = wc.getAttribute('data-wave');
+        var wTide = (wc.querySelector('.p-wave-tide') || {}).value || '';
+        var wEvent = (wc.querySelector('.p-wave-event') || {}).value || '';
+        var wBoss = (wc.querySelector('.p-wave-boss') || {}).value || '';
+        var wDelivery = (wc.querySelector('.p-wave-delivery') || {}).value || '';
+        waves.push({
+          wave: wNum,
+          tide: wTide,
+          event: wEvent || wBoss,
+          delivery: wDelivery ? parseInt(wDelivery, 10) : null
+        });
+      }
+
+      // 昼のみ判定: WAVE1-3の内容がすべて「昼」
+      var isAllDay = true;
+      for (var d = 0; d < waves.length; d++) {
+        if (waves[d].wave === 'extra') continue;
+        if (waves[d].event !== '昼') { isAllDay = false; break; }
+      }
+
+      // 総納品数 = WAVE1-3の納品数合計
+      var totalDelivery = 0;
+      for (var t = 0; t < waves.length; t++) {
+        if (waves[t].wave === 'extra') continue;
+        if (waves[t].delivery !== null) totalDelivery += waves[t].delivery;
+      }
+
+      var record = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        timestamp: Date.now(),
+        stage: stage,
+        danger: dangerVal,
+        weapons: pSelectedWeapons.map(function(w) { return w.name; }),
+        waves: waves,
+        isAllDay: isAllDay,
+        totalDelivery: totalDelivery,
+        result: {
+          kill: killVal,
+          deliver: deliverVal,
+          assist: assistVal,
+          poweregg: eggVal
+        }
+      };
+
+      // 編集時のID設定
+      if (pEditingId) {
+        record.id = pEditingId;
+        record.timestamp = Date.now();
+      }
+
+      // 保存（Firestore or localStorage）
+      saveRecord(record, function() {
+        pEditingId = null;
+
+        // テーブル再描画
+        renderAllTables();
+
+        // ビュー履歴をクリアしてトップに戻る
+        pViewHistory = [];
+        pCurrentView = 'top';
+        pActionsSection.style.display = '';
+        pPostSection.style.display = 'none';
+        pEditSection.style.display = 'none';
+        pCards.forEach(function(c) { c.style.display = ''; });
+        window.scrollTo(0, 0);
+
+        // フォームリセット
+        pResetForm();
+
+        alert('記録を保存しました');
+      });
+    });
+
+    // === フォームリセット ===
+    function pResetForm() {
+      pSelectedWeapons = [];
+      pRenderWeaponSlots();
+      pMatchResult.textContent = '';
+      pStageSelect.disabled = false;
+      pStageSelect.selectedIndex = 0;
+      document.getElementById('p-danger-input').value = '';
+      document.querySelectorAll('#personal-post-section .pwave-card').forEach(function(card) {
+        card.querySelectorAll('select').forEach(function(s) { s.selectedIndex = 0; });
+        card.querySelectorAll('input').forEach(function(inp) { inp.value = ''; });
+      });
+      document.getElementById('p-result-kill').value = '';
+      document.getElementById('p-result-deliver').value = '';
+      document.getElementById('p-result-assist').value = '';
+      document.getElementById('p-result-poweregg').value = '';
+    }
+
+    // === テーブル描画 ===
+    var STAGES = ['アラマキ砦','ムニ・エール海洋発電所','シェケナダム','難破船ドン・ブラコ','すじこジャンクション跡','トキシラズいぶし工房','どんぴこ闘技場'];
+
+    // === データアクセス層 ===
+    var cachedRecords = null; // Firestoreから読み込んだキャッシュ
+
+    function isLoggedIn() {
+      return FB && FB.available && FB.currentUser;
+    }
+
+    function getRecords() {
+      if (cachedRecords !== null) return cachedRecords;
+      return JSON.parse(localStorage.getItem('personalRecords') || '[]');
+    }
+
+    function saveRecord(record, callback) {
+      if (isLoggedIn()) {
+        FB.savePersonalRecord(record, function(err) {
+          if (err) { alert('保存に失敗しました: ' + err.message); return; }
+          // キャッシュ更新
+          if (cachedRecords !== null) {
+            var found = false;
+            for (var i = 0; i < cachedRecords.length; i++) {
+              if (cachedRecords[i].id === record.id) {
+                cachedRecords[i] = record;
+                found = true;
+                break;
+              }
+            }
+            if (!found) cachedRecords.push(record);
+          }
+          if (callback) callback();
+        });
+      } else {
+        var records = JSON.parse(localStorage.getItem('personalRecords') || '[]');
+        if (pEditingId) {
+          for (var i = 0; i < records.length; i++) {
+            if (records[i].id === record.id) { records[i] = record; break; }
+          }
+        } else {
+          records.push(record);
+        }
+        localStorage.setItem('personalRecords', JSON.stringify(records));
+        if (callback) callback();
+      }
+    }
+
+    function deleteRecord(recordId, callback) {
+      if (isLoggedIn()) {
+        FB.deletePersonalRecord(recordId, function(err) {
+          if (err) { alert('削除に失敗しました: ' + err.message); return; }
+          if (cachedRecords !== null) {
+            cachedRecords = cachedRecords.filter(function(r) { return r.id !== recordId; });
+          }
+          if (callback) callback();
+        });
+      } else {
+        var records = JSON.parse(localStorage.getItem('personalRecords') || '[]');
+        records = records.filter(function(r) { return r.id !== recordId; });
+        localStorage.setItem('personalRecords', JSON.stringify(records));
+        if (callback) callback();
+      }
+    }
+
+    function loadRecordsFromFirestore(callback) {
+      if (!isLoggedIn()) return callback();
+      FB.getPersonalRecords(function(err, records) {
+        if (err) { console.error('Firestore読み込みエラー:', err); return callback(); }
+        cachedRecords = records;
+        callback();
+      });
+    }
+
+    // ログイン時: localStorageをFirestoreにマージ → localStorage削除 → Firestoreから再読込
+    function onLogin() {
+      var localRecords = JSON.parse(localStorage.getItem('personalRecords') || '[]');
+      if (localRecords.length > 0) {
+        FB.mergeLocalRecords(localRecords, function(err) {
+          if (err) console.error('マージエラー:', err);
+          localStorage.removeItem('personalRecords');
+          loadRecordsFromFirestore(function() {
+            renderAllTables();
+          });
+        });
+      } else {
+        loadRecordsFromFirestore(function() {
+          renderAllTables();
+        });
+      }
+    }
+
+    // ログアウト時: キャッシュクリア → localStorageから読み直し
+    function onLogout() {
+      cachedRecords = null;
+      renderAllTables();
+    }
+
+    // 認証状態変更リスナー
+    if (typeof FB !== 'undefined') {
+      FB.onAuthChange(function(user) {
+        if (user) {
+          onLogin();
+        } else {
+          onLogout();
+        }
+      });
+    }
+
+    function renderAllTables() {
+      var records = getRecords();
+      renderDeliveryTable(records);
+      renderWaveTable(records);
+      renderKillTable(records);
+      updateTotals();
+      highlightMaxInColumns();
+    }
+
+    function getNthMax(arr, n) {
+      // 配列から重複除去・降順ソートしてn番目(1-based)を返す
+      var unique = [];
+      for (var i = 0; i < arr.length; i++) {
+        if (unique.indexOf(arr[i]) === -1) unique.push(arr[i]);
+      }
+      unique.sort(function(a, b) { return b - a; });
+      return n <= unique.length ? unique[n - 1] : null;
+    }
+
+    function renderDeliveryTable(records) {
+      var deliveryCard = document.querySelectorAll('.personal-card')[0];
+      if (!deliveryCard) return;
+      var rows = deliveryCard.querySelectorAll('.record-stage-row');
+
+      rows.forEach(function(row) {
+        var stageName = row.querySelector('.record-stage-name').textContent;
+        var vals = row.querySelectorAll('.record-stage-val');
+
+        var dayVals = [];
+        var nightVals = [];
+        records.forEach(function(r) {
+          if (r.stage !== stageName) return;
+          if (r.isAllDay) {
+            dayVals.push(r.totalDelivery);
+          } else {
+            nightVals.push(r.totalDelivery);
+          }
+        });
+
+        var dayVal = getNthMax(dayVals, currentRank);
+        var nightVal = getNthMax(nightVals, currentRank);
+        vals[0].textContent = dayVal !== null ? dayVal : '-';
+        vals[1].textContent = nightVal !== null ? nightVal : '-';
+      });
+    }
+
+    function renderWaveTable(records) {
+      // WAVE種類別納品記録: 選択した潮位×内容のステージ別最高WAVE納品数
+      var tideFilter = document.getElementById('wave-tide-filter').value;
+      var eventFilter = document.getElementById('wave-event-filter').value;
+      var waveCard = document.querySelectorAll('.personal-card')[1];
+      if (!waveCard) return;
+      var rows = waveCard.querySelectorAll('.record-stage-row');
+
+      rows.forEach(function(row) {
+        var stageName = row.querySelector('.record-stage-name').textContent;
+        var valEl = row.querySelector('.record-stage-single-val');
+
+        var maxVal = null;
+        records.forEach(function(r) {
+          if (r.stage !== stageName) return;
+          (r.waves || []).forEach(function(w) {
+            if (w.wave === 'extra') return;
+            if (w.tide === tideFilter && w.event === eventFilter && w.delivery !== null) {
+              if (maxVal === null || w.delivery > maxVal) maxVal = w.delivery;
+            }
+          });
+        });
+
+        valEl.textContent = maxVal !== null ? maxVal : '-';
+      });
+    }
+
+    function hasOkashira(r) {
+      if (!r.waves) return false;
+      for (var i = 0; i < r.waves.length; i++) {
+        if (r.waves[i].wave === 'extra' && r.waves[i].event) return true;
+      }
+      return false;
+    }
+
+    function renderKillTable(records) {
+      // 個人討伐記録: ステージ別の最高討伐数・最高赤イクラ
+      var killCard = document.querySelectorAll('.personal-card')[2];
+      if (!killCard) return;
+      var rows = killCard.querySelectorAll('.record-stage-row');
+
+      rows.forEach(function(row) {
+        var stageName = row.querySelector('.record-stage-name').textContent;
+        var vals = row.querySelectorAll('.record-stage-val');
+
+        var maxKill = null;
+        var maxKillEx = false;
+        var maxEgg = null;
+        var maxEggEx = false;
+        records.forEach(function(r) {
+          if (r.stage !== stageName) return;
+          if (r.result) {
+            var ex = hasOkashira(r);
+            if (maxKill === null || r.result.kill > maxKill) {
+              maxKill = r.result.kill;
+              maxKillEx = ex;
+            }
+            if (maxEgg === null || r.result.poweregg > maxEgg) {
+              maxEgg = r.result.poweregg;
+              maxEggEx = ex;
+            }
+          }
+        });
+
+        if (maxKill !== null) {
+          vals[0].innerHTML = maxKill + (maxKillEx ? '<sub class="ex-mark">EX</sub>' : '');
+        } else {
+          vals[0].textContent = '-';
+        }
+        if (maxEgg !== null) {
+          vals[1].innerHTML = maxEgg + (maxEggEx ? '<sub class="ex-mark">EX</sub>' : '');
+        } else {
+          vals[1].textContent = '-';
+        }
+      });
+    }
+
+    // === 記録修正セクション ===
+    var peditCurrentPage = 1;
+    var PEDIT_PER_PAGE = 20;
+    var pEditingId = null; // 編集中のレコードID
+
+    function renderEditList() {
+      var records = getRecords();
+      var sortVal = document.getElementById('pedit-sort-select').value;
+      records = records.slice(); // コピー
+
+      // ステージフィルタ
+      var stageFilter = document.getElementById('pedit-stage-filter').value;
+      if (stageFilter) {
+        records = records.filter(function(r) { return r.stage === stageFilter; });
+      }
+
+      if (sortVal === 'newest') {
+        records.sort(function(a, b) { return b.timestamp - a.timestamp; });
+      } else if (sortVal === 'oldest') {
+        records.sort(function(a, b) { return a.timestamp - b.timestamp; });
+      } else if (sortVal === 'delivery-desc') {
+        records.sort(function(a, b) { return b.totalDelivery - a.totalDelivery; });
+      } else if (sortVal === 'poweregg-desc') {
+        records.sort(function(a, b) { return (b.result ? b.result.poweregg : 0) - (a.result ? a.result.poweregg : 0); });
+      } else if (sortVal === 'kill-desc') {
+        records.sort(function(a, b) { return (b.result ? b.result.kill : 0) - (a.result ? a.result.kill : 0); });
+      }
+
+      var list = document.getElementById('pedit-list');
+      var pagination = document.getElementById('pedit-pagination');
+      list.innerHTML = '';
+      pagination.innerHTML = '';
+
+      if (records.length === 0) {
+        list.innerHTML = '<div class="pedit-empty">記録がありません</div>';
+        return;
+      }
+
+      var totalPages = Math.ceil(records.length / PEDIT_PER_PAGE);
+      if (peditCurrentPage > totalPages) peditCurrentPage = totalPages;
+      var start = (peditCurrentPage - 1) * PEDIT_PER_PAGE;
+      var pageRecords = records.slice(start, start + PEDIT_PER_PAGE);
+
+      pageRecords.forEach(function(r) {
+        var card = document.createElement('div');
+        card.className = 'pedit-card';
+
+        var info = document.createElement('div');
+        info.className = 'pedit-card-info';
+
+        // 1行目: ステージ + キケン度
+        var line1 = document.createElement('div');
+        line1.className = 'pedit-card-line1';
+        var stageEl = document.createElement('span');
+        stageEl.className = 'pedit-card-stage';
+        stageEl.textContent = r.stage;
+        line1.appendChild(stageEl);
+        var dangerEl = document.createElement('span');
+        dangerEl.className = 'pedit-card-danger';
+        dangerEl.innerHTML = 'キケン度 <span class="pedit-card-danger-val">' + r.danger + '%</span>';
+        line1.appendChild(dangerEl);
+        info.appendChild(line1);
+
+        // 2行目: 総合金 + 昼夜バッジ
+        var line2 = document.createElement('div');
+        line2.className = 'pedit-card-line2';
+        var totalEl = document.createElement('span');
+        totalEl.className = 'pedit-card-total';
+        totalEl.innerHTML = '<span class="pedit-card-total-label">総合金</span><img src="png/icon_goldenegg.png" class="pedit-card-total-icon"><span class="pedit-card-total-val">x' + r.totalDelivery + '</span>';
+        line2.appendChild(totalEl);
+        var badgeEl = document.createElement('span');
+        badgeEl.className = 'pedit-card-badge ' + (r.isAllDay ? 'pedit-badge-day' : 'pedit-badge-night');
+        badgeEl.textContent = r.isAllDay ? '昼のみ' : '夜あり';
+        line2.appendChild(badgeEl);
+        info.appendChild(line2);
+
+        // 3行目: WAVE詳細
+        var line2b = document.createElement('div');
+        line2b.className = 'pedit-card-waves';
+        var SHORT_EVENT = {'昼':'昼','ラッシュ':'ラッシュ','霧':'霧','グリル発進':'グリル','ドスコイ大量発生':'ドスコイ','キンシャケ探し':'間欠泉','ハコビヤ襲来':'ハコビヤ','ドロシャケ噴出':'ドロ','巨大タツマキ':'タツマキ'};
+        var SHORT_TIDE = {'普通':'普通','満潮':'満潮','干潮':'干潮'};
+        if (r.waves) {
+          for (var wi = 0; wi < r.waves.length; wi++) {
+            var w = r.waves[wi];
+            if (w.wave === 'extra') {
+              if (w.event) {
+                var exSpan = document.createElement('span');
+                exSpan.className = 'pedit-card-stat';
+                var SHORT_BOSS = {'ヨコヅナ':'ヨコヅナ','タツ':'タツ','ジョー':'ジョー','オカシラ連合':'連合'};
+                var bossShort = SHORT_BOSS[w.event] || w.event;
+                exSpan.innerHTML = '<span class="pedit-wave-badge">EX</span><span class="pedit-card-stat-label">' + bossShort + '</span>';
+                line2b.appendChild(exSpan);
+              }
+              continue;
+            }
+            var wSpan = document.createElement('span');
+            wSpan.className = 'pedit-card-stat';
+            var tideName = SHORT_TIDE[w.tide] || w.tide || '';
+            var eventName = SHORT_EVENT[w.event] || w.event || '';
+            var delVal = w.delivery !== null ? w.delivery : '-';
+            wSpan.innerHTML = '<span class="pedit-wave-badge">W' + w.wave + '</span><span class="pedit-card-stat-label">' + tideName + eventName + '</span><span class="pedit-card-stat-val">' + delVal + '</span>';
+            line2b.appendChild(wSpan);
+          }
+        }
+        info.appendChild(line2b);
+
+        // 4行目: 討伐・金イクラ・赤イクラ
+        var line3 = document.createElement('div');
+        line3.className = 'pedit-card-line3';
+        var killEl = document.createElement('span');
+        killEl.className = 'pedit-card-stat';
+        killEl.innerHTML = '<span class="pedit-card-stat-label">討伐</span><span class="pedit-card-stat-val">x' + r.result.kill + '</span>';
+        line3.appendChild(killEl);
+        var eggEl = document.createElement('span');
+        eggEl.className = 'pedit-card-stat';
+        eggEl.innerHTML = '<img src="png/icon_goldenegg.png" class="pedit-card-stat-icon"><span class="pedit-card-stat-val">x' + r.result.deliver + '<span class="pedit-assist">&lt;' + r.result.assist + '&gt;</span></span>';
+        line3.appendChild(eggEl);
+        var powEl = document.createElement('span');
+        powEl.className = 'pedit-card-stat';
+        powEl.innerHTML = '<img src="png/icon_poweregg.png" class="pedit-card-stat-icon"><span class="pedit-card-stat-val">' + r.result.poweregg + '</span>';
+        line3.appendChild(powEl);
+        info.appendChild(line3);
+
+        // 4行目: タイムスタンプ
+        var line4 = document.createElement('div');
+        line4.className = 'pedit-card-line4';
+        var dateEl = document.createElement('span');
+        dateEl.className = 'pedit-card-date';
+        var d = new Date(r.timestamp);
+        dateEl.textContent = d.getFullYear() + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + ('0' + d.getDate()).slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+        line4.appendChild(dateEl);
+        info.appendChild(line4);
+
+        // ボタン
+        var actions = document.createElement('div');
+        actions.className = 'pedit-card-actions';
+        var editBtn = document.createElement('button');
+        editBtn.className = 'pedit-btn pedit-btn-edit';
+        editBtn.textContent = '編集';
+        editBtn.addEventListener('click', function() {
+          loadRecordToForm(r);
+        });
+        actions.appendChild(editBtn);
+        var deleteBtn = document.createElement('button');
+        deleteBtn.className = 'pedit-btn pedit-btn-delete';
+        deleteBtn.textContent = '削除';
+        deleteBtn.addEventListener('click', function() {
+          if (!confirm('この記録を削除しますか？')) return;
+          deleteRecord(r.id, function() {
+            renderEditList();
+            renderAllTables();
+          });
+        });
+        actions.appendChild(deleteBtn);
+        info.appendChild(line4);
+        card.appendChild(info);
+
+        // ボタン行（常にカード最下部）
+        var line5 = document.createElement('div');
+        line5.className = 'pedit-card-line5';
+        line5.appendChild(actions);
+        card.appendChild(line5);
+
+        list.appendChild(card);
+      });
+
+      // ページネーション
+      if (totalPages > 1) {
+        for (var p = 1; p <= totalPages; p++) {
+          var btn = document.createElement('button');
+          btn.className = 'pedit-page-btn';
+          if (p === peditCurrentPage) btn.classList.add('active');
+          btn.textContent = p;
+          btn.setAttribute('data-page', p);
+          btn.addEventListener('click', function() {
+            peditCurrentPage = parseInt(this.getAttribute('data-page'), 10);
+            renderEditList();
+          });
+          pagination.appendChild(btn);
+        }
+      }
+    }
+
+    function loadRecordToForm(r) {
+      pEditingId = r.id;
+      pResetForm();
+
+      // ステージ
+      pStageSelect.value = r.stage;
+
+      // キケン度
+      document.getElementById('p-danger-input').value = r.danger;
+
+      // ブキ
+      pSelectedWeapons = r.weapons.map(function(name) {
+        return { name: name, icon: WEAPON_ICONS[name] || 'weapon_random.png' };
+      });
+      pRenderWeaponSlots();
+      pMatchWeapons();
+
+      // WAVE
+      var waveCards = document.querySelectorAll('#personal-post-section .pwave-card');
+      for (var i = 0; i < waveCards.length; i++) {
+        var card = waveCards[i];
+        var wNum = card.getAttribute('data-wave');
+        var wData = null;
+        for (var j = 0; j < r.waves.length; j++) {
+          if (r.waves[j].wave === wNum) { wData = r.waves[j]; break; }
+        }
+        if (!wData) continue;
+
+        var tide = card.querySelector('.p-wave-tide');
+        var event = card.querySelector('.p-wave-event');
+        var boss = card.querySelector('.p-wave-boss');
+        var delivery = card.querySelector('.p-wave-delivery');
+
+        if (tide) tide.value = wData.tide || '';
+        if (event) event.value = wData.event || '';
+        if (boss) boss.value = wData.event || '';
+        if (delivery && wData.delivery !== null) delivery.value = wData.delivery;
+      }
+
+      // リザルト
+      document.getElementById('p-result-kill').value = r.result.kill;
+      document.getElementById('p-result-deliver').value = r.result.deliver;
+      document.getElementById('p-result-assist').value = r.result.assist;
+      document.getElementById('p-result-poweregg').value = r.result.poweregg;
+
+      // タイトルとボタンを編集モードに変更
+      document.querySelector('#personal-post-section .search-heading').textContent = '記録を編集';
+      document.getElementById('p-submit-btn').textContent = '記録を更新する';
+
+      pShowView('post');
+    }
+
+    // ソート・フィルタ変更
+    document.getElementById('pedit-sort-select').addEventListener('change', function() {
+      peditCurrentPage = 1;
+      renderEditList();
+    });
+
+    document.getElementById('pedit-stage-filter').addEventListener('change', function() {
+      peditCurrentPage = 1;
+      renderEditList();
+    });
+
+    // WAVE種類別フィルタ変更時に再描画
+    document.getElementById('wave-tide-filter').addEventListener('change', function() { renderAllTables(); });
+    document.getElementById('wave-event-filter').addEventListener('change', function() { renderAllTables(); });
+
+    // 初期描画（ログイン前はlocalStorageから、ログイン後はonAuthChangeで再描画）
+    renderAllTables();
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase_config.js"></script>
+  <script src="js/auth_ui.js"></script>
+</body>
+</html>
