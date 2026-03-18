@@ -1788,6 +1788,10 @@
 
   <script src="js/schedule_data.js"></script>
   <script src="js/weapon_data.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase_config.js"></script>
 
   <script>
     // 1st/2nd切り替え
@@ -2373,19 +2377,10 @@
       if (isLoggedIn()) {
         FB.savePersonalRecord(record, function(err) {
           if (err) { alert('保存に失敗しました: ' + err.message); return; }
-          // キャッシュ更新
-          if (cachedRecords !== null) {
-            var found = false;
-            for (var i = 0; i < cachedRecords.length; i++) {
-              if (cachedRecords[i].id === record.id) {
-                cachedRecords[i] = record;
-                found = true;
-                break;
-              }
-            }
-            if (!found) cachedRecords.push(record);
-          }
-          if (callback) callback();
+          // Firestoreから再読み込みしてキャッシュ更新
+          loadRecordsFromFirestore(function() {
+            if (callback) callback();
+          });
         });
       } else {
         var records = JSON.parse(localStorage.getItem('personalRecords') || '[]');
@@ -2405,10 +2400,9 @@
       if (isLoggedIn()) {
         FB.deletePersonalRecord(recordId, function(err) {
           if (err) { alert('削除に失敗しました: ' + err.message); return; }
-          if (cachedRecords !== null) {
-            cachedRecords = cachedRecords.filter(function(r) { return r.id !== recordId; });
-          }
-          if (callback) callback();
+          loadRecordsFromFirestore(function() {
+            if (callback) callback();
+          });
         });
       } else {
         var records = JSON.parse(localStorage.getItem('personalRecords') || '[]');
@@ -2839,10 +2833,6 @@
     renderAllTables();
   </script>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase_config.js"></script>
   <script src="js/auth_ui.js"></script>
 </body>
 </html>
