@@ -2446,11 +2446,15 @@
     }
 
     // 認証状態変更リスナー
+    var pAuthInitialized = false;
     if (typeof FB !== 'undefined') {
       FB.onAuthChange(function(user) {
+        if (pAuthInitialized && user) return; // 初回以降の重複呼び出し防止
+        pAuthInitialized = !!user;
         if (user) {
           onLogin();
         } else {
+          pAuthInitialized = false;
           onLogout();
         }
       });
