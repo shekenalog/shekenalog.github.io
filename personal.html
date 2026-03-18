@@ -160,10 +160,14 @@
       display: flex;
       align-items: center;
       overflow: hidden;
-      box-shadow: inset 0 0 0 1.5px #3a4a6a;
+      outline: 1.5px solid #3a4a6a;
+      outline-offset: -1.5px;
     }
 
     .record-total-icon-area {
+      align-self: stretch;
+      aspect-ratio: 1;
+      min-height: 0;
       flex-shrink: 0;
       background: #e57197;
       display: flex;
@@ -176,8 +180,8 @@
     }
 
     .record-total-icon {
-      width: 75%;
-      height: 75%;
+      width: 1.8rem;
+      height: 1.8rem;
       object-fit: contain;
     }
 
@@ -2828,21 +2832,23 @@
     document.getElementById('wave-tide-filter').addEventListener('change', function() { renderAllTables(); });
     document.getElementById('wave-event-filter').addEventListener('change', function() { renderAllTables(); });
 
-    // === totalアイコンエリアを正方形に ===
+    // === iOS対応: aspect-ratioフォールバック ===
     function fixTotalIconSquare() {
-      var cards = document.querySelectorAll('.record-total-card');
-      cards.forEach(function(card) {
-        var area = card.querySelector('.record-total-icon-area');
-        if (!area) return;
-        area.style.width = '';
-        area.style.height = '';
-        var h = card.offsetHeight;
-        area.style.width = h + 'px';
-        area.style.height = h + 'px';
+      var areas = document.querySelectorAll('.record-total-icon-area');
+      areas.forEach(function(area) {
+        // aspect-ratioが効いていれば幅>0のはず
+        if (area.offsetWidth > 0) return;
+        var card = area.closest('.record-total-card');
+        if (card) area.style.width = card.offsetHeight + 'px';
       });
     }
 
-    window.addEventListener('resize', fixTotalIconSquare);
+    window.addEventListener('resize', function() {
+      // リサイズ時にリセットしてaspect-ratio再評価
+      var areas = document.querySelectorAll('.record-total-icon-area');
+      areas.forEach(function(a) { a.style.width = ''; });
+      requestAnimationFrame(fixTotalIconSquare);
+    });
 
     // 初期描画（ログイン前はlocalStorageから、ログイン後はonAuthChangeで再描画）
     renderAllTables();
