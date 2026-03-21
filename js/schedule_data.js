@@ -12398,5 +12398,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 776,
+    "year": 2026,
+    "startDate": "03/28 09:00",
+    "endDate": "03/30 01:00",
+    "stage": "アラマキ砦",
+    "boss": "ジョー",
+    "weapons": [
+      "スプラスピナー",
+      "モップリン",
+      ".52ガロン",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
