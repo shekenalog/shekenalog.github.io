@@ -12414,5 +12414,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 777,
+    "year": 2026,
+    "startDate": "03/30 01:00",
+    "endDate": "03/31 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スプラシューター",
+      "ダイナモローラー",
+      "ジムワイパー",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
