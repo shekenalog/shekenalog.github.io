@@ -12446,5 +12446,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 779,
+    "year": 2026,
+    "startDate": "04/02 09:00",
+    "endDate": "04/04 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "スペースシューター",
+      "デンタルワイパーミント",
+      "ケルビン525",
+      "ジェットスイーパー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
