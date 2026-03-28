@@ -12462,5 +12462,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 780,
+    "year": 2026,
+    "startDate": "04/04 01:00",
+    "endDate": "04/05 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
