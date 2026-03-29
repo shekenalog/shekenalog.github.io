@@ -12478,5 +12478,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 781,
+    "year": 2026,
+    "startDate": "04/05 17:00",
+    "endDate": "04/07 09:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "ボトルガイザー",
+      "デュアルスイーパー",
+      "カーボンローラー",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
