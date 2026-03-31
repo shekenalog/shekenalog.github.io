@@ -12494,5 +12494,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 782,
+    "year": 2026,
+    "startDate": "04/07 09:00",
+    "endDate": "04/09 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "ボールドマーカー",
+      "Dark Tetra Dualies",
+      "スパイガジェット",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
