@@ -2,8 +2,11 @@ name: Update Salmon Run Schedules
 
 on:
   schedule:
-    # JST 9:00, 17:00, 1:00 = UTC 0:00, 8:00, 16:00
-    - cron: '0 0,8,16 * * *'
+    # 各切替(JST 9:00/17:00/1:00)の -16分, +6分, +31分, +61分
+    - cron: '44 7,15,23 * * *'
+    - cron: '6 0,8,16 * * *'
+    - cron: '31 0,8,16 * * *'
+    - cron: '1 1,9,17 * * *'
   workflow_dispatch:
 
 permissions:
