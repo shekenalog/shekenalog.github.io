@@ -86,6 +86,7 @@ const WEAPON_MAP = {
   // マニューバー
   "Dapple Dualies": "スパッタリー",
   "Douser Dualies FF": "ガエンFF",
+  "Dark Tetra Dualies": "クアッドホッパーブラック",
   "Dualie Squelchers": "デュアルスイーパー",
   "Glooga Dualies": "ケルビン525",
   "Splat Dualies": "スプラマニューバー",

@@ -12504,7 +12504,7 @@ const SCHEDULE_DATA = [
     "boss": "ジョー",
     "weapons": [
       "ボールドマーカー",
-      "Dark Tetra Dualies",
+      "クアッドホッパーブラック",
       "スパイガジェット",
       "ハイドラント"
     ],
