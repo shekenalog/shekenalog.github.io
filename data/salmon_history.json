@@ -12526,5 +12526,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 784,
+    "year": 2026,
+    "startDate": "04/10 17:00",
+    "endDate": "04/12 09:00",
+    "stage": "シェケナダム",
+    "boss": "タツ",
+    "weapons": [
+      "24式張替傘・甲",
+      "シャープマーカー",
+      "バケットスロッシャー",
+      "Rブラスターエリート"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
