@@ -12542,5 +12542,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 785,
+    "year": 2026,
+    "startDate": "04/12 09:00",
+    "endDate": "04/14 01:00",
+    "stage": "アラマキ砦",
+    "boss": "ジョー",
+    "weapons": [
+      "モップリン",
+      "わかばシューター",
+      "ホットブラスター",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
