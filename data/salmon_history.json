@@ -12558,5 +12558,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 786,
+    "year": 2026,
+    "startDate": "04/14 01:00",
+    "endDate": "04/15 17:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "N-ZAP85",
+      "ガエンFF",
+      "ノヴァブラスター",
+      "ジェットスイーパー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
