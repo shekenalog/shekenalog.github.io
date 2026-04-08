@@ -12574,5 +12574,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 787,
+    "year": 2026,
+    "startDate": "04/15 17:00",
+    "endDate": "04/17 09:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "タツ",
+    "weapons": [
+      "L3リールガン",
+      "ホクサイ",
+      "ワイドローラー",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
