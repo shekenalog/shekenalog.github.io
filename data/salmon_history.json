@@ -12590,5 +12590,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 788,
+    "year": 2026,
+    "startDate": "04/17 09:00",
+    "endDate": "04/19 01:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ジョー",
+    "weapons": [
+      "エクスプロッシャー",
+      "オーバーフロッシャー",
+      "プロモデラーMG",
+      "ソイチューバー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
