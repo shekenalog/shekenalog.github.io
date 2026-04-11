@@ -73,9 +73,9 @@ const WEAPON_MAP = {
   "Bloblobber": "オーバーフロッシャー",
   "Dread Wringer": "モップリン",
   "Explosher": "エクスプロッシャー",
-  "Slosher": "ヒッセン",
+  "Slosher": "バケットスロッシャー",
   "Sloshing Machine": "スクリュースロッシャー",
-  "Tri-Slosher": "バケットスロッシャー",
+  "Tri-Slosher": "ヒッセン",
   // スピナー
   "Ballpoint Splatling": "クーゲルシュライバー",
   "Heavy Splatling": "バレルスピナー",

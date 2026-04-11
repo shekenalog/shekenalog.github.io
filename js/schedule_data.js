@@ -12537,7 +12537,7 @@ const SCHEDULE_DATA = [
     "weapons": [
       "24式張替傘・甲",
       "シャープマーカー",
-      "バケットスロッシャー",
+      "ヒッセン",
       "Rブラスターエリート"
     ],
     "eventType": "regular",
