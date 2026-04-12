@@ -12606,5 +12606,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 789,
+    "year": 2026,
+    "startDate": "04/19 01:00",
+    "endDate": "04/20 17:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ジムワイパー",
+      "スプラローラー",
+      "ハイドラント",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
