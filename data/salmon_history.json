@@ -12622,5 +12622,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 790,
+    "year": 2026,
+    "startDate": "04/20 17:00",
+    "endDate": "04/22 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "タツ",
+    "weapons": [
+      "スクリュースロッシャー",
+      "シャープマーカー",
+      "ヴァリアブルローラー",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
