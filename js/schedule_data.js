@@ -12638,5 +12638,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 791,
+    "year": 2026,
+    "startDate": "04/22 09:00",
+    "endDate": "04/24 01:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "フィンセント",
+      "スパッタリー",
+      "わかばシューター",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
