@@ -12654,5 +12654,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 792,
+    "year": 2026,
+    "startDate": "04/24 01:00",
+    "endDate": "04/25 17:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "デンタルワイパーミント",
+      "ホットブラスター",
+      "プライムシューター",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
