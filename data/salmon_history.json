@@ -12686,5 +12686,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 794,
+    "year": 2026,
+    "startDate": "04/27 09:00",
+    "endDate": "04/29 01:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ジョー",
+    "weapons": [
+      "S-BLAST92",
+      "パブロ",
+      "ヒッセン",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
