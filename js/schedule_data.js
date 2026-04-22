@@ -12702,5 +12702,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 795,
+    "year": 2026,
+    "startDate": "04/29 01:00",
+    "endDate": "04/30 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "カーボンローラー",
+      "クアッドホッパーブラック",
+      "ノヴァブラスター",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
