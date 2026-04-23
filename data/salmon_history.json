@@ -12718,5 +12718,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 796,
+    "year": 2026,
+    "startDate": "04/30 17:00",
+    "endDate": "05/02 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "タツ",
+    "weapons": [
+      "24式張替傘・甲",
+      "ノーチラス47",
+      "ヴァリアブルローラー",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
