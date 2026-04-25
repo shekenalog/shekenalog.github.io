@@ -12734,5 +12734,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 797,
+    "year": 2026,
+    "startDate": "05/02 09:00",
+    "endDate": "05/04 01:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
