@@ -12750,5 +12750,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 798,
+    "year": 2026,
+    "startDate": "05/04 01:00",
+    "endDate": "05/05 17:00",
+    "stage": "シェケナダム",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "オーバーフロッシャー",
+      "N-ZAP85",
+      "プライムシューター",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
