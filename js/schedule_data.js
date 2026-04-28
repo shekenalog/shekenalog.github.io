@@ -12766,5 +12766,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 799,
+    "year": 2026,
+    "startDate": "05/05 17:00",
+    "endDate": "05/07 09:00",
+    "stage": "アラマキ砦",
+    "boss": "タツ",
+    "weapons": [
+      "シャープマーカー",
+      "ガエンFF",
+      "スペースシューター",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
