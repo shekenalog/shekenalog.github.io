@@ -12814,5 +12814,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 802,
+    "year": 2026,
+    "startDate": "05/09 09:00",
+    "endDate": "05/11 09:00",
+    "stage": "アラマキ砦",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "スプラシューター",
+      "ホットブラスター",
+      "スプラローラー",
+      "スプラチャージャー"
+    ],
+    "eventType": "bigbigrun",
+    "isGolden": false
   }
 ]
