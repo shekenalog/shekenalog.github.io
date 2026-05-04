@@ -259,36 +259,7 @@ async function main() {
     });
   }
 
-  // Team Contest (Big Big Run)
-  const teamcontest = api.data?.coopGroupingSchedule?.teamContestSchedules?.nodes || [];
-  for (const node of teamcontest) {
-    const start = utcToJST(node.startTime);
-    const end = utcToJST(node.endTime);
-    const key = `${start.year}/${start.dateStr}`;
-    if (existingDates.has(key)) continue;
-
-    const setting = node.setting;
-    if (!setting) continue;
-
-    const isGolden = detectGolden(setting.weapons);
-    const weapons = setting.weapons.map(w => {
-      if (w.name === "Random") return "？";
-      return mapWeapon(w.name);
-    });
-    const bossName = setting.boss ? mapBoss(setting.boss.name) : "オカシラ連合";
-
-    newRecords.push({
-      startTime: node.startTime,
-      startDateStr: start.dateStr,
-      endDateStr: end.dateStr,
-      startYear: start.year,
-      stage: mapStage(setting.coopStage.name),
-      boss: bossName,
-      weapons: weapons,
-      eventType: "bigbigrun",
-      isGolden: isGolden,
-    });
-  }
+  // Team Contest — バイトチームコンテストは対象外（スキップ）
 
   // 時系列ソート
   newRecords.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
