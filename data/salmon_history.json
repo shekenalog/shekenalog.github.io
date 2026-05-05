@@ -12814,5 +12814,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 802,
+    "year": 2026,
+    "startDate": "05/10 17:00",
+    "endDate": "05/12 09:00",
+    "stage": "シェケナダム",
+    "boss": "タツ",
+    "weapons": [
+      "わかばシューター",
+      "ヒッセン",
+      "クーゲルシュライバー",
+      "キャンピングシェルター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
