@@ -12846,5 +12846,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 804,
+    "year": 2026,
+    "startDate": "05/14 01:00",
+    "endDate": "05/15 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "カーボンローラー",
+      "N-ZAP85",
+      "ホットブラスター",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
