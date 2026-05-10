@@ -12862,5 +12862,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 805,
+    "year": 2026,
+    "startDate": "05/15 17:00",
+    "endDate": "05/17 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "タツ",
+    "weapons": [
+      "ヴァリアブルローラー",
+      "スプラシューター",
+      "R-PEN/5H",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
