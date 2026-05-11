@@ -12878,5 +12878,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 806,
+    "year": 2026,
+    "startDate": "05/17 09:00",
+    "endDate": "05/19 01:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      "L3リールガン",
+      "ガエンFF",
+      "スプラローラー",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
