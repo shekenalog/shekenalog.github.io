@@ -12894,5 +12894,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 807,
+    "year": 2026,
+    "startDate": "05/19 01:00",
+    "endDate": "05/20 17:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スパッタリー",
+      "デンタルワイパーミント",
+      "ワイドローラー",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
