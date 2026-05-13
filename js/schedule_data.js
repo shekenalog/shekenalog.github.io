@@ -12910,5 +12910,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 808,
+    "year": 2026,
+    "startDate": "05/20 17:00",
+    "endDate": "05/22 09:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "LACT-450",
+      "ドライブワイパー",
+      "ロングブラスター",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
