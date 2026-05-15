@@ -12926,5 +12926,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 809,
+    "year": 2026,
+    "startDate": "05/22 09:00",
+    "endDate": "05/24 01:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "パブロ",
+      "スプラスピナー",
+      "ボトルガイザー",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
