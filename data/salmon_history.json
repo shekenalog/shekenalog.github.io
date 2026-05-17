@@ -12942,5 +12942,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 810,
+    "year": 2026,
+    "startDate": "05/24 01:00",
+    "endDate": "05/25 17:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "24式張替傘・甲",
+      "ボールドマーカー",
+      "ジムワイパー",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
