@@ -12958,5 +12958,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 811,
+    "year": 2026,
+    "startDate": "05/25 17:00",
+    "endDate": "05/27 09:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "タツ",
+    "weapons": [
+      "ヒッセン",
+      "わかばシューター",
+      "イグザミナー",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
