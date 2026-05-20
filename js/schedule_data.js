@@ -12974,5 +12974,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 812,
+    "year": 2026,
+    "startDate": "05/27 09:00",
+    "endDate": "05/29 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "フィンセント",
+      ".52ガロン",
+      "N-ZAP85",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
