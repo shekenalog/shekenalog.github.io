@@ -12990,5 +12990,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 813,
+    "year": 2026,
+    "startDate": "05/29 01:00",
+    "endDate": "05/30 17:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "クーゲルシュライバー",
+      "ヴァリアブルローラー",
+      "クアッドホッパーブラック",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
