@@ -13006,5 +13006,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 814,
+    "year": 2026,
+    "startDate": "05/30 17:00",
+    "endDate": "06/01 09:00",
+    "stage": "アラマキ砦",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": true
   }
 ];
