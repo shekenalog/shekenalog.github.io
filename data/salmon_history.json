@@ -13022,5 +13022,21 @@
     ],
     "eventType": "regular",
     "isGolden": true
+  },
+  {
+    "no": 815,
+    "year": 2026,
+    "startDate": "06/01 09:00",
+    "endDate": "06/03 01:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ジョー",
+    "weapons": [
+      "バケットスロッシャー",
+      "ダイナモローラー",
+      "シャープマーカー",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
