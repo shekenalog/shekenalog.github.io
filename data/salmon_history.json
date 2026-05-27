@@ -13038,5 +13038,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 816,
+    "year": 2026,
+    "startDate": "06/03 01:00",
+    "endDate": "06/04 17:00",
+    "stage": "シェケナダム",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "デンタルワイパーミント",
+      "オーバーフロッシャー",
+      "カーボンローラー",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
