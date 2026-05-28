@@ -13054,5 +13054,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 817,
+    "year": 2026,
+    "startDate": "06/04 17:00",
+    "endDate": "06/06 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "タツ",
+    "weapons": [
+      "ホクサイ",
+      "クラッシュブラスター",
+      "パラシェルター",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
