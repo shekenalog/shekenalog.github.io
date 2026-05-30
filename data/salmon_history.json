@@ -13070,5 +13070,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 818,
+    "year": 2026,
+    "startDate": "06/06 09:00",
+    "endDate": "06/08 01:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ジョー",
+    "weapons": [
+      "スパイガジェット",
+      "プロモデラーMG",
+      "ガエンFF",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
