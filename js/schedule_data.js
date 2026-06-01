@@ -13086,5 +13086,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 819,
+    "year": 2026,
+    "startDate": "06/08 01:00",
+    "endDate": "06/09 17:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スプラスピナー",
+      "L3リールガン",
+      "スペースシューター",
+      "ソイチューバー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
