@@ -13102,5 +13102,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 820,
+    "year": 2026,
+    "startDate": "06/09 17:00",
+    "endDate": "06/11 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "タツ",
+    "weapons": [
+      "スプラローラー",
+      "ドライブワイパー",
+      "スプラシューター",
+      "Rブラスターエリート"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
