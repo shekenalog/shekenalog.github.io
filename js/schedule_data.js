@@ -13118,5 +13118,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 821,
+    "year": 2026,
+    "startDate": "06/11 09:00",
+    "endDate": "06/13 01:00",
+    "stage": "アラマキ砦",
+    "boss": "ジョー",
+    "weapons": [
+      "S-BLAST92",
+      "24式張替傘・甲",
+      "モップリン",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
