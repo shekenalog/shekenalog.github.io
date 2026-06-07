@@ -13150,5 +13150,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 823,
+    "year": 2026,
+    "startDate": "06/14 17:00",
+    "endDate": "06/16 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "タツ",
+    "weapons": [
+      "ボトルガイザー",
+      "パラシェルター",
+      "シャープマーカー",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
