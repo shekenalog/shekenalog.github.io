@@ -13182,5 +13182,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 825,
+    "year": 2026,
+    "startDate": "06/18 09:00",
+    "endDate": "06/20 09:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スプラスピナー",
+      "クラッシュブラスター",
+      "ジェットスイーパー",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
