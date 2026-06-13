@@ -13198,5 +13198,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 826,
+    "year": 2026,
+    "startDate": "06/20 09:00",
+    "endDate": "06/22 09:00",
+    "stage": "Multiple Sites",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "bigrun",
+    "isGolden": true
   }
 ]
