@@ -13214,5 +13214,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "bigrun",
     "isGolden": true
+  },
+  {
+    "no": 827,
+    "year": 2026,
+    "startDate": "06/22 09:00",
+    "endDate": "06/23 01:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "タツ",
+    "weapons": [
+      "ボールドマーカー",
+      "ロングブラスター",
+      "LACT-450",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
