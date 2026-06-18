@@ -13246,5 +13246,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 829,
+    "year": 2026,
+    "startDate": "06/24 17:00",
+    "endDate": "06/26 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "L3リールガン",
+      "オーバーフロッシャー",
+      "デュアルスイーパー",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
