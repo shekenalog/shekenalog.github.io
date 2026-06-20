@@ -13262,5 +13262,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 830,
+    "year": 2026,
+    "startDate": "06/26 09:00",
+    "endDate": "06/28 01:00",
+    "stage": "シェケナダム",
+    "boss": "タツ",
+    "weapons": [
+      "ノーチラス47",
+      "デンタルワイパーミント",
+      "シャープマーカー",
+      "キャンピングシェルター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
