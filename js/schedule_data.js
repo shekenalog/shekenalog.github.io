@@ -13278,5 +13278,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 831,
+    "year": 2026,
+    "startDate": "06/28 01:00",
+    "endDate": "06/29 17:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "わかばシューター",
+      "モップリン",
+      "ガエンFF",
+      "Rブラスターエリート"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
