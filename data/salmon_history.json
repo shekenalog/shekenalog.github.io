@@ -13294,5 +13294,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 832,
+    "year": 2026,
+    "startDate": "06/29 17:00",
+    "endDate": "07/01 09:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ジムワイパー",
+      "S-BLAST92",
+      "N-ZAP85",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
