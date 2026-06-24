@@ -13310,5 +13310,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 833,
+    "year": 2026,
+    "startDate": "07/01 09:00",
+    "endDate": "07/03 01:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "ノヴァブラスター",
+      "ボトルガイザー",
+      "スパッタリー",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
