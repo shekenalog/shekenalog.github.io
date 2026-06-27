@@ -13342,5 +13342,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 835,
+    "year": 2026,
+    "startDate": "07/04 17:00",
+    "endDate": "07/06 09:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
