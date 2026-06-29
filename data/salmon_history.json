@@ -13358,5 +13358,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 836,
+    "year": 2026,
+    "startDate": "07/06 09:00",
+    "endDate": "07/08 01:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "タツ",
+    "weapons": [
+      "LACT-450",
+      "ホットブラスター",
+      "ダイナモローラー",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
