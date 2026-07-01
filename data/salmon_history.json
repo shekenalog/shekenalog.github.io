@@ -13374,5 +13374,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 837,
+    "year": 2026,
+    "startDate": "07/08 01:00",
+    "endDate": "07/09 17:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "ホクサイ",
+      "スプラマニューバー",
+      "スプラローラー",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
