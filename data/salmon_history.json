@@ -13422,5 +13422,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 840,
+    "year": 2026,
+    "startDate": "07/13 01:00",
+    "endDate": "07/14 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ジョー",
+    "weapons": [
+      "ドライブワイパー",
+      "イグザミナー",
+      "オーバーフロッシャー",
+      "キャンピングシェルター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
