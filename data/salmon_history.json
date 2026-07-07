@@ -13438,5 +13438,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 841,
+    "year": 2026,
+    "startDate": "07/14 17:00",
+    "endDate": "07/16 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スプラスピナー",
+      "デンタルワイパーミント",
+      "ヒッセン",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
