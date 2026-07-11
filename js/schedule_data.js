@@ -13470,5 +13470,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 843,
+    "year": 2026,
+    "startDate": "07/18 01:00",
+    "endDate": "07/19 17:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      ".52ガロン",
+      "ボトルガイザー",
+      "R-PEN/5H",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
