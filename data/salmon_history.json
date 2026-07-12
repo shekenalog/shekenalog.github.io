@@ -13486,5 +13486,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 844,
+    "year": 2026,
+    "startDate": "07/19 17:00",
+    "endDate": "07/21 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スペースシューター",
+      "N-ZAP85",
+      "クラッシュブラスター",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
