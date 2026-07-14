@@ -13502,5 +13502,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 845,
+    "year": 2026,
+    "startDate": "07/21 09:00",
+    "endDate": "07/23 01:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "タツ",
+    "weapons": [
+      "S-BLAST92",
+      "プロモデラーMG",
+      "パブロ",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
