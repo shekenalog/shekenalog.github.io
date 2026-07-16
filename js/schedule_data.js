@@ -13518,5 +13518,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 846,
+    "year": 2026,
+    "startDate": "07/23 01:00",
+    "endDate": "07/24 17:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      "ケルビン525",
+      "ヴァリアブルローラー",
+      "ラピッドブラスター",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
