@@ -13550,5 +13550,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 848,
+    "year": 2026,
+    "startDate": "07/26 09:00",
+    "endDate": "07/28 01:00",
+    "stage": "アラマキ砦",
+    "boss": "タツ",
+    "weapons": [
+      "パラシェルター",
+      "カーボンローラー",
+      "ホクサイ",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
