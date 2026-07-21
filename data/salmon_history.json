@@ -13566,5 +13566,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 849,
+    "year": 2026,
+    "startDate": "07/28 01:00",
+    "endDate": "07/29 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ジョー",
+    "weapons": [
+      "ボトルガイザー",
+      "オーバーフロッシャー",
+      "H3リールガン",
+      "キャンピングシェルター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
