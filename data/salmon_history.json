@@ -13582,5 +13582,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 850,
+    "year": 2026,
+    "startDate": "07/29 17:00",
+    "endDate": "07/31 09:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "24式張替傘・甲",
+      "スプラマニューバー",
+      "デュアルスイーパー",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
