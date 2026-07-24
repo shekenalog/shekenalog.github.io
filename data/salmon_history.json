@@ -13598,5 +13598,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 851,
+    "year": 2026,
+    "startDate": "07/31 09:00",
+    "endDate": "08/02 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "タツ",
+    "weapons": [
+      "ガエンFF",
+      "クアッドホッパーブラック",
+      "スプラスピナー",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
