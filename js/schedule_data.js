@@ -13614,5 +13614,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 852,
+    "year": 2026,
+    "startDate": "08/02 01:00",
+    "endDate": "08/03 17:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
