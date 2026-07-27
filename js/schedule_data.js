@@ -13630,5 +13630,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 853,
+    "year": 2026,
+    "startDate": "08/03 17:00",
+    "endDate": "08/05 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "S-BLAST92",
+      "シャープマーカー",
+      "ジムワイパー",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
