@@ -13646,5 +13646,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 854,
+    "year": 2026,
+    "startDate": "08/05 09:00",
+    "endDate": "08/07 01:00",
+    "stage": "シェケナダム",
+    "boss": "タツ",
+    "weapons": [
+      "バケットスロッシャー",
+      "デンタルワイパーミント",
+      "ホットブラスター",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
