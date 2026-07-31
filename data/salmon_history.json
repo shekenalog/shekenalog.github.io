@@ -13662,5 +13662,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 855,
+    "year": 2026,
+    "startDate": "08/07 01:00",
+    "endDate": "08/08 17:00",
+    "stage": "アラマキ砦",
+    "boss": "ジョー",
+    "weapons": [
+      "フィンセント",
+      "ドライブワイパー",
+      "オーバーフロッシャー",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
