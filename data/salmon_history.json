@@ -13694,5 +13694,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 857,
+    "year": 2026,
+    "startDate": "08/10 09:00",
+    "endDate": "08/12 01:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "タツ",
+    "weapons": [
+      "モップリン",
+      "カーボンローラー",
+      "プライムシューター",
+      "ソイチューバー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
