@@ -13710,5 +13710,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 858,
+    "year": 2026,
+    "startDate": "08/12 01:00",
+    "endDate": "08/13 17:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "ガエンFF",
+      "スプラマニューバー",
+      "パラシェルター",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
