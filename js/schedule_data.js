@@ -13726,5 +13726,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 859,
+    "year": 2026,
+    "startDate": "08/13 17:00",
+    "endDate": "08/15 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ダイナモローラー",
+      "N-ZAP85",
+      ".52ガロン",
+      "Rブラスターエリート"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
