@@ -13742,5 +13742,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 860,
+    "year": 2026,
+    "startDate": "08/15 09:00",
+    "endDate": "08/17 01:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "タツ",
+    "weapons": [
+      "ボトルガイザー",
+      "スパッタリー",
+      "ハイドラント",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
