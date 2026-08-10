@@ -13758,5 +13758,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 861,
+    "year": 2026,
+    "startDate": "08/17 01:00",
+    "endDate": "08/18 17:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "クーゲルシュライバー",
+      "24式張替傘・甲",
+      "オーバーフロッシャー",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
