@@ -13774,5 +13774,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 862,
+    "year": 2026,
+    "startDate": "08/18 17:00",
+    "endDate": "08/20 09:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "デンタルワイパーミント",
+      "ヒッセン",
+      "プロモデラーMG",
+      "ジェットスイーパー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
