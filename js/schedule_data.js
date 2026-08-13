@@ -13790,5 +13790,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 863,
+    "year": 2026,
+    "startDate": "08/20 09:00",
+    "endDate": "08/22 01:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "S-BLAST92",
+      "わかばシューター",
+      "スプラシューター",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
