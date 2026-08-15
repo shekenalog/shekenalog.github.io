@@ -13806,5 +13806,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 864,
+    "year": 2026,
+    "startDate": "08/22 01:00",
+    "endDate": "08/23 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ジョー",
+    "weapons": [
+      "プライムシューター",
+      "シャープマーカー",
+      "クラッシュブラスター",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
