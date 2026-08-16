@@ -13822,5 +13822,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 865,
+    "year": 2026,
+    "startDate": "08/23 17:00",
+    "endDate": "08/25 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ノヴァブラスター",
+      "ケルビン525",
+      "パラシェルター",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
