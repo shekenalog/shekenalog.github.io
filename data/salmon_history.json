@@ -13838,5 +13838,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 866,
+    "year": 2026,
+    "startDate": "08/25 09:00",
+    "endDate": "08/27 01:00",
+    "stage": "アラマキ砦",
+    "boss": "タツ",
+    "weapons": [
+      "ボールドマーカー",
+      "ロングブラスター",
+      "ドライブワイパー",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
