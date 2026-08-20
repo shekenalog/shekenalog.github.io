@@ -13854,5 +13854,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 867,
+    "year": 2026,
+    "startDate": "08/27 01:00",
+    "endDate": "08/28 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ジョー",
+    "weapons": [
+      "N-ZAP85",
+      "スプラローラー",
+      "ホットブラスター",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
