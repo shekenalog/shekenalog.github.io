@@ -13870,5 +13870,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 868,
+    "year": 2026,
+    "startDate": "08/28 17:00",
+    "endDate": "08/30 09:00",
+    "stage": "シェケナダム",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": true
   }
 ];
