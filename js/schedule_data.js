@@ -13902,5 +13902,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 870,
+    "year": 2026,
+    "startDate": "09/01 01:00",
+    "endDate": "09/02 17:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "ジムワイパー",
+      "S-BLAST92",
+      ".52ガロン",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
