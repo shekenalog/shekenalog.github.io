@@ -13934,5 +13934,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 872,
+    "year": 2026,
+    "startDate": "09/04 09:00",
+    "endDate": "09/06 01:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "タツ",
+    "weapons": [
+      "ロングブラスター",
+      "デンタルワイパーミント",
+      "スプラシューター",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
