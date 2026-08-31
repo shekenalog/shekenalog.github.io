@@ -13966,5 +13966,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 874,
+    "year": 2026,
+    "startDate": "09/07 17:00",
+    "endDate": "09/09 09:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ホクサイ",
+      "N-ZAP85",
+      "カーボンローラー",
+      "Rブラスターエリート"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
