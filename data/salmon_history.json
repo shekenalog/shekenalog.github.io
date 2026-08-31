@@ -13950,5 +13950,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 873,
+    "year": 2026,
+    "startDate": "09/06 01:00",
+    "endDate": "09/07 17:00",
+    "stage": "アラマキ砦",
+    "boss": "ジョー",
+    "weapons": [
+      "ヴァリアブルローラー",
+      "ノーチラス47",
+      "ヒッセン",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
