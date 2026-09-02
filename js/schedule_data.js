@@ -13982,5 +13982,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 875,
+    "year": 2026,
+    "startDate": "09/09 09:00",
+    "endDate": "09/11 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "タツ",
+    "weapons": [
+      "ノヴァブラスター",
+      "スクリュースロッシャー",
+      "オーバーフロッシャー",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
