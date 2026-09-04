@@ -13998,5 +13998,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 876,
+    "year": 2026,
+    "startDate": "09/11 01:00",
+    "endDate": "09/12 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      "モップリン",
+      "スプラマニューバー",
+      "L3リールガン",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
