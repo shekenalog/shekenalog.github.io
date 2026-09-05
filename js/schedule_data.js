@@ -14014,5 +14014,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 877,
+    "year": 2026,
+    "startDate": "09/12 09:00",
+    "endDate": "09/14 09:00",
+    "stage": "スメーシーワールド",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "bigrun",
+    "isGolden": false
   }
 ];
