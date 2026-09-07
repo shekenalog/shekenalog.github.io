@@ -14030,5 +14030,21 @@
     ],
     "eventType": "bigrun",
     "isGolden": false
+  },
+  {
+    "no": 878,
+    "year": 2026,
+    "startDate": "09/14 09:00",
+    "endDate": "09/16 01:00",
+    "stage": "シェケナダム",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ワイドローラー",
+      "24式張替傘・甲",
+      "スパッタリー",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
