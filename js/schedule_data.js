@@ -14046,5 +14046,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 879,
+    "year": 2026,
+    "startDate": "09/16 01:00",
+    "endDate": "09/17 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "ジムワイパー",
+      "プロモデラーMG",
+      "スパイガジェット",
+      "ソイチューバー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
