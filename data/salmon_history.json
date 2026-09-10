@@ -14062,5 +14062,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 880,
+    "year": 2026,
+    "startDate": "09/17 17:00",
+    "endDate": "09/19 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ジョー",
+    "weapons": [
+      ".52ガロン",
+      "シャープマーカー",
+      "フィンセント",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
