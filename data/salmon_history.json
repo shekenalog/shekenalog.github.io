@@ -14078,5 +14078,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 881,
+    "year": 2026,
+    "startDate": "09/19 09:00",
+    "endDate": "09/21 01:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ガエンFF",
+      "ボールドマーカー",
+      "バレルスピナー",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
