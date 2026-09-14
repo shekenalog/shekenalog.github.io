@@ -14094,5 +14094,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 882,
+    "year": 2026,
+    "startDate": "09/21 01:00",
+    "endDate": "09/22 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "タツ",
+    "weapons": [
+      "S-BLAST92",
+      "パラシェルター",
+      "スプラシューター",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
