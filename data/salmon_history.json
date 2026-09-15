@@ -14110,5 +14110,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 883,
+    "year": 2026,
+    "startDate": "09/22 17:00",
+    "endDate": "09/24 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "パブロ",
+      "ドライブワイパー",
+      "ボトルガイザー",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
