@@ -14126,5 +14126,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 884,
+    "year": 2026,
+    "startDate": "09/24 09:00",
+    "endDate": "09/26 01:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "オーバーフロッシャー",
+      "スプラローラー",
+      ".96ガロン",
+      "ジェットスイーパー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
