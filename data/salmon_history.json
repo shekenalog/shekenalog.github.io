@@ -14142,5 +14142,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 885,
+    "year": 2026,
+    "startDate": "09/26 01:00",
+    "endDate": "09/27 17:00",
+    "stage": "シェケナダム",
+    "boss": "タツ",
+    "weapons": [
+      "スクリュースロッシャー",
+      "カーボンローラー",
+      "LACT-450",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
