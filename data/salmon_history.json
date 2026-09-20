@@ -14158,5 +14158,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 886,
+    "year": 2026,
+    "startDate": "09/27 17:00",
+    "endDate": "09/29 09:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ジョー",
+    "weapons": [
+      "24式張替傘・甲",
+      "N-ZAP85",
+      "ダイナモローラー",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
