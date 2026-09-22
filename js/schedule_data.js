@@ -14174,5 +14174,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 887,
+    "year": 2026,
+    "startDate": "09/29 09:00",
+    "endDate": "10/01 01:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ノヴァブラスター",
+      "シャープマーカー",
+      "ワイドローラー",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
