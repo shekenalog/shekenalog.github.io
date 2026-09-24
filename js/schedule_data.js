@@ -14190,5 +14190,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 888,
+    "year": 2026,
+    "startDate": "10/01 01:00",
+    "endDate": "10/02 17:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "タツ",
+    "weapons": [
+      "ヴァリアブルローラー",
+      "ホクサイ",
+      "プライムシューター",
+      "Rブラスターエリート"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
