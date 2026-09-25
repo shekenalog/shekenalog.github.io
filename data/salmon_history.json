@@ -14206,5 +14206,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 889,
+    "year": 2026,
+    "startDate": "10/02 17:00",
+    "endDate": "10/04 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
