@@ -14222,5 +14222,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 890,
+    "year": 2026,
+    "startDate": "10/04 09:00",
+    "endDate": "10/06 01:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ボールドマーカー",
+      "ケルビン525",
+      "ガエンFF",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
