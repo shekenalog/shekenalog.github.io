@@ -14254,5 +14254,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 892,
+    "year": 2026,
+    "startDate": "10/07 17:00",
+    "endDate": "10/09 09:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ジョー",
+    "weapons": [
+      "LACT-450",
+      "モップリン",
+      "ドライブワイパー",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
