@@ -14270,5 +14270,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 893,
+    "year": 2026,
+    "startDate": "10/09 09:00",
+    "endDate": "10/11 01:00",
+    "stage": "シェケナダム",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "スパッタリー",
+      "カーボンローラー",
+      "スプラスピナー",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
