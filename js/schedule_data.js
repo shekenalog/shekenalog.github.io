@@ -14286,5 +14286,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 894,
+    "year": 2026,
+    "startDate": "10/11 01:00",
+    "endDate": "10/12 17:00",
+    "stage": "アラマキ砦",
+    "boss": "タツ",
+    "weapons": [
+      "N-ZAP85",
+      "ボトルガイザー",
+      "クラッシュブラスター",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
