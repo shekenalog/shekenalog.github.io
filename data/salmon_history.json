@@ -14302,5 +14302,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 895,
+    "year": 2026,
+    "startDate": "10/12 17:00",
+    "endDate": "10/14 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      "ジムワイパー",
+      "フィンセント",
+      ".96ガロン",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
