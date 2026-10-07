@@ -14318,5 +14318,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 896,
+    "year": 2026,
+    "startDate": "10/14 09:00",
+    "endDate": "10/16 01:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ガエンFF",
+      "24式張替傘・甲",
+      "ノヴァブラスター",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
