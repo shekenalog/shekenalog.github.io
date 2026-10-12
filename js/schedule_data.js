@@ -14366,5 +14366,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 899,
+    "year": 2026,
+    "startDate": "10/19 09:00",
+    "endDate": "10/21 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "S-BLAST92",
+      "スプラマニューバー",
+      "シャープマーカー",
+      "ソイチューバー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
