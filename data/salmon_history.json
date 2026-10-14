@@ -14382,5 +14382,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 900,
+    "year": 2026,
+    "startDate": "10/21 01:00",
+    "endDate": "10/22 17:00",
+    "stage": "シェケナダム",
+    "boss": "タツ",
+    "weapons": [
+      "ドライブワイパー",
+      "N-ZAP85",
+      "わかばシューター",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
