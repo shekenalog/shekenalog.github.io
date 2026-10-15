@@ -14398,5 +14398,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 901,
+    "year": 2026,
+    "startDate": "10/22 17:00",
+    "endDate": "10/24 09:00",
+    "stage": "アラマキ砦",
+    "boss": "ジョー",
+    "weapons": [
+      "スプラローラー",
+      "エクスプロッシャー",
+      "スプラシューター",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
