@@ -14414,5 +14414,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 902,
+    "year": 2026,
+    "startDate": "10/24 09:00",
+    "endDate": "10/26 01:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ケルビン525",
+      "デンタルワイパーミント",
+      "クラッシュブラスター",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
