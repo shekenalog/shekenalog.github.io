@@ -14430,5 +14430,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 903,
+    "year": 2026,
+    "startDate": "10/26 01:00",
+    "endDate": "10/27 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "スペースシューター",
+      "ボールドマーカー",
+      "フィンセント",
+      "スクイックリンα"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
