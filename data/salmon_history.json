@@ -14446,5 +14446,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 904,
+    "year": 2026,
+    "startDate": "10/27 17:00",
+    "endDate": "10/29 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ジョー",
+    "weapons": [
+      "プロモデラーMG",
+      "スプラスピナー",
+      "L3リールガン",
+      "リッター4K"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
