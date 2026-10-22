@@ -14462,5 +14462,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 905,
+    "year": 2026,
+    "startDate": "10/29 09:00",
+    "endDate": "10/31 01:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "ヴァリアブルローラー",
+      "ガエンFF",
+      ".52ガロン",
+      "ハイドラント"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
