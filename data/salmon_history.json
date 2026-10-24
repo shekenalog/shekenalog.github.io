@@ -14478,5 +14478,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 906,
+    "year": 2026,
+    "startDate": "10/31 01:00",
+    "endDate": "11/01 17:00",
+    "stage": "アラマキ砦",
+    "boss": "オカシラ連合",
+    "weapons": [
+      "？",
+      "？",
+      "？",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
