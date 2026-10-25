@@ -14494,5 +14494,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 907,
+    "year": 2026,
+    "startDate": "11/01 17:00",
+    "endDate": "11/03 09:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "スパイガジェット",
+      "ボトルガイザー",
+      "LACT-450",
+      "バレルスピナー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
