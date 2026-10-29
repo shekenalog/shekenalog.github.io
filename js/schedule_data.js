@@ -14526,5 +14526,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 909,
+    "year": 2026,
+    "startDate": "11/05 01:00",
+    "endDate": "11/06 17:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "タツ",
+    "weapons": [
+      "スパッタリー",
+      "ホットブラスター",
+      "わかばシューター",
+      "ジェットスイーパー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
