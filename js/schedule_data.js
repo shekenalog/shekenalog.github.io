@@ -14542,5 +14542,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 910,
+    "year": 2026,
+    "startDate": "11/06 17:00",
+    "endDate": "11/08 09:00",
+    "stage": "シェケナダム",
+    "boss": "ジョー",
+    "weapons": [
+      "スプラマニューバー",
+      "スプラローラー",
+      "デンタルワイパーミント",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
