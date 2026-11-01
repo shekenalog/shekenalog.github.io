@@ -14558,5 +14558,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 911,
+    "year": 2026,
+    "startDate": "11/08 09:00",
+    "endDate": "11/10 01:00",
+    "stage": "アラマキ砦",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "オーバーフロッシャー",
+      "ノヴァブラスター",
+      "ガエンFF",
+      "トライストリンガー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
