@@ -14574,5 +14574,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 912,
+    "year": 2026,
+    "startDate": "11/10 01:00",
+    "endDate": "11/11 17:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "タツ",
+    "weapons": [
+      "スプラスピナー",
+      "スペースシューター",
+      "N-ZAP85",
+      "ラピッドブラスター"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
