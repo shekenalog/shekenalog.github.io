@@ -14590,5 +14590,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 913,
+    "year": 2026,
+    "startDate": "11/11 17:00",
+    "endDate": "11/13 09:00",
+    "stage": "ムニ・エール海洋発電所",
+    "boss": "ジョー",
+    "weapons": [
+      "ワイドローラー",
+      "ホクサイ",
+      "パラシェルター",
+      "フルイドV"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
