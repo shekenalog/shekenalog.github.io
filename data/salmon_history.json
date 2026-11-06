@@ -14606,5 +14606,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 914,
+    "year": 2026,
+    "startDate": "11/13 09:00",
+    "endDate": "11/15 01:00",
+    "stage": "すじこジャンクション跡",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "プライムシューター",
+      "ボトルガイザー",
+      "ボールドマーカー",
+      "スプラチャージャー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
