@@ -14622,5 +14622,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 915,
+    "year": 2026,
+    "startDate": "11/15 01:00",
+    "endDate": "11/16 17:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "タツ",
+    "weapons": [
+      "カーボンローラー",
+      "L3リールガン",
+      "バレルスピナー",
+      "？"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
