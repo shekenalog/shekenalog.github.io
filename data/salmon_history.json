@@ -14638,5 +14638,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 916,
+    "year": 2026,
+    "startDate": "11/16 17:00",
+    "endDate": "11/18 09:00",
+    "stage": "どんぴこ闘技場",
+    "boss": "ジョー",
+    "weapons": [
+      "シャープマーカー",
+      "パブロ",
+      ".52ガロン",
+      "ジェットスイーパー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
