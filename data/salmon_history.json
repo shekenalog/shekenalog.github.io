@@ -14654,5 +14654,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 917,
+    "year": 2026,
+    "startDate": "11/18 09:00",
+    "endDate": "11/20 01:00",
+    "stage": "シェケナダム",
+    "boss": "ヨコヅナ",
+    "weapons": [
+      "クラッシュブラスター",
+      "デンタルワイパーミント",
+      "ガエンFF",
+      "ソイチューバー"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
