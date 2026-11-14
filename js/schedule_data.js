@@ -14670,5 +14670,21 @@ const SCHEDULE_DATA = [
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 918,
+    "year": 2026,
+    "startDate": "11/20 01:00",
+    "endDate": "11/21 17:00",
+    "stage": "アラマキ砦",
+    "boss": "タツ",
+    "weapons": [
+      "N-ZAP85",
+      "スプラマニューバー",
+      "スプラスピナー",
+      "14式竹筒銃・甲"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ];
