@@ -14686,5 +14686,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 919,
+    "year": 2026,
+    "startDate": "11/21 17:00",
+    "endDate": "11/23 09:00",
+    "stage": "トキシラズいぶし工房",
+    "boss": "ジョー",
+    "weapons": [
+      "イグザミナー",
+      "ホクサイ",
+      "スプラローラー",
+      ".96ガロン"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
