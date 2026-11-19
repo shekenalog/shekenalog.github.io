@@ -14734,5 +14734,21 @@
     ],
     "eventType": "regular",
     "isGolden": false
+  },
+  {
+    "no": 922,
+    "year": 2026,
+    "startDate": "11/26 17:00",
+    "endDate": "11/28 09:00",
+    "stage": "難破船ドン・ブラコ",
+    "boss": "ジョー",
+    "weapons": [
+      "スパイガジェット",
+      "オーバーフロッシャー",
+      "S-BLAST92",
+      "R-PEN/5H"
+    ],
+    "eventType": "regular",
+    "isGolden": false
   }
 ]
